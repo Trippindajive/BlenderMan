@@ -1,5 +1,10 @@
 package GameState;
-
+/**
+ * This is an abstract class defining what
+ * methods we expect a GameState object to have.
+ * @author Tim Riggins
+ *
+ */
 public abstract class GameState {
 	
 	protected GameStateManager gsm;
