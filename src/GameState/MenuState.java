@@ -4,6 +4,11 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import TileMap.Background;
 
+/**
+ * A subclass of GameState, it defines the properties of the main menu.
+ * @author Tim Riggins
+ *
+ */
 public class MenuState extends GameState {
 	
 	private Background bg;

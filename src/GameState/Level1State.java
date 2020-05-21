@@ -4,6 +4,11 @@ import java.awt.*;
 import TileMap.TileMap;
 import Main.GamePanel;
 
+/**
+ * A subclass of GameState, it defines the properties of Level 1, such as: graphics, functions, etc.
+ * @author Tim Riggins
+ *
+ */
 public class Level1State extends GameState{
 	
 	// TileMap

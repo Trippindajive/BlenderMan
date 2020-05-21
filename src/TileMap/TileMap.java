@@ -6,6 +6,11 @@ import java.io.*;
 import javax.imageio.ImageIO;
 import Main.GamePanel;
 
+/**
+ * This class details how tile images will be drawn to the screen.
+ * @author Tim Riggins
+ *
+ */
 public class TileMap {
 	
 	// Position

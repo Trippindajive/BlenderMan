@@ -6,8 +6,8 @@ package GameState;
  *
  */
 public enum STATE {
-	MENU(1),
-	LEVEL_ONE(2);
+	MENU(0),
+	LEVEL_ONE(1);
 	
 	// The value of a given state (corresponds to GameState)
 	private int value;

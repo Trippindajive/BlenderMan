@@ -8,7 +8,7 @@ import java.util.ArrayList;
  *
  */
 public class GameStateManager {
-	// REMOVE LATER LOL
+	
 	private ArrayList<GameState> gameStates;
 	private STATE currentState;
 	

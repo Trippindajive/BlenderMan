@@ -5,6 +5,11 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import Main.GamePanel;
 
+/**
+ * This defines the properties of the background images.
+ * @author Tim Riggins
+ *
+ */
 public class Background {
 	
 	private BufferedImage image;
