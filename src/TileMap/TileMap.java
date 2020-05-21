@@ -164,4 +164,12 @@ public class TileMap {
 			
 		}
 	}
+	
+	public int getNumRows() {
+		return numRows;
+	}
+	
+	public int getNumCols() {
+		return numCols;
+	}
 }

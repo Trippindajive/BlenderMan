@@ -1,6 +1,7 @@
 package GameState;
 
 import java.awt.*;
+import TileMap.Background;
 import TileMap.TileMap;
 import Main.GamePanel;
 
@@ -13,6 +14,7 @@ public class Level1State extends GameState{
 	
 	// TileMap
 	private TileMap tileMap;
+	private Background bg;
 	
 	public Level1State(GameStateManager gsm) {
 		this.gsm = gsm;
@@ -24,6 +26,8 @@ public class Level1State extends GameState{
 		tileMap.loadTiles("/Tilesets/grasstileset.gif");
 		tileMap.loadMap("/Maps/level1-1.map");
 		tileMap.setPosition(0, 0);
+		
+		bg = new Background("/Backgrounds/grassbg1.gif", 0.1); // double value is a move scale
 	}
 	
 	public void update() {
@@ -34,6 +38,9 @@ public class Level1State extends GameState{
 		// Clear screen
 		g.setColor(Color.WHITE);
 		g.fillRect(0, 0, GamePanel.WIDTH, GamePanel.HEIGHT);
+		
+		//Draw background
+		bg.draw(g);
 		
 		//Draw tilemap
 		tileMap.draw(g);
