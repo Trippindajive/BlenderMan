@@ -2,6 +2,8 @@ package Main;
 
 import javax.swing.JFrame; // A class that essentially enables the creation of a GUI (graphic user interface)
 
+//REMOVE: Testing if laptop can still run updated versions
+
 /**
  * This is where the game contains the main method, running it as an executable.
  * @author Tim Riggins
@@ -19,3 +21,5 @@ public class Game {
 	}
 
 }
+
+
