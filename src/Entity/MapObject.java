@@ -164,6 +164,9 @@ public abstract class MapObject {
 				dx = 0;
 				xtemp = (currCol + 1) * tileSize - cwidth / 2;
 			}
+			else {
+				xtemp += dx;
+			}
 		}
 		
 		
