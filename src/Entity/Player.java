@@ -6,6 +6,11 @@ import javax.imageio.ImageIO; // Package that contains classes which can read sp
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
+/**
+ * The subclass of MapObject which handles all Player attributes
+ * @author Tim Riggins
+ *
+ */
 public class Player extends MapObject {
 	
 	// Player Variables
@@ -35,7 +40,7 @@ public class Player extends MapObject {
 	private ArrayList<BufferedImage[]> sprites;
 	private final int[] numFrames = {2, 8, 1, 2, 4, 2, 5}; // An array of the number of frames for each animation action
 	
-	// Animation actions (describes index of array of animation sprites)
+	// (ENUMS) Animation actions (describes index of array of animation sprites)
 	private static final int IDLE = 0;
 	private static final int WALKING  = 1;
 	private static final int JUMPING = 2;
@@ -43,7 +48,10 @@ public class Player extends MapObject {
 	private static final int GLIDING = 4;
 	private static final int FIREBALL = 5;
 	private static final int SCRATCHING = 6;
-	
+	/**
+	 * Constructor for making player object with its appropriate tilemap
+	 * @param tm Tilemap
+	 */
 	public Player(TileMap tm) {
 		super(tm); // relates to MapObject line 71
 		
@@ -52,7 +60,7 @@ public class Player extends MapObject {
 		cwidth = 20; // Dimensions for in-game
 		cheight = 20;
 		
-		// These variables that define the player physics had been tested by the instructor as well-balanced
+		// These variables define the player physics which had been tested by the instructor as being well-balanced
 		moveSpeed = 0.3;
 		maxSpeed = 1.6;
 		stopSpeed = 0.4;
@@ -71,9 +79,9 @@ public class Player extends MapObject {
 		// fireBalls = new ArrayList<FireBall>();
 		
 		scratchDamage = 8;
-		scratchRange = 40;
+		scratchRange = 40; // In pixels
 		
-		// Load sprites
+		// Loads sprites
 		try {
 			
 			BufferedImage spritesheet = ImageIO.read(
@@ -88,7 +96,7 @@ public class Player extends MapObject {
 				BufferedImage[] bi = new BufferedImage[numFrames[i]];
 				for(int j = 0; j < numFrames[i]; j++) {
 					
-					if(i !=6) {
+					if(i != 6) {
 					bi[j] = spritesheet.getSubimage(
 							j * width,
 							i * height,
@@ -96,7 +104,7 @@ public class Player extends MapObject {
 							height
 							);
 					}
-					else {
+					else { // The attack animation has a larger width
 						bi[j] = spritesheet.getSubimage(
 								j * width * 2,
 								i * height,
@@ -149,7 +157,9 @@ public class Player extends MapObject {
 	public void setGliding(boolean b) {
 		gliding = b;
 	}
-	
+	/**
+	 * Determines the next position the player must be at
+	 */
 	private void getNextPosition() {
 		
 		// Movement
@@ -204,7 +214,9 @@ public class Player extends MapObject {
 			if(dy > maxFallSpeed) dy = maxFallSpeed;
 		}
 	}
-	
+	/**
+	 * Updates the positioning of the player
+	 */
 	public void update() {
 		
 		// Update position
@@ -272,13 +284,16 @@ public class Player extends MapObject {
 		
 		animation.update();
 		
-		// Set direction of player
+		// Set direction of player after attacking
 		if(currentAction != SCRATCHING && currentAction != FIREBALL) {
 			if(right) facingRight = true;
 			if(left) facingRight = false;
 		}
 	}
-	
+	/**
+	 * Actually draws the player
+	 * @param g
+	 */
 	public void draw(Graphics2D g) {
 		
 		setMapPosition(); // THIS METHOD SHOULD FIRST BE CALLED FOR EACH ENTITY

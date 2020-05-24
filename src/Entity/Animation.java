@@ -17,13 +17,16 @@ public class Animation {
 	private long startTime;
 	private long delay;
 	
-	// Describes whether an animation has been played already if it has been looped
+	// Describes whether an animation has been played already if it has been looped (useful for attack)
 	private boolean playedOnce;
 	
 	public Animation() {
 		playedOnce = false;
 	}
-	
+	/**
+	 * Sets the animation frames
+	 * @param frames An array storing the animation image frames
+	 */
 	public void setFrames(BufferedImage[] frames) {
 		this.frames= frames;
 		currentFrame = 0;
@@ -34,13 +37,15 @@ public class Animation {
 	public void setDelay(long d) {
 		delay = d;
 	}
-	
+	/**
+	 * Useful if needing to manually adding the frame number
+	 * @param i Frame #
+	 */
 	public void setFrame(int i) {
 		currentFrame = i;
 	}
-	
 	/**
-	 * Handles the logic that determines if next frame needs to played
+	 * Handles the logic that determines if the next frame needs to played
 	 */
 	public void update() {
 		if(delay == -1)
@@ -58,13 +63,13 @@ public class Animation {
 	}
 	/**
 	 * Gets the current frame number
-	 * @return
+	 * @return Current frame #
 	 */
 	public int getFrame() {
 		return currentFrame;
 	}
 	/** 
-	 * Gets the image that needs to be drawn
+	 * VERY IMPORTANT: Gets the image that needs to be drawn
 	 * @return
 	 */
 	public BufferedImage getImage() {

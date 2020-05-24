@@ -8,7 +8,7 @@ import Main.GamePanel;
 import java.awt.event.KeyEvent;
 
 /**
- * A subclass of GameState, it defines the properties of Level 1, such as: graphics, functions, etc.
+ * A subclass of GameState, it defines the properties of Level 1, such as: graphics, functions, objects, etc.
  * @author Tim Riggins
  *
  */
@@ -34,7 +34,7 @@ public class Level1State extends GameState{
 		bg = new Background("/Backgrounds/grassbg1.gif", 0.1); // double value is a move scale
 		
 		player = new Player(tileMap);
-		player.setPosition(100, 100);
+		player.setPosition(50, 50);
 	}
 	
 	public void update() {
@@ -66,7 +66,7 @@ public class Level1State extends GameState{
 		if(k == KeyEvent.VK_RIGHT) player.setRight(true);
 		if(k == KeyEvent.VK_UP) player.setUp(true);
 		if(k == KeyEvent.VK_DOWN) player.setDown(true);
-		if(k == KeyEvent.VK_SPACE) player.setJumping(true);
+		if(k == KeyEvent.VK_W) player.setJumping(true);
 		if(k == KeyEvent.VK_E) player.setGliding(true);
 		//if(k == KeyEvent.VK_R) player.setScratching();
 		//if(k == KeyEvent.VK_F) player.setFiring();
@@ -78,7 +78,7 @@ public class Level1State extends GameState{
 		if(k == KeyEvent.VK_RIGHT) player.setRight(false);
 		if(k == KeyEvent.VK_UP) player.setUp(false);
 		if(k == KeyEvent.VK_DOWN) player.setDown(false);
-		if(k == KeyEvent.VK_SPACE) player.setJumping(false);
+		if(k == KeyEvent.VK_W) player.setJumping(false);
 		if(k == KeyEvent.VK_E) player.setGliding(false);
 	}
 }
