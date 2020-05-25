@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class GameStateManager {
 	// REMOVE LATER LOL
 	private ArrayList<GameState> gameStates;
-	private STATE currentState;
+	private STATE currentState = STATE.MENU; // Default screen state
 	
 	public GameStateManager() {
 		gameStates = new ArrayList<GameState>();
