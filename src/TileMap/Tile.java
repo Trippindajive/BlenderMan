@@ -2,6 +2,11 @@ package TileMap;
 
 import java.awt.image.BufferedImage;
 
+/**
+ * This defines the behavior of graphical tile blocks in-game.
+ * @author Tim Riggins
+ *
+ */
 public class Tile {
 	
 	private BufferedImage image;

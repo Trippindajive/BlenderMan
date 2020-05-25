@@ -1,2 +1,2 @@
 # BlenderMan
-Awesome 80s retro platformer
+A 2D action platformer heavily inspired by 80s pop culture.

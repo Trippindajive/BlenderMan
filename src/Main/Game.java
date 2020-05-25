@@ -2,6 +2,11 @@ package Main;
 
 import javax.swing.JFrame; // A class that essentially enables the creation of a GUI (graphic user interface)
 
+/**
+ * This is where the game contains the main method, running it as an executable.
+ * @author Tim Riggins
+ *
+ */
 public class Game {
 	
 	public static void main(String[] args) {
@@ -14,3 +19,5 @@ public class Game {
 	}
 
 }
+
+
