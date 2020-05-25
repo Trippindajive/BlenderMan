@@ -4,11 +4,16 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import TileMap.Background;
 
+/**
+ * A subclass of GameState, it defines the properties of the main menu.
+ * @author Tim Riggins
+ *
+ */
 public class MenuState extends GameState {
 	
 	private Background bg;
 	private int currentChoice = 0;
-	private String[] options = {"Start", "Help", "Quit"};
+	private String[] options = {"Start", "Load XP", "Passwords", "Leaderboards", "Help", "Quit"};
 	private Color titleColor;
 	private Font titleFont;
 	private Font font;
@@ -17,8 +22,8 @@ public class MenuState extends GameState {
 		this.gsm = gsm;
 		
 		try {
-			bg = new Background("/Backgrounds/menubg.gif", 1);
-			bg.setVector(-0.1, 0);
+			bg = new Background("/Backgrounds/retor.jpg", 1);
+			bg.setVector(-0.5, 0);
 			
 			titleColor = new Color(0, 128, 0);
 			titleFont = new Font("Century Gothic", Font.PLAIN, 28);
@@ -44,7 +49,7 @@ public class MenuState extends GameState {
 		// Draw title
 		g.setColor(titleColor);
 		g.setFont(titleFont);
-		g.drawString("BlenderMaaaaan", 40, 70); // In the future, write a function that automatically centers strings
+		g.drawString("BlenderMan", 80, 70); // In the future, write a function that automatically centers strings
 		
 		// Draw menu options
 		g.setFont(font);
@@ -53,7 +58,7 @@ public class MenuState extends GameState {
 				g.setColor(Color.RED);
 			}
 			else {
-				g.setColor(Color.BLACK);
+				g.setColor(Color.WHITE);
 			}
 			g.drawString(options[i], 145, 140 + i * 15);
 		}
@@ -65,10 +70,18 @@ public class MenuState extends GameState {
 			gsm.setState(STATE.LEVEL_ONE);
 		}
 		if(currentChoice == 1) {
-			// Help
-			
+			//Log-Ins
 		}
 		if(currentChoice == 2) {
+			// Passwords
+		}
+		if(currentChoice == 3) {
+			//Leaderboards
+		}
+		if(currentChoice == 4) {
+			//Help
+		}
+		if(currentChoice == 5) {
 			System.exit(0);
 		}
 	}

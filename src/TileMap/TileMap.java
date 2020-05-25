@@ -6,6 +6,11 @@ import java.io.*;
 import javax.imageio.ImageIO;
 import Main.GamePanel;
 
+/**
+ * This class details how tile images will be drawn to the screen.
+ * @author Tim Riggins
+ *
+ */
 public class TileMap {
 	
 	// Position
@@ -78,6 +83,11 @@ public class TileMap {
 			map = new int[numRows][numCols];
 			width = numCols * tileSize;
 			height = numRows * tileSize;
+			
+			xmin = GamePanel.WIDTH - width;
+			xmax = 0;
+			ymin = GamePanel.HEIGHT - height;
+			ymax = 0;
 			
 			// Read map array
 			String delims = "\\s+";
@@ -158,5 +168,13 @@ public class TileMap {
 		}
 			
 		}
+	}
+	
+	public int getNumRows() {
+		return numRows;
+	}
+	
+	public int getNumCols() {
+		return numCols;
 	}
 }

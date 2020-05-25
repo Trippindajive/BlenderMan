@@ -7,6 +7,11 @@ import javax.swing.JPanel; // A class from the swing package that is a container
 
 import GameState.GameStateManager;
 
+/**
+ * This defines the properties of the game window.
+ * @author Tim Riggins
+ *
+ */
 public class GamePanel extends JPanel implements Runnable, KeyListener{
 	
 	// Dimensions of the GUI
