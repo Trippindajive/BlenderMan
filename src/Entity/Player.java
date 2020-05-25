@@ -26,7 +26,7 @@ public class Player extends MapObject {
 	private boolean firing;
 	private int fireCost;
 	private int fireBallDamage;
-	// private ArrayList<FireBall> fireBalls;
+	private ArrayList<FireBall> fireBalls;
 	
 	// Scratch Attack
 	private boolean scratching;
@@ -76,7 +76,7 @@ public class Player extends MapObject {
 		
 		fireCost = 200;
 		fireBallDamage = 5;
-		// fireBalls = new ArrayList<FireBall>();
+		fireBalls = new ArrayList<FireBall>();
 		
 		scratchDamage = 8;
 		scratchRange = 40; // In pixels
@@ -96,7 +96,7 @@ public class Player extends MapObject {
 				BufferedImage[] bi = new BufferedImage[numFrames[i]];
 				for(int j = 0; j < numFrames[i]; j++) {
 					
-					if(i != 6) {
+					if(i != SCRATCHING) {
 					bi[j] = spritesheet.getSubimage(
 							j * width,
 							i * height,
@@ -108,7 +108,7 @@ public class Player extends MapObject {
 						bi[j] = spritesheet.getSubimage(
 								j * width * 2,
 								i * height,
-								width,
+								width * 2,
 								height
 								);
 					}
@@ -224,6 +224,35 @@ public class Player extends MapObject {
 		checkTileMapCollision();
 		setPosition(xtemp, ytemp);
 		
+		// Checks if attack has stopped
+		if(currentAction == SCRATCHING) {
+			if(animation.hasPlayedOnce()) scratching = false;
+		}
+		if(currentAction == FIREBALL) {
+			if(animation.hasPlayedOnce()) firing = false;
+		}
+		
+		// Fireball attack
+		fire += 1;
+		if(fire > maxFire) fire = maxFire;
+		if(firing && currentAction != FIREBALL) {
+			if(fire > fireCost) {
+				fire -= fireCost;
+				FireBall fb = new FireBall(tileMap, facingRight);
+				fb.setPosition(x, y);
+				fireBalls.add(fb);
+			}
+		}
+		
+		// Update fireballs
+		for(int i = 0; i < fireBalls.size(); i++) {
+			fireBalls.get(i).update();
+			if(fireBalls.get(i).shouldRemove()) {
+				fireBalls.remove(i);
+				i--;
+			}
+		}
+		
 		// Set animation
 		if(scratching) {
 			if(currentAction != SCRATCHING) {
@@ -297,6 +326,11 @@ public class Player extends MapObject {
 	public void draw(Graphics2D g) {
 		
 		setMapPosition(); // THIS METHOD SHOULD FIRST BE CALLED FOR EACH ENTITY
+		
+		// Draw Fireballs
+		for(int i = 0; i < fireBalls.size(); i++) {
+			fireBalls.get(i).draw(g);
+		}
 		
 		// Draw player
 		if(flinching) {
