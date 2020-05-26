@@ -8,7 +8,6 @@ import TileMap.TileMap;
 import Main.GamePanel;
 import java.awt.event.KeyEvent;
 import Entity.Enemies.*;
-import Audio.AudioPlayer;
 
 /**
  * A subclass of GameState, it defines the properties of Level 1, such as: graphics, functions, objects, etc.

@@ -12,7 +12,8 @@ import GameState.GameStateManager;
  * @author Tim Riggins
  *
  */
-public class GamePanel extends JPanel implements Runnable, KeyListener{
+@SuppressWarnings("serial")
+public class GamePanel extends JPanel implements Runnable, KeyListener {
 	
 	// Dimensions of the GUI
 	public static final int WIDTH = 320;
