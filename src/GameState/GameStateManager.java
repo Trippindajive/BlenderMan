@@ -1,7 +1,5 @@
 package GameState;
 
-import java.util.ArrayList;
-
 /**
  * This handles the GameState properties within our game.
  * @author Tim Riggins
@@ -9,49 +7,84 @@ import java.util.ArrayList;
  */
 public class GameStateManager {
 	
-	private ArrayList<GameState> gameStates;
-	private STATE currentState = STATE.MENU; // Default screen state
+	private GameState[] gameStates;
+	private int currentState;
+	public static final int NUMGAMESTATES = 2;
+	public static final int MENUSTATE = 0;
+	public static final int LEVEL1STATE = 1;
+	//private STATE currentState = STATE.MENU; // Default screen state
+	
 	
 	public GameStateManager() {
-		gameStates = new ArrayList<GameState>();
-		currentState = STATE.MENU;
-		gameStates.add(new MenuState(this));
-		gameStates.add(new Level1State(this));
+		gameStates = new GameState[NUMGAMESTATES];
+		//currentState = STATE.MENU;
+		currentState = MENUSTATE;
+		
+		loadState(currentState);
+	}
+	
+	private void loadState(int state) {
+		if(state == MENUSTATE)
+			gameStates[state] = new MenuState(this);
+		if(state == LEVEL1STATE)
+			gameStates[state] = new Level1State(this);
+	}
+	
+	private void unloadState(int state) {
+		gameStates[state] = null;
 	}
 	
 	/**
 	 * Sets the state of the game
 	 * @param state
 	 */
-	public void setState(STATE state) { 
+	/*public void setState(STATE state) { 
 		currentState = state;
-		gameStates.get(currentState.value()).init();
+		gameStates[currentState].init();
+	}*/
+	public void setState(int state) {
+		unloadState(currentState);
+		currentState = state;
+		loadState(currentState);
+		//gameStates[currentState].init();
 	}
 	/**
 	 * Updates the game's values.
 	 */
 	public void update() {
-		gameStates.get(currentState.value()).update();
+		try {
+			
+			gameStates[currentState].update();
+			
+		} catch (Exception b) {
+			//b.printStackTrace();
+		}
 	}
 	/**
 	 * Renders graphics with the AWT Graphics2D library.
 	 * @param g The AWT Graphics library.
 	 */
 	public void draw(java.awt.Graphics2D g) {
-		gameStates.get(currentState.value()).draw(g);
+		try {
+			
+			gameStates[currentState].draw(g);
+			
+		} catch (Exception e) {
+			//e.printStackTrace();
+		}
 	}
 	/**
 	 * Signals key press.
 	 * @param k The ASCII value of the key pressed.
 	 */
 	public void keyPressed(int k) {
-		gameStates.get(currentState.value()).keyPressed(k);
+		gameStates[currentState].keyPressed(k);
 	}
 	/**
 	 * Signals key release.
 	 * @param k The ASCII value of the key released.
 	 */
 	public void keyReleased(int k) {
-		gameStates.get(currentState.value()).keyReleased(k);
+		gameStates[currentState].keyReleased(k);
 	}
 }

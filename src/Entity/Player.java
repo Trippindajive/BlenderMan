@@ -1,10 +1,13 @@
 package Entity;
 
 import TileMap.*;
+import Audio.AudioPlayer;
+
 import java.util.ArrayList;
 import javax.imageio.ImageIO; // Package that contains classes which can read spritesheets
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
 
 /**
  * The subclass of MapObject which handles all Player attributes
@@ -48,6 +51,9 @@ public class Player extends MapObject {
 	private static final int GLIDING = 4;
 	private static final int FIREBALL = 5;
 	private static final int SCRATCHING = 6;
+	
+	private HashMap<String, AudioPlayer> sfx;
+	
 	/**
 	 * Constructor for making player object with its appropriate tilemap
 	 * @param tm Tilemap
@@ -127,6 +133,10 @@ public class Player extends MapObject {
 		animation.setFrames(sprites.get(IDLE));
 		animation.setDelay(400);
 		
+		
+		sfx = new HashMap<String, AudioPlayer>();
+		sfx.put("jump", new AudioPlayer("/SFX/zapsplat_multimedia_game_sound_classic_jump_002_41725.wav"));
+		sfx.put("scratch", new AudioPlayer("/SFX/zapsplat_household_band_aid_plaster_strip_rip_tear_002_11599.wav"));
 		
 	}
 	
@@ -258,6 +268,7 @@ public class Player extends MapObject {
 		
 		// Jumping
 		if(jumping && !falling) {
+			sfx.get("jump").play();
 			dy = jumpStart;
 			falling = true;
 		}
@@ -323,6 +334,7 @@ public class Player extends MapObject {
 		// Set animation
 		if(scratching) {
 			if(currentAction != SCRATCHING) {
+				sfx.get("scratch").play();
 				currentAction = SCRATCHING;
 				animation.setFrames(sprites.get(SCRATCHING));
 				animation.setDelay(50);

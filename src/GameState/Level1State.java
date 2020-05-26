@@ -1,7 +1,6 @@
 package GameState;
 
 import java.awt.*;
-//import java.awt.Point;
 import java.util.ArrayList;
 import Entity.*;
 import TileMap.Background;
@@ -9,6 +8,7 @@ import TileMap.TileMap;
 import Main.GamePanel;
 import java.awt.event.KeyEvent;
 import Entity.Enemies.*;
+import Audio.AudioPlayer;
 
 /**
  * A subclass of GameState, it defines the properties of Level 1, such as: graphics, functions, objects, etc.
@@ -28,12 +28,15 @@ public class Level1State extends GameState{
 	
 	private HUD hud;
 	
+	//private AudioPlayer bgMusic;
+	
 	public Level1State(GameStateManager gsm) {
 		this.gsm = gsm;
 		init();
 	}
 	
 	public void init() {
+		
 		tileMap = new TileMap(30);
 		tileMap.loadTiles("/Tilesets/grasstileset.gif");
 		tileMap.loadMap("/Maps/level1-1.map");
@@ -43,7 +46,7 @@ public class Level1State extends GameState{
 		bg = new Background("/Backgrounds/grassbg1.gif", 0.1); // double value is a move scale
 		
 		player = new Player(tileMap);
-		player.setPosition(50, 50);
+		player.setPosition(50, 0);
 		
 		// Populate enemies
 		populateEnemies();
@@ -51,6 +54,7 @@ public class Level1State extends GameState{
 		deathExplosions = new ArrayList<DeathExplosion>();
 		
 		hud = new HUD(player);
+		
 	}
 	/**
 	 * This method creates an array of enemies that will be created onto the screen 
@@ -63,7 +67,7 @@ public class Level1State extends GameState{
 		Point[] points = new Point[] {
 			new Point(200, 200),
 			new Point(300, 200),
-			//new Point(600, 200),
+			//new Point(600, 200), Enemy won't appear at this location. Tiles blocking it?
 			new Point(860, 200),
 			new Point(1525, 200),
 			new Point(1680, 200),
