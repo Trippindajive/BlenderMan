@@ -157,6 +157,65 @@ public class Player extends MapObject {
 	public void setGliding(boolean b) {
 		gliding = b;
 	}
+	
+	public void checkAttack(ArrayList<Enemy> enemies) {
+		
+		// Loop through enemy array
+		for(int i = 0; i < enemies.size(); i++) {
+			
+			Enemy e = enemies.get(i);
+		
+		// Check scratch attack
+		if(scratching) {
+			if(facingRight) {
+					if(
+						e.getx() > x &&
+						e.getx() < x + scratchRange && // Checks enemy position against player position from the right
+						e.gety() > y - height / 2 &&
+						e.gety() < y + height / 2
+						) {
+						e.hit(scratchDamage);
+					}
+							
+				}
+			
+			else {
+					if(
+							e.getx() < x &&
+							e.getx() > x - scratchRange && // Checks enemy position against player position from the left
+							e.gety() > y - height / 2 &&
+							e.gety() < y + height / 2) {
+						e.hit(scratchDamage);
+					}
+				}
+			}
+		
+		// Check fireball attack
+			for(int j = 0; j < fireBalls.size(); j++) {
+				if(fireBalls.get(j).intersects(e)) {
+					e.hit(fireBallDamage);
+					fireBalls.get(j).setHit();
+					break;
+				}
+			}
+			
+			// Check for enemy collision
+			if(intersects(e)) {
+				hit(e.getDamage());
+			}
+		}
+	}
+	
+	public void hit(int damage) {
+		if(flinching) return;
+		health -= damage;
+		if(health < 0) health = 0;
+		if(health == 0) dead = true;
+		flinching = true;
+		flinchTimer = System.nanoTime();
+		dead = true;
+	}
+	
 	/**
 	 * Determines the next position the player must be at
 	 */
@@ -250,6 +309,14 @@ public class Player extends MapObject {
 			if(fireBalls.get(i).shouldRemove()) {
 				fireBalls.remove(i);
 				i--;
+			}
+		}
+		
+		// Check for flinching
+		if(flinching) {
+			long elapsed = (System.nanoTime() - flinchTimer) / 1000000;
+			if(elapsed > 1000) {
+				flinching = false;
 			}
 		}
 		
