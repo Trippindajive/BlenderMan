@@ -41,7 +41,7 @@ public class Player extends MapObject {
 	
 	// Animations
 	private ArrayList<BufferedImage[]> sprites;
-	private final int[] numFrames = {2, 8, 1, 2, 4, 2, 5}; // An array of the number of frames for each animation action
+	private final int[] numFrames = {8, 11}; // An array of the number of frames for each animation action
 	
 	// (ENUMS) Animation actions (describes index of array of animation sprites)
 	private static final int IDLE = 0;
@@ -61,8 +61,8 @@ public class Player extends MapObject {
 	public Player(TileMap tm) {
 		super(tm); // relates to MapObject line 71
 		
-		width = 30; // Dimensions for spritesheet
-		height = 30;
+		width = 100; // Dimensions for spritesheet
+		height = 100;
 		cwidth = 20; // Dimensions for in-game
 		cheight = 20;
 		
@@ -92,13 +92,13 @@ public class Player extends MapObject {
 			
 			BufferedImage spritesheet = ImageIO.read(
 					getClass().getResourceAsStream(
-							"/Sprites/Player/playersprites.gif"
+							"/Sprites/Player/BMSpriteIdleWalk.gif"
 							)
 					);
 			
 			sprites = new ArrayList<BufferedImage[]>();
 			
-			for(int i = 0; i < 7; i++) { // It is less than 7 because that is the # of animation actions
+			for(int i = 0; i < 2; i++) { // It is less than 2 because that is the # of animation actions
 				BufferedImage[] bi = new BufferedImage[numFrames[i]];
 				for(int j = 0; j < numFrames[i]; j++) {
 					
@@ -338,7 +338,7 @@ public class Player extends MapObject {
 				currentAction = SCRATCHING;
 				animation.setFrames(sprites.get(SCRATCHING));
 				animation.setDelay(50);
-				width = 60;
+				width = 100;
 			}
 		}
 		else if(firing) {
@@ -346,7 +346,7 @@ public class Player extends MapObject {
 				currentAction = FIREBALL;
 				animation.setFrames(sprites.get(FIREBALL));
 				animation.setDelay(100);
-				width = 30;
+				width = 100;
 			}
 		}
 		else if(dy > 0) {
@@ -355,14 +355,14 @@ public class Player extends MapObject {
 					currentAction = GLIDING;
 					animation.setFrames(sprites.get(GLIDING));
 					animation.setDelay(100);
-					width = 30;
+					width = 100;
 				}
 			}
 			else if (currentAction != FALLING) {
 				currentAction = FALLING;
 				animation.setFrames(sprites.get(FALLING));
 				animation.setDelay(100);
-				width = 30;
+				width = 100;
 			}
 		}
 		else if(dy < 0) {
@@ -370,7 +370,7 @@ public class Player extends MapObject {
 				currentAction = JUMPING;
 				animation.setFrames(sprites.get(JUMPING));
 				animation.setDelay(-1); // There's only one frame for jumping
-				width = 30;
+				width = 100;
 			}
 		}
 		else if(left || right) {
@@ -378,7 +378,7 @@ public class Player extends MapObject {
 					currentAction = WALKING;
 					animation.setFrames(sprites.get(WALKING));
 					animation.setDelay(40);
-					width = 30;
+					width = 100;
 			}
 		}
 		else {
@@ -386,7 +386,7 @@ public class Player extends MapObject {
 				currentAction = IDLE;
 				animation.setFrames(sprites.get(IDLE));
 				animation.setDelay(400);
-				width = 30;
+				width = 100;
 			}
 		}
 		

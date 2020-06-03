@@ -26,7 +26,7 @@ public class MenuState extends GameState {
 		this.gsm = gsm;
 		
 		try {
-			bg = new Background("/Backgrounds/retor.jpg", 1);
+			bg = new Background("/Backgrounds/retro-sunrise-4k-ps-320x240.jpg", 1);
 			bg.setVector(-0.5, 0);
 			
 			titleColor = new Color(0, 128, 0);
