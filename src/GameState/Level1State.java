@@ -8,6 +8,8 @@ import TileMap.TileMap;
 import Main.GamePanel;
 import java.awt.event.KeyEvent;
 import Entity.Enemies.*;
+import Entity.GameOver;
+import Entity.Vittles.Strawberry;
 
 /**
  * A subclass of GameState, it defines the properties of Level 1, such as: graphics, functions, objects, etc.
@@ -19,11 +21,14 @@ public class Level1State extends GameState{
 	// TileMap
 	private TileMap tileMap;
 	private Background bg;
+	private GameOver gameOver;
 	
 	private Player player;
+	private Strawberry test;
 	
 	private ArrayList<Enemy> enemies;
 	private ArrayList<DeathExplosion> deathExplosions;
+	private ArrayList<Vittle> vittles;
 	
 	private HUD hud;
 	
@@ -42,13 +47,17 @@ public class Level1State extends GameState{
 		tileMap.setPosition(0, 0);
 		tileMap.setTween(1); //Corrects "twitching" behavior of moving entities
 		
-		bg = new Background("/Backgrounds/grassbg1.gif", 0.1); // double value is a move scale
+		bg = new Background("/Backgrounds/retro arcade.gif", 0.1); // double value is a move scale
 		
 		player = new Player(tileMap);
-		player.setPosition(50, 0);
+		player.setPosition(50.0, 180.0);
 		
-		// Populate enemies
+		// Populate enemies & vittles
 		populateEnemies();
+		populateVittles();
+		
+		//test = new Strawberry(tileMap);
+		//test.setPosition(0, 0);
 		
 		deathExplosions = new ArrayList<DeathExplosion>();
 		
@@ -64,8 +73,8 @@ public class Level1State extends GameState{
 		enemies = new ArrayList<Enemy>();
 		Slugger s;
 		Point[] points = new Point[] {
-			new Point(200, 200),
-			new Point(300, 200),
+			//new Point(200, 200),
+			//new Point(300, 200),
 			//new Point(600, 200), Enemy won't appear at this location. Tiles blocking it?
 			new Point(860, 200),
 			new Point(1525, 200),
@@ -79,6 +88,21 @@ public class Level1State extends GameState{
 		}
 	}
 	
+	private void populateVittles() {
+		
+		vittles = new ArrayList<Vittle>();
+		Strawberry ss;
+		Point[] points = new Point[] {
+				new Point(200, 160),
+				new Point(300, 160)
+		};
+		for(int i = 0; i < points.length; i++) {
+			ss = new Strawberry(tileMap);
+			ss.setPosition(points[i].x, points[i].y);
+			vittles.add(ss);
+		}
+	}
+	
 	public void update() {
 		
 		// Update player
@@ -86,6 +110,12 @@ public class Level1State extends GameState{
 		tileMap.setPosition(
 				GamePanel.WIDTH / 2 - player.getx(),
 				GamePanel.HEIGHT / 2 - player.gety());
+		
+		// Checks if player died
+		if(player.getHealth() == 0) {
+			player.getNextPosition();
+		}
+		
 		
 		// Update background
 		bg.setPosition(tileMap.getx(), tileMap.gety());
@@ -103,6 +133,11 @@ public class Level1State extends GameState{
 				deathExplosions.add(new DeathExplosion(
 						e.getx(), e.gety()));
 			}
+		}
+		
+		// Update all vittles
+		for(int i = 0; i < vittles.size(); i++) {
+			vittles.get(i).update();
 		}
 		
 		// Update death explosions
@@ -134,6 +169,11 @@ public class Level1State extends GameState{
 			enemies.get(i).draw(g);
 		}
 		
+		// Draw vittles
+		for(int i = 0; i < vittles.size(); i++) {
+			vittles.get(i).draw(g);
+		}
+		
 		// Draw death explosions
 		for(int i = 0; i < deathExplosions.size(); i++) {
 			deathExplosions.get(i).setMapPosition((int)tileMap.getx(), (int)tileMap.gety());
@@ -142,18 +182,29 @@ public class Level1State extends GameState{
 		
 		// Draw HUD
 		hud.draw(g);
+		
+		// Draw Game Over
+		if(player.isDead() == true) {
+			gameOver = new GameOver();
+			gameOver.draw(g);
+			
+		}
 	}
 	
 	public void keyPressed(int k) {
-		if(k == KeyEvent.VK_A) player.setLeft(true);
-		if(k == KeyEvent.VK_D) player.setRight(true);
-		if(k == KeyEvent.VK_UP) player.setUp(true);
-		if(k == KeyEvent.VK_DOWN) player.setDown(true);
-		if(k == KeyEvent.VK_SPACE) player.setJumping(true);
-		if(k == KeyEvent.VK_E) player.setGliding(true);
-		if(k == KeyEvent.VK_R) player.setScratching();
-		if(k == KeyEvent.VK_F) player.setFiring();
-		
+		if(player.isDead() != true) {
+			if(k == KeyEvent.VK_A) player.setLeft(true);
+			if(k == KeyEvent.VK_D) player.setRight(true);
+			if(k == KeyEvent.VK_UP) player.setUp(true);
+			if(k == KeyEvent.VK_DOWN) player.setDown(true);
+			if(k == KeyEvent.VK_SPACE) player.setJumping(true);
+			if(k == KeyEvent.VK_E) player.setGliding(true);			
+			if(k == KeyEvent.VK_R) player.setScratching();
+			if(k == KeyEvent.VK_F) player.setFiring();
+		}
+		else {
+			if(k == KeyEvent.VK_ENTER) gsm.setState(0);
+		}
 	}
 	
 	public void keyReleased(int k) {

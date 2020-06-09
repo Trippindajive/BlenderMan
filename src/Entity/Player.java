@@ -54,6 +54,8 @@ public class Player extends MapObject {
 	
 	private HashMap<String, AudioPlayer> sfx;
 	
+	private BufferedImage spritesheet;
+	
 	/**
 	 * Constructor for making player object with its appropriate tilemap
 	 * @param tm Tilemap
@@ -64,20 +66,20 @@ public class Player extends MapObject {
 		width = 100; // Dimensions for spritesheet
 		height = 100;
 		cwidth = 20; // Dimensions for in-game
-		cheight = 20;
+		cheight = 50;
 		
 		// These variables define the player physics which had been tested by the instructor as being well-balanced
 		moveSpeed = 0.3;
 		maxSpeed = 1.6;
 		stopSpeed = 0.4;
 		fallSpeed = 0.15;
-		maxFallSpeed = 4.0;
+		terminalSpeed = 4.0;
 		jumpStart = -4.8;
 		stopJumpSpeed = 0.3;
 		
 		facingRight = true;
 		
-		health = maxHealth = 5;
+		health = maxHealth = 1;
 		fire = maxFire = 2500;
 		
 		fireCost = 200;
@@ -90,7 +92,7 @@ public class Player extends MapObject {
 		// Loads sprites
 		try {
 			
-			BufferedImage spritesheet = ImageIO.read(
+			spritesheet = ImageIO.read(
 					getClass().getResourceAsStream(
 							"/Sprites/Player/BMSpriteIdleWalk.gif"
 							)
@@ -112,9 +114,9 @@ public class Player extends MapObject {
 					}
 					else { // The attack animation has a larger width
 						bi[j] = spritesheet.getSubimage(
-								j * width * 2,
+								j * width,
 								i * height,
-								width * 2,
+								width,
 								height
 								);
 					}
@@ -166,6 +168,10 @@ public class Player extends MapObject {
 	
 	public void setGliding(boolean b) {
 		gliding = b;
+	}
+	
+	public boolean isDead() {
+		return dead;
 	}
 	
 	public void checkAttack(ArrayList<Enemy> enemies) {
@@ -229,7 +235,7 @@ public class Player extends MapObject {
 	/**
 	 * Determines the next position the player must be at
 	 */
-	private void getNextPosition() {
+	public void getNextPosition() {
 		
 		// Movement
 		if(left) {
@@ -281,7 +287,7 @@ public class Player extends MapObject {
 			if(dy > 0) jumping = false;
 			if(dy < 0 && !jumping) dy += stopJumpSpeed;
 			
-			if(dy > maxFallSpeed) dy = maxFallSpeed;
+			if(dy > terminalSpeed) dy = terminalSpeed;
 		}
 	}
 	/**
@@ -309,7 +315,7 @@ public class Player extends MapObject {
 			if(fire > fireCost) {
 				fire -= fireCost;
 				FireBall fb = new FireBall(tileMap, facingRight);
-				fb.setPosition(x, y);
+				fb.setPosition(x, y + 10);
 				fireBalls.add(fb);
 			}
 		}
@@ -331,12 +337,27 @@ public class Player extends MapObject {
 			}
 		}
 		
+		// Check if dead
+		if(dead) {
+			moveSpeed = 0.0;
+			maxSpeed = 0.0;
+			health = maxHealth = 0;
+			fire = maxFire = 0;
+			
+			
+			
+			sfx.put("jump", null);
+			sfx.put("scratch", null);
+		}
+		
 		// Set animation
 		if(scratching) {
 			if(currentAction != SCRATCHING) {
 				sfx.get("scratch").play();
 				currentAction = SCRATCHING;
+				/*scratching animation does not exist for now
 				animation.setFrames(sprites.get(SCRATCHING));
+				*/
 				animation.setDelay(50);
 				width = 100;
 			}
@@ -344,7 +365,10 @@ public class Player extends MapObject {
 		else if(firing) {
 			if(currentAction != FIREBALL) {
 				currentAction = FIREBALL;
-				animation.setFrames(sprites.get(FIREBALL));
+				/*firing animation does not exist for now
+				animation.setFrames(sprites.get(0));
+				*/
+				
 				animation.setDelay(100);
 				width = 100;
 			}
@@ -412,7 +436,7 @@ public class Player extends MapObject {
 		}
 		
 		// Draw player
-		if(flinching) {
+		if(flinching && !dead) {
 			long elapsed = (System.nanoTime() - flinchTimer) / 1000000;
 			if(elapsed / 100 % 2 == 0) {
 				return;

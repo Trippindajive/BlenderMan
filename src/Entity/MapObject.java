@@ -23,11 +23,11 @@ public abstract class MapObject {
 	protected double dx; // Local Positions
 	protected double dy;
 	
-	// Dimensions for sprite sheets
+	// Dimensions of sprite sheets
 	protected int width;
 	protected int height;
 	
-	// Collision Boxes
+	// Collision Boxes of Entity
 	protected int cwidth;
 	protected int cheight;
 	
@@ -63,7 +63,7 @@ public abstract class MapObject {
 	protected double maxSpeed;
 	protected double stopSpeed;
 	protected double fallSpeed; // Gravity
-	protected double maxFallSpeed; // Terminal Velocity
+	protected double terminalSpeed; // Terminal Velocity
 	protected double jumpStart;
 	protected double stopJumpSpeed;
 	

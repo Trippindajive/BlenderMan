@@ -15,7 +15,7 @@ public class MenuState extends GameState {
 	
 	private Background bg;
 	private int currentChoice = 0;
-	private String[] options = {"Start", "Load XP(WIP)", "Passwords(WIP)", "Leaderboards(WIP)", "Help(WIP)", "Quit"};
+	private String[] options = {"Start", "Load(WIP)", "Password(WIP)", "Leaderboards(WIP)", "Help", "Quit"};
 	private Color titleColor;
 	private Font titleFont;
 	private Font font;
@@ -26,16 +26,16 @@ public class MenuState extends GameState {
 		this.gsm = gsm;
 		
 		try {
-			bg = new Background("/Backgrounds/retro-sunrise-4k-ps-320x240.jpg", 1);
+			bg = new Background("/Backgrounds/retro sunshine 640x480.jpg", 1.0);
 			bg.setVector(-0.5, 0);
 			
 			titleColor = new Color(0, 128, 0);
-			titleFont = new Font("Century Gothic", Font.PLAIN, 28);
+			titleFont = new Font("Century Gothic", Font.PLAIN, 72);
 			
-			font = new Font("Arial", Font.PLAIN, 12);
+			font = new Font("Arial", Font.PLAIN, 24);
 			
-			bgMusic = new AudioPlayer("/Music/Red-MarKer-DMC-12-Gauge.wav");
-			bgMusic.play();
+			//bgMusic = new AudioPlayer("/Music/Red-MarKer-DMC-12-Gauge.wav");
+			//bgMusic.play();
 			
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -57,7 +57,7 @@ public class MenuState extends GameState {
 		// Draw title
 		g.setColor(titleColor);
 		g.setFont(titleFont);
-		g.drawString("BlenderMan", 80, 70); // In the future, write a function that automatically centers strings
+		g.drawString("BlenderMan", 110, 100); // In the future, write a function that automatically centers strings
 		
 		// Draw menu options
 		g.setFont(font);
@@ -68,7 +68,7 @@ public class MenuState extends GameState {
 			else {
 				g.setColor(Color.WHITE);
 			}
-			g.drawString(options[i], 145, 140 + i * 15);
+			g.drawString(options[i], 280, 180 + i * 25);
 		}
 	}
 	
@@ -89,6 +89,7 @@ public class MenuState extends GameState {
 		}
 		if(currentChoice == 4) {
 			//Help
+			gsm.setState(11);
 		}
 		if(currentChoice == 5) {
 			System.exit(0);

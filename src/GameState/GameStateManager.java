@@ -9,9 +9,10 @@ public class GameStateManager {
 	
 	private GameState[] gameStates;
 	private int currentState;
-	public static final int NUMGAMESTATES = 2;
+	public static final int NUMGAMESTATES = 12;
 	public static final int MENUSTATE = 0;
 	public static final int LEVEL1STATE = 1;
+	public static final int HELPSCREEN = 11;
 	//private STATE currentState = STATE.MENU; // Default screen state
 	
 	
@@ -28,6 +29,8 @@ public class GameStateManager {
 			gameStates[state] = new MenuState(this);
 		if(state == LEVEL1STATE)
 			gameStates[state] = new Level1State(this);
+		if(state == HELPSCREEN)
+			gameStates[state] = new HelpScreen(this);
 	}
 	
 	private void unloadState(int state) {
