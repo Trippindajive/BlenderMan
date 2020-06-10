@@ -34,5 +34,6 @@ public class HUD {
 				30, 25);
 		g.drawString(player.getFire() / 100 + "/" + player.getMaxFire() / 100,
 				30, 45);
+		g.drawString("Fruits: " + player.getFruits(), 80, 25);
 	}
 }

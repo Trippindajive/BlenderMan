@@ -20,10 +20,13 @@ public class Strawberry extends Vittle{
 		fallSpeed = 0.2;
 		terminalSpeed = 10.0;
 		
-		width = 100;
-		height = 100;
-		cwidth = 50;
-		cheight = 100;
+		width = 40;
+		height = 40;
+		cwidth = 30;
+		cheight = 30;
+		
+		healPoints = 5;
+		atkPoints = 2;
 		
 		type = category[0];
 		
@@ -33,13 +36,14 @@ public class Strawberry extends Vittle{
 			BufferedImage spritesheet = ImageIO.read(getClass().getResourceAsStream(
 					"/Sprites/Vittles/spritesheet.png"));
 			
-			sprites = new BufferedImage[6];
+			sprites = new BufferedImage[4];
 			for(int i = 0; i < sprites.length; i++) {
 				sprites[i] = spritesheet.getSubimage(
 						i * width,
 						0,
 						width,
-						height);
+						height
+						);
 			}	
 			
 			animation = new Animation();

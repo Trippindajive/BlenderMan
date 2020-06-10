@@ -39,6 +39,12 @@ public class Player extends MapObject {
 	// Gliding
 	private boolean gliding;
 	
+	// Vittles inventory
+	private ArrayList<Vittle> fruits = new ArrayList<Vittle>();
+	//private ArrayList<Vittle> veggies = new ArrayList<Veggies>();
+	//private ArrayList<Vittle> proteins = new ArrayList<Proteins>();
+	//private ArrayList<Vittle> liquids = new ArrayList<Liquids>();
+	
 	// Animations
 	private ArrayList<BufferedImage[]> sprites;
 	private final int[] numFrames = {8, 11}; // An array of the number of frames for each animation action
@@ -51,6 +57,7 @@ public class Player extends MapObject {
 	private static final int GLIDING = 4;
 	private static final int FIREBALL = 5;
 	private static final int SCRATCHING = 6;
+	private static final int BLENDING = 7;
 	
 	private HashMap<String, AudioPlayer> sfx;
 	
@@ -65,7 +72,7 @@ public class Player extends MapObject {
 		
 		width = 100; // Dimensions for spritesheet
 		height = 100;
-		cwidth = 20; // Dimensions for in-game
+		cwidth = 30; // Dimensions for in-game
 		cheight = 50;
 		
 		// These variables define the player physics which had been tested by the instructor as being well-balanced
@@ -73,14 +80,16 @@ public class Player extends MapObject {
 		maxSpeed = 1.6;
 		stopSpeed = 0.4;
 		fallSpeed = 0.15;
-		terminalSpeed = 4.0;
+		terminalSpeed = 5.0;
 		jumpStart = -4.8;
 		stopJumpSpeed = 0.3;
 		
 		facingRight = true;
 		
-		health = maxHealth = 1;
-		fire = maxFire = 2500;
+		health = 10;
+		maxHealth = 50;
+		maxFire = 2500;
+		fire = 0;
 		
 		fireCost = 200;
 		fireBallDamage = 5;
@@ -135,10 +144,7 @@ public class Player extends MapObject {
 		animation.setFrames(sprites.get(IDLE));
 		animation.setDelay(400);
 		
-		
 		sfx = new HashMap<String, AudioPlayer>();
-		sfx.put("jump", new AudioPlayer("/SFX/zapsplat_multimedia_game_sound_classic_jump_002_41725.wav"));
-		sfx.put("scratch", new AudioPlayer("/SFX/zapsplat_household_band_aid_plaster_strip_rip_tear_002_11599.wav"));
 		
 	}
 	
@@ -174,11 +180,24 @@ public class Player extends MapObject {
 		return dead;
 	}
 	
+	public void setFruits(Vittle v) {
+		fruits.add(v);
+	}
+	
+	public int getFruits() {
+		return fruits.size();
+	}
+	
+	public void addToInventory(Vittle v) {
+		if(v.isCaptured() == true) {
+			setFruits(v);
+		}
+	}
+	
 	public void checkAttack(ArrayList<Enemy> enemies) {
 		
-		// Loop through enemy array
+		// LOOPS THROUGH ENEMY ARRAY
 		for(int i = 0; i < enemies.size(); i++) {
-			
 			Enemy e = enemies.get(i);
 		
 		// Check scratch attack
@@ -207,13 +226,13 @@ public class Player extends MapObject {
 			}
 		
 		// Check fireball attack
-			for(int j = 0; j < fireBalls.size(); j++) {
-				if(fireBalls.get(j).intersects(e)) {
-					e.hit(fireBallDamage);
-					fireBalls.get(j).setHit();
-					break;
-				}
+		for(int j = 0; j < fireBalls.size(); j++) {
+			if(fireBalls.get(j).intersects(e)) {
+				e.hit(fireBallDamage);
+				fireBalls.get(j).setHit();
+				break;
 			}
+		}
 			
 			// Check for enemy collision
 			if(intersects(e)) {
@@ -222,14 +241,51 @@ public class Player extends MapObject {
 		}
 	}
 	
+	public void checkCaptured(ArrayList<Vittle> vittles) {
+		
+		// LOOPS THROUGH VITTLE ARRAY
+		for(int i = 0; i < vittles.size(); i++) {
+			Vittle v = vittles.get(i);
+			
+			// Check scratch attack
+			if(scratching) {
+				if(facingRight) {
+					if(
+							v.getx() > x &&
+							v.getx() < x + scratchRange &&
+							v.gety() > y - height / 2 &&
+							v.gety() < y + height / 2
+							) {
+						v.hit(scratchDamage);
+					}
+				}
+				else {
+					if(
+							v.getx() < x &&
+							v.getx() > x - scratchRange &&
+							v.gety() > y - height / 2 &&
+							v.gety() < y + height / 2
+							) {
+						v.hit(scratchDamage);
+					}
+				}
+			}
+		}
+	}
+	
 	public void hit(int damage) {
-		if(flinching) return;
+		if(flinching) {
+			return;
+		}
 		health -= damage;
-		if(health < 0) health = 0;
-		if(health == 0) dead = true;
+		if(health < 0) {
+			health = 0;
+		}
+		if(health == 0) {
+			dead = true;
+		}
 		flinching = true;
 		flinchTimer = System.nanoTime();
-		dead = true;
 	}
 	
 	/**
@@ -274,7 +330,7 @@ public class Player extends MapObject {
 		
 		// Jumping
 		if(jumping && !falling) {
-			sfx.get("jump").play();
+			sfx.put("jump", new AudioPlayer("/SFX/zapsplat_multimedia_game_sound_classic_jump_002_41725.wav"));
 			dy = jumpStart;
 			falling = true;
 		}
@@ -307,9 +363,10 @@ public class Player extends MapObject {
 		if(currentAction == FIREBALL) {
 			if(animation.hasPlayedOnce()) firing = false;
 		}
+	
 		
 		// Fireball attack
-		fire += 1;
+		//fire += 1;
 		if(fire > maxFire) fire = maxFire;
 		if(firing && currentAction != FIREBALL) {
 			if(fire > fireCost) {
@@ -346,14 +403,30 @@ public class Player extends MapObject {
 			
 			
 			
-			sfx.put("jump", null);
+			/*sfx.put("jump", null);
 			sfx.put("scratch", null);
+			sfx.put("blend", null);
+			*/
+		}
+		
+		// Blending action
+		if(up) {
+			if(currentAction != BLENDING) {
+				long elapsed = (System.nanoTime() - 100) / 1000000;
+				if(elapsed < 1000000000) {
+					up = false;
+					AudioPlayer blendsfx = new AudioPlayer("/SFX/blendersfx1.wav");
+					blendsfx.play();
+				}
+				
+				animation.setDelay(1000);
+			}
 		}
 		
 		// Set animation
 		if(scratching) {
 			if(currentAction != SCRATCHING) {
-				sfx.get("scratch").play();
+				sfx.put("scratch", new AudioPlayer("/SFX/zapsplat_household_band_aid_plaster_strip_rip_tear_002_11599.wav"));
 				currentAction = SCRATCHING;
 				/*scratching animation does not exist for now
 				animation.setFrames(sprites.get(SCRATCHING));

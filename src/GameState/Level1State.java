@@ -24,7 +24,6 @@ public class Level1State extends GameState{
 	private GameOver gameOver;
 	
 	private Player player;
-	private Strawberry test;
 	
 	private ArrayList<Enemy> enemies;
 	private ArrayList<DeathExplosion> deathExplosions;
@@ -55,9 +54,6 @@ public class Level1State extends GameState{
 		// Populate enemies & vittles
 		populateEnemies();
 		populateVittles();
-		
-		//test = new Strawberry(tileMap);
-		//test.setPosition(0, 0);
 		
 		deathExplosions = new ArrayList<DeathExplosion>();
 		
@@ -122,6 +118,7 @@ public class Level1State extends GameState{
 		
 		// Check if player is attacking
 		player.checkAttack(enemies);
+		player.checkCaptured(vittles);
 		
 		// Update all enemies
 		for(int i = 0; i < enemies.size(); i++) {
@@ -137,7 +134,15 @@ public class Level1State extends GameState{
 		
 		// Update all vittles
 		for(int i = 0; i < vittles.size(); i++) {
-			vittles.get(i).update();
+			Vittle v = vittles.get(i);
+			v.update();
+			if(v.isCaptured()) {
+				player.addToInventory(v);
+				vittles.remove(i);
+				i--;
+				deathExplosions.add(new DeathExplosion(
+						v.getx(), v.gety()));
+			}
 		}
 		
 		// Update death explosions

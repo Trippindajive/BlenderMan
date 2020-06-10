@@ -1,7 +1,7 @@
 package Entity;
 
 import TileMap.TileMap;
-
+import java.util.ArrayList;
 /**
  * This is the superclass for all vittles.
  * @author Tim Riggins
@@ -42,12 +42,9 @@ public class Vittle extends MapObject{
 		health -= damage;
 		if(health < 0) 
 			health = 0;
-		if(health == 0) {
+		if(health == 0) 
 			captured = true;
-			fleeing = false;
-		}
-		flinching = true;
-		flinchTimer = System.nanoTime();
+		fleeing = false;
 	}
 	
 	public void setType(int element) {
