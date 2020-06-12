@@ -32,8 +32,10 @@ public class HUD {
 		g.setFont(font);
 		g.drawString(player.getHealth() + "/" + player.getMaxHealth(),
 				30, 25);
-		g.drawString(player.getFire() / 100 + "/" + player.getMaxFire() / 100,
+		g.drawString(player.getAtkPower() + "/" + player.getMaxPower(),
 				30, 45);
+		g.setColor(Color.RED);
 		g.drawString("Fruits: " + player.getFruits(), 80, 25);
+		g.drawString("Veggies: " + player.getVeggies(), 150, 25);
 	}
 }

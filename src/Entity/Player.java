@@ -2,7 +2,7 @@ package Entity;
 
 import TileMap.*;
 import Audio.AudioPlayer;
-
+//import Entity.Vittle.*;
 import java.util.ArrayList;
 import javax.imageio.ImageIO; // Package that contains classes which can read spritesheets
 import java.awt.*;
@@ -19,11 +19,13 @@ public class Player extends MapObject {
 	// Player Variables
 	private int health;
 	private int maxHealth;
-	private int fire;
-	private int maxFire;
+	private int atkPower;
+	private int maxPower;
+	private int atkPoints;
 	private boolean dead;
 	private boolean flinching;
 	private long flinchTimer;
+	private int healPoints;
 	
 	// Fireball
 	private boolean firing;
@@ -39,9 +41,13 @@ public class Player extends MapObject {
 	// Gliding
 	private boolean gliding;
 	
+	// Blending
+	@SuppressWarnings("unused")
+	private boolean blending;
+	
 	// Vittles inventory
-	private ArrayList<Vittle> fruits = new ArrayList<Vittle>();
-	//private ArrayList<Vittle> veggies = new ArrayList<Veggies>();
+	public ArrayList<Vittle> fruits = new ArrayList<Vittle>();
+	public ArrayList<Vittle> veggies = new ArrayList<Vittle>();
 	//private ArrayList<Vittle> proteins = new ArrayList<Proteins>();
 	//private ArrayList<Vittle> liquids = new ArrayList<Liquids>();
 	
@@ -86,13 +92,14 @@ public class Player extends MapObject {
 		
 		facingRight = true;
 		
-		health = 10;
+		health = 3;
 		maxHealth = 50;
-		maxFire = 2500;
-		fire = 0;
+		atkPower = 0;
+		maxPower = 25;
 		
-		fireCost = 200;
-		fireBallDamage = 5;
+		
+		fireCost = 5;
+		fireBallDamage = 10;
 		fireBalls = new ArrayList<FireBall>();
 		
 		scratchDamage = 8;
@@ -148,20 +155,51 @@ public class Player extends MapObject {
 		
 	}
 	
+	// Actual Health
 	public int getHealth() {
 		return health;
 	}
 	
+	// Actual Max Health
 	public int getMaxHealth() {
 		return maxHealth;
 	}
 	
-	public int getFire() {
-		return fire;
+	// Actual Attack Power
+	public int getAtkPower() {
+		return atkPower;
 	}
 	
-	public int getMaxFire() {
-		return maxFire;
+	// Actual Max Attack Power
+	public int getMaxPower() {
+		return maxPower;
+	}
+	
+	// Potential Heal Points in Inventory
+	public int getHealPoints() {
+		System.out.println(healPoints);
+		return healPoints;
+	}
+	
+	// Potential Atk Points in Inventory
+	public int getAtkPoints() {
+		return atkPoints;
+	}
+	
+	/*public void setAtkPower(int atkPoints) {
+		atkPower += atkPoints;
+	}*/
+	
+	public void setHealPoints() {
+		for(int i = 0; i < fruits.size(); i++) {
+			healPoints += fruits.get(i).getHealPoints();
+		}
+	}
+	
+	public void setAtkPoints() {
+		for(int i = 0; i < veggies.size(); i++) {
+			atkPoints += veggies.get(i).getAtkPoints();
+		}
 	}
 	
 	public void setFiring() {
@@ -188,9 +226,20 @@ public class Player extends MapObject {
 		return fruits.size();
 	}
 	
+	public void setVeggies(Vittle v) {
+		veggies.add(v);
+	}
+	
+	public int getVeggies() {
+		return veggies.size();
+	}
+	
 	public void addToInventory(Vittle v) {
-		if(v.isCaptured() == true) {
+		if(v.isCaptured() == true && v.getFruitType()) {
 			setFruits(v);
+		}
+		if(v.isCaptured() == true && v.getVegType()) {
+			setVeggies(v);
 		}
 	}
 	
@@ -241,13 +290,14 @@ public class Player extends MapObject {
 		}
 	}
 	
-	public void checkCaptured(ArrayList<Vittle> vittles) {
+	public void checkCapturedFruit(ArrayList<Vittle> vittles) {
 		
 		// LOOPS THROUGH VITTLE ARRAY
 		for(int i = 0; i < vittles.size(); i++) {
 			Vittle v = vittles.get(i);
 			
 			// Check scratch attack
+				
 			if(scratching) {
 				if(facingRight) {
 					if(
@@ -257,6 +307,9 @@ public class Player extends MapObject {
 							v.gety() < y + height / 2
 							) {
 						v.hit(scratchDamage);
+						if(v.getHealth() == 0) {
+							healPoints += v.getHealPoints();
+						}
 					}
 				}
 				else {
@@ -267,9 +320,48 @@ public class Player extends MapObject {
 							v.gety() < y + height / 2
 							) {
 						v.hit(scratchDamage);
+						if(v.getHealth() == 0) {
+							healPoints += v.getHealPoints();
+						}
+					}
+				}	
+			}
+		}	
+	}
+	
+	public void checkCapturedVeg(ArrayList<Vittle> vittles) {
+		for(int i = 0; i < vittles.size(); i++) {
+			Vittle v = vittles.get(i);
+			
+			if(scratching) {
+				if(facingRight) {	
+					if(
+							v.getx() > x &&
+							v.getx() < x + scratchRange &&
+							v.gety() > y - height / 2 &&
+							v.gety() < y + height / 2
+							) {
+						v.hit(scratchDamage);
+						if(v.getHealth() == 0) {
+							atkPoints += v.getAtkPoints();
+						}
+					}
+				}
+				else {
+					if(
+							v.getx() < x &&
+							v.getx() > x - scratchRange &&
+							v.gety() > y - height / 2 &&
+							v.gety() < y + height / 2
+							) {
+						v.hit(scratchDamage);
+						if(v.getHealth() == 0) {
+							atkPoints += v.getAtkPoints();
+						}
 					}
 				}
 			}
+			
 		}
 	}
 	
@@ -323,14 +415,16 @@ public class Player extends MapObject {
 		
 		// Cannot move whilst attacking unless in the air
 		if(
-		(currentAction == SCRATCHING || currentAction == FIREBALL) &&
+		(currentAction == SCRATCHING || currentAction == FIREBALL || currentAction == BLENDING) &&
 		!(jumping || falling)) {
 			dx = 0;
 		}
 		
 		// Jumping
 		if(jumping && !falling) {
-			sfx.put("jump", new AudioPlayer("/SFX/zapsplat_multimedia_game_sound_classic_jump_002_41725.wav"));
+			if(currentAction != BLENDING) {
+				sfx.put("jump", new AudioPlayer("/SFX/zapsplat_multimedia_game_sound_classic_jump_002_41725.wav"));
+			}
 			dy = jumpStart;
 			falling = true;
 		}
@@ -348,6 +442,7 @@ public class Player extends MapObject {
 	}
 	/**
 	 * Updates the positioning of the player
+	 * @param blending 
 	 */
 	public void update() {
 		
@@ -363,14 +458,14 @@ public class Player extends MapObject {
 		if(currentAction == FIREBALL) {
 			if(animation.hasPlayedOnce()) firing = false;
 		}
+		if(currentAction == BLENDING) {
+			if(animation.hasPlayedOnce()) blending = false;
+		}
 	
-		
 		// Fireball attack
-		//fire += 1;
-		if(fire > maxFire) fire = maxFire;
 		if(firing && currentAction != FIREBALL) {
-			if(fire > fireCost) {
-				fire -= fireCost;
+			if(atkPower > fireCost) {
+				atkPower -= fireCost;
 				FireBall fb = new FireBall(tileMap, facingRight);
 				fb.setPosition(x, y + 10);
 				fireBalls.add(fb);
@@ -399,7 +494,7 @@ public class Player extends MapObject {
 			moveSpeed = 0.0;
 			maxSpeed = 0.0;
 			health = maxHealth = 0;
-			fire = maxFire = 0;
+			atkPoints = maxPower = 0;
 			
 			
 			
@@ -410,16 +505,26 @@ public class Player extends MapObject {
 		}
 		
 		// Blending action
+		/**
+		 * @bug AS UP KEY IS PRESSED DOWN, SFX OVERLAPS
+		 * 
+		 */
 		if(up) {
 			if(currentAction != BLENDING) {
-				long elapsed = (System.nanoTime() - 100) / 1000000;
-				if(elapsed < 1000000000) {
-					up = false;
-					AudioPlayer blendsfx = new AudioPlayer("/SFX/blendersfx1.wav");
-					blendsfx.play();
+				health += healPoints;
+				for(int i = 0; i < fruits.size(); i++) {
+					fruits.remove(i);
+					i--;
 				}
-				
-				animation.setDelay(1000);
+				healPoints = 0;
+			}
+			if(currentAction != BLENDING) {
+				atkPower += atkPoints;
+				for(int i = 0; i < veggies.size(); i++) {
+					veggies.remove(i);
+					i--;
+				}
+				atkPoints = 0;
 			}
 		}
 		
@@ -441,9 +546,19 @@ public class Player extends MapObject {
 				/*firing animation does not exist for now
 				animation.setFrames(sprites.get(0));
 				*/
-				
 				animation.setDelay(100);
 				width = 100;
+			}
+		}
+		else if(up) {
+			if(currentAction != BLENDING) {
+				AudioPlayer blendsfx = new AudioPlayer("/SFX/blendersfx1.wav");
+				blendsfx.play();
+				currentAction = BLENDING;
+				animation.setDelay(100);
+				width = 100;
+				//moveSpeed = 0; // cancel movement when blending
+				//jumpStart = 0;
 			}
 		}
 		else if(dy > 0) {

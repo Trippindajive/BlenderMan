@@ -1,7 +1,6 @@
 package Entity;
 
 import TileMap.TileMap;
-import java.util.ArrayList;
 /**
  * This is the superclass for all vittles.
  * @author Tim Riggins
@@ -10,14 +9,28 @@ import java.util.ArrayList;
 
 public class Vittle extends MapObject{
 	
+	protected Vittle Fruit;
+	protected Vittle Veggie;
+	protected Vittle Protein;
+	protected Vittle Liquid;
+	
+	protected boolean isFruit;
+	protected boolean isVeggie;
+	protected boolean isProtein;
+	protected boolean isLiquid;
+	protected boolean[] types = {isFruit, isVeggie, isProtein, isLiquid};
+	
+	//protected boolean isVeggie;
+	
 	// Attributes of vittle
 	protected int healPoints;
 	protected int atkPoints;
 	protected int defPoints;
 	protected int boostPercentage;
 	protected int scorePoints;
-	protected String[] category = {"Fruit", "Vegetable", "Protein", "Liquid"};
-	protected String type;
+	protected Vittle[] category = {Fruit, Veggie, Protein, Liquid};
+	protected int element;
+	//protected boolean type;
 	protected int health = 1;
 	protected int maxHealth = health;
 	
@@ -25,11 +38,21 @@ public class Vittle extends MapObject{
 	protected boolean captured;
 	protected boolean flinching;
 	protected long flinchTimer;
-	protected boolean fleeing;
+	//protected boolean fleeing;
 	protected long fleeTimer;
 	
 	public Vittle(TileMap tm) {
 		super(tm);
+		
+		moveSpeed = 0.3;
+		maxSpeed = 0.3;
+		fallSpeed = 0.2;
+		terminalSpeed = 10.0;
+		
+		width = 40;
+		height = 40;
+		cwidth = 30;
+		cheight = 30;
 	}
 	
 	public boolean isCaptured() {
@@ -44,15 +67,36 @@ public class Vittle extends MapObject{
 			health = 0;
 		if(health == 0) 
 			captured = true;
-		fleeing = false;
+		//fleeing = false;
 	}
 	
-	public void setType(int element) {
-		type = this.category[element];
+	public void setFruitType(Vittle v) {
+		if(v == category[0]) {
+			isFruit = true;
+		}
 	}
 	
-	public String getType() {
-		return type;
+	public boolean getFruitType() {
+		return isFruit;
+	}
+	
+	public void setVegType(Vittle v) {
+		if(v == category[1]) {
+			isVeggie = true;
+		}
+	}
+	
+	public boolean getVegType() {
+		return isVeggie;
+	}
+	
+	
+	public void setHealth(int health) {
+		this.health = health;
+	}
+	
+	public int getHealth() {
+		return health;
 	}
 	
 	public void setHealPoints(int healPoints) {
@@ -81,5 +125,38 @@ public class Vittle extends MapObject{
 	
 	public void update() {
 		
+	}
+	
+	public void getNextPosition() {
+		
+		if(left) {
+			dx -= moveSpeed;
+			if(dx < -maxSpeed) {
+				dx = -maxSpeed;
+			}
+		}
+		else if(right) {
+			dx += moveSpeed;
+			if(dx > maxSpeed) {
+				dx = maxSpeed;
+			}
+		}
+		if(falling) {
+			dy += fallSpeed;
+		}
+	}
+	
+	public void checkWallCollision() {
+		// If hits wall, move other way
+		if(right && dx == 0) {
+			right = false;
+			left = true;
+			facingRight = false;
+		}
+		else if(left && dx == 0) {
+			right = true;
+			left = false;
+			facingRight = true;
+		}
 	}
 }

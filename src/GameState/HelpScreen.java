@@ -15,7 +15,7 @@ public class HelpScreen extends GameState {
 	private Background bg;
 	private Font font;
 	private String[] controls = {"A - Move Left", "D - Move Right", "Space - Jump", 
-			"E - Float", "R - Melee", "F - Fire"};
+			"E - Float", "R - Melee", "F - Fire", "Up - Blend"};
 	
 	public HelpScreen(GameStateManager gsm) {
 		this.gsm = gsm;
@@ -45,7 +45,7 @@ public class HelpScreen extends GameState {
 		g.setFont(font);
 		for(int i = 0; i < controls.length; i++) {
 			g.setColor(Color.WHITE);
-			g.drawString(controls[i], 280, 180 + i * 25);
+			g.drawString(controls[i], 280, 150 + i * 25);
 		}
 		g.setColor(Color.RED);
 		g.drawString("PRESS ENTER TO RETURN TO MENU", 130, 400);

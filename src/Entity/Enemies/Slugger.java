@@ -24,7 +24,7 @@ public class Slugger extends Enemy {
 		cwidth = 20; // Width of actual entity
 		cheight = 20;
 		
-		health = maxHealth = 2;
+		health = maxHealth = 10;
 		damage = 1;
 		
 		// Load Sprites
@@ -77,6 +77,7 @@ public class Slugger extends Enemy {
 		
 		getNextPosition();
 		checkTileMapCollision();
+		checkWallCollision();
 		setPosition(xtemp, ytemp);
 		
 		// check flinching
@@ -85,18 +86,6 @@ public class Slugger extends Enemy {
 			if(elapsed > 400) {
 				flinching = false;
 			}
-		}
-		
-		// If hits a wall, move other way
-		if(right && dx == 0) {
-			right = false;
-			left = true;
-			facingRight = false;
-		}
-		else if(left && dx == 0) {
-			right = true;
-			left = false;
-			facingRight = true;
 		}
 		
 		// Update animation

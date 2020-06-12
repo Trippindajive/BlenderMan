@@ -7,24 +7,24 @@ import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import java.awt.Graphics2D;
 
-public class Strawberry extends Vittle{
+public class Broccoli extends Vittle {
 	
 	private BufferedImage[] sprites;
-	
-	public Strawberry(TileMap tm) {
+	//private boolean isVeggie = true;
+	public Broccoli(TileMap tm) {
 		super(tm);
 		
-		// Strawberry Stats
-		healPoints = 5;
-		atkPoints = 2;
-		scorePoints = 10;
+		// Broccoli Stats
+		atkPoints = 7;
+		defPoints = 4;
+		scorePoints = 14;
 		
 		// Load Sprites
 		try {
-			
+					
 			BufferedImage spritesheet = ImageIO.read(getClass().getResourceAsStream(
-					"/Sprites/Vittles/spritesheet.png"));
-			
+					"/Sprites/Vittles/spritesheet (3).png"));
+					
 			sprites = new BufferedImage[4];
 			for(int i = 0; i < sprites.length; i++) {
 				sprites[i] = spritesheet.getSubimage(
@@ -34,11 +34,11 @@ public class Strawberry extends Vittle{
 						height
 						);
 			}	
-			
+					
 			animation = new Animation();
 			animation.setFrames(sprites);
 			animation.setDelay(300);
-			
+					
 			right = true;
 			facingRight = true;
 			
@@ -53,10 +53,10 @@ public class Strawberry extends Vittle{
 		checkTileMapCollision();
 		checkWallCollision();
 		setPosition(xtemp, ytemp);
-		setHealPoints(healPoints);
-		getHealPoints();
-		setFruitType(Fruit);
-		getFruitType();
+		setAtkPoints(atkPoints);
+		getAtkPoints();
+		setVegType(Veggie);
+		getVegType();
 		animation.update();
 	}
 	

@@ -38,4 +38,18 @@ public class Enemy extends MapObject {
 	public void update() {
 		
 	}
+	
+	public void checkWallCollision() {
+		// If hits wall, move other way
+		if(right && dx == 0) {
+			right = false;
+			left = true;
+			facingRight = false;
+		}
+		else if(left && dx == 0) {
+			right = true;
+			left = false;
+			facingRight = true;
+		}
+	}
 }

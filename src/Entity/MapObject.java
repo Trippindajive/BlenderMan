@@ -53,10 +53,12 @@ public abstract class MapObject {
 	// Movement
 	protected boolean left;
 	protected boolean right;
-	protected boolean up;
 	protected boolean down;
 	protected boolean jumping;
 	protected boolean falling;
+	
+	// Actions
+	protected boolean up; // Blending action
 	
 	// Movement Attributes (Physics)
 	protected double moveSpeed;
@@ -228,7 +230,7 @@ public abstract class MapObject {
 		right = b;
 	}
 	
-	public void setUp(boolean b) {
+	public void setBlending(boolean b) {
 		up = b;
 	}
 	

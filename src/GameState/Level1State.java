@@ -8,8 +8,7 @@ import TileMap.TileMap;
 import Main.GamePanel;
 import java.awt.event.KeyEvent;
 import Entity.Enemies.*;
-import Entity.GameOver;
-import Entity.Vittles.Strawberry;
+import Entity.Vittles.*;;
 
 /**
  * A subclass of GameState, it defines the properties of Level 1, such as: graphics, functions, objects, etc.
@@ -26,8 +25,13 @@ public class Level1State extends GameState{
 	private Player player;
 	
 	private ArrayList<Enemy> enemies;
+	private ArrayList<Vittle> Fruits = new ArrayList<Vittle>();
+	private ArrayList<Vittle> Veggies = new ArrayList<Vittle>();
 	private ArrayList<DeathExplosion> deathExplosions;
-	private ArrayList<Vittle> vittles;
+	
+	// Location arrays for objects
+	Point[] p; // strawberries
+	Point[] pp; // broccoli
 	
 	private HUD hud;
 	
@@ -86,20 +90,34 @@ public class Level1State extends GameState{
 	
 	private void populateVittles() {
 		
-		vittles = new ArrayList<Vittle>();
-		Strawberry ss;
-		Point[] points = new Point[] {
-				new Point(200, 160),
+		//vittles = new ArrayList<Vittle>();
+		Strawberry fs = new Strawberry(tileMap);
+		Broccoli vb = new Broccoli(tileMap);
+		
+		p = new Point[] {
+				//new Point(200, 160),
 				new Point(300, 160)
 		};
-		for(int i = 0; i < points.length; i++) {
-			ss = new Strawberry(tileMap);
-			ss.setPosition(points[i].x, points[i].y);
-			vittles.add(ss);
+		for(int i = 0; i < p.length; i++) {
+			fs = new Strawberry(tileMap);
+			fs.setPosition(p[i].x, p[i].y);
+			Fruits.add(fs);
+		}
+		
+		pp = new Point[] {
+				new Point(200, 130)
+		};
+		for(int i = 0; i < pp.length; i++) {
+			vb = new Broccoli(tileMap);
+			vb.setPosition(pp[i].x, pp[i].y);
+			Veggies.add(vb);
 		}
 	}
-	
+		
 	public void update() {
+		Vittle f; // fruit entity
+		Vittle v; // veg entity
+		
 		
 		// Update player
 		player.update();
@@ -118,7 +136,8 @@ public class Level1State extends GameState{
 		
 		// Check if player is attacking
 		player.checkAttack(enemies);
-		player.checkCaptured(vittles);
+		player.checkCapturedFruit(Fruits);
+		player.checkCapturedVeg(Veggies);
 		
 		// Update all enemies
 		for(int i = 0; i < enemies.size(); i++) {
@@ -132,13 +151,26 @@ public class Level1State extends GameState{
 			}
 		}
 		
-		// Update all vittles
-		for(int i = 0; i < vittles.size(); i++) {
-			Vittle v = vittles.get(i);
+		// Update all Fruit vittles
+		for(int i = 0; i < Fruits.size(); i++) {
+			f = Fruits.get(i);
+			f.update();
+			if(f.isCaptured()) {
+				player.addToInventory(f);
+				Fruits.remove(i);
+				i--;
+				deathExplosions.add(new DeathExplosion(
+						f.getx(), f.gety()));
+			}
+		}
+		
+		// Update all Veggie vittles
+		for(int i = 0; i < Veggies.size(); i++) {
+			 v = Veggies.get(i);
 			v.update();
 			if(v.isCaptured()) {
 				player.addToInventory(v);
-				vittles.remove(i);
+				Veggies.remove(i);
 				i--;
 				deathExplosions.add(new DeathExplosion(
 						v.getx(), v.gety()));
@@ -175,8 +207,13 @@ public class Level1State extends GameState{
 		}
 		
 		// Draw vittles
-		for(int i = 0; i < vittles.size(); i++) {
-			vittles.get(i).draw(g);
+		for(int i = 0; i < Fruits.size(); i++) {
+			Fruits.get(i).draw(g);
+		}
+		
+		// Draw vittles
+		for(int i = 0; i < Veggies.size(); i++) {
+			Veggies.get(i).draw(g);
 		}
 		
 		// Draw death explosions
@@ -200,7 +237,7 @@ public class Level1State extends GameState{
 		if(player.isDead() != true) {
 			if(k == KeyEvent.VK_A) player.setLeft(true);
 			if(k == KeyEvent.VK_D) player.setRight(true);
-			if(k == KeyEvent.VK_UP) player.setUp(true);
+			if(k == KeyEvent.VK_UP) player.setBlending(true);
 			if(k == KeyEvent.VK_DOWN) player.setDown(true);
 			if(k == KeyEvent.VK_SPACE) player.setJumping(true);
 			if(k == KeyEvent.VK_E) player.setGliding(true);			
@@ -215,7 +252,7 @@ public class Level1State extends GameState{
 	public void keyReleased(int k) {
 		if(k == KeyEvent.VK_A) player.setLeft(false);
 		if(k == KeyEvent.VK_D) player.setRight(false);
-		if(k == KeyEvent.VK_UP) player.setUp(false);
+		if(k == KeyEvent.VK_UP) player.setBlending(false);
 		if(k == KeyEvent.VK_DOWN) player.setDown(false);
 		if(k == KeyEvent.VK_SPACE) player.setJumping(false);
 		if(k == KeyEvent.VK_E) player.setGliding(false);
