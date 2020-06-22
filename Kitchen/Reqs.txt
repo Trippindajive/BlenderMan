@@ -1,0 +1,9 @@
+FUNCTIONAL REQUIREMENTS
+- Should export map file
+    - Map file should accurately capture visual representation input
+    - Map file should be stored in Benderman/Assets/Maps
+    - Map file should be named according to user's discretion
+- Should load in tiles options
+    - Should get tile name from file name 
+- Should allow user to set width and height dimensions per tile
+- Should allow user to save unfinished levels

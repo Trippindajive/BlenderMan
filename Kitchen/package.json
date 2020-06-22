@@ -1,0 +1,21 @@
+{
+  "name": "kitchen",
+  "version": "1.0.0",
+  "description": "Level creator for Blenderman",
+  "main": "src/main.js",
+  "scripts": {
+    "test": "test",
+    "start": "electron .",
+    "iterate": "electron-packager src/ && mv kitchen-win32-x64/kitchen.exe ./ && rm -rf kitchen-win32-x64" 
+  },
+  "keywords": [
+    "level",
+    "creator",
+    "blenderman"
+  ],
+  "author": "A'Shaun Thomas",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^9.0.4"
+  }
+}
