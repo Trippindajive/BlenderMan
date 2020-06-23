@@ -50,8 +50,8 @@ public class Animation {
 	public void update() {
 		if(delay == -1)
 			return;
-		
-		long elapsed = (System.nanoTime() - startTime) / 1000000; // How long it has been since animation was played in milliseconds
+		long elapsed = (System.nanoTime() - startTime) / 1000000;
+		 // How long it has been since animation was played in milliseconds
 		if(elapsed > delay) {
 			currentFrame++;
 			startTime = System.nanoTime(); // Resets timer

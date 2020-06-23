@@ -10,6 +10,7 @@ public class Enemy extends MapObject {
 	protected int damage; // contact damage
 	protected boolean flinching;
 	protected long flinchTimer;
+	protected int scorePoints;
 	
 	public Enemy(TileMap tm) {
 		super(tm);
@@ -29,8 +30,9 @@ public class Enemy extends MapObject {
 		health -= damage;
 		if(health < 0)
 			health = 0;
-		if(health == 0)
+		if(health == 0) {
 			dead = true;
+		}
 		flinching = true;
 		flinchTimer = System.nanoTime();
 	}

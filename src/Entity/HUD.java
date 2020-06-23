@@ -37,5 +37,8 @@ public class HUD {
 		g.setColor(Color.RED);
 		g.drawString("Fruits: " + player.getFruits(), 80, 25);
 		g.drawString("Veggies: " + player.getVeggies(), 150, 25);
+		g.drawString("Proteins: " + player.getProteins(), 230, 25);
+		g.setColor(Color.WHITE);
+		g.drawString("SCORE: " + player.getScore(), 0, 65);
 	}
 }

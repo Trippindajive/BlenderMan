@@ -2,7 +2,6 @@ package Entity;
 
 import TileMap.*;
 import Audio.AudioPlayer;
-//import Entity.Vittle.*;
 import java.util.ArrayList;
 import javax.imageio.ImageIO; // Package that contains classes which can read spritesheets
 import java.awt.*;
@@ -22,10 +21,13 @@ public class Player extends MapObject {
 	private int atkPower;
 	private int maxPower;
 	private int atkPoints;
+	private int defPoints;
 	private boolean dead;
 	private boolean flinching;
 	private long flinchTimer;
 	private int healPoints;
+	private int scorePoints;
+	
 	
 	// Fireball
 	private boolean firing;
@@ -42,13 +44,12 @@ public class Player extends MapObject {
 	private boolean gliding;
 	
 	// Blending
-	@SuppressWarnings("unused")
-	private boolean blending;
+	//private boolean blend;
 	
 	// Vittles inventory
 	public ArrayList<Vittle> fruits = new ArrayList<Vittle>();
 	public ArrayList<Vittle> veggies = new ArrayList<Vittle>();
-	//private ArrayList<Vittle> proteins = new ArrayList<Proteins>();
+	private ArrayList<Vittle> proteins = new ArrayList<Vittle>();
 	//private ArrayList<Vittle> liquids = new ArrayList<Liquids>();
 	
 	// Animations
@@ -92,9 +93,9 @@ public class Player extends MapObject {
 		
 		facingRight = true;
 		
-		health = 3;
-		maxHealth = 50;
-		atkPower = 0;
+		health = 5;
+		maxHealth = 10;
+		atkPower = 24;
 		maxPower = 25;
 		
 		
@@ -102,7 +103,7 @@ public class Player extends MapObject {
 		fireBallDamage = 10;
 		fireBalls = new ArrayList<FireBall>();
 		
-		scratchDamage = 8;
+		scratchDamage = 5;
 		scratchRange = 40; // In pixels
 		
 		// Loads sprites
@@ -186,10 +187,6 @@ public class Player extends MapObject {
 		return atkPoints;
 	}
 	
-	/*public void setAtkPower(int atkPoints) {
-		atkPower += atkPoints;
-	}*/
-	
 	public void setHealPoints() {
 		for(int i = 0; i < fruits.size(); i++) {
 			healPoints += fruits.get(i).getHealPoints();
@@ -234,12 +231,23 @@ public class Player extends MapObject {
 		return veggies.size();
 	}
 	
+	public void setProteins(Vittle v) {
+		proteins.add(v);
+	}
+	
+	public int getProteins() {
+		return proteins.size();
+	}
+	
 	public void addToInventory(Vittle v) {
 		if(v.isCaptured() == true && v.getFruitType()) {
 			setFruits(v);
 		}
 		if(v.isCaptured() == true && v.getVegType()) {
 			setVeggies(v);
+		}
+		if(v.isCaptured() == true && v.getProteinType()) {
+			setProteins(v);
 		}
 	}
 	
@@ -259,6 +267,9 @@ public class Player extends MapObject {
 						e.gety() < y + height / 2
 						) {
 						e.hit(scratchDamage);
+						if(e.isDead() == true) {
+							setScore(e.scorePoints);
+						}
 					}
 							
 				}
@@ -270,6 +281,9 @@ public class Player extends MapObject {
 							e.gety() > y - height / 2 &&
 							e.gety() < y + height / 2) {
 						e.hit(scratchDamage);
+						if(e.isDead() == true) {
+							setScore(e.scorePoints);
+						}
 					}
 				}
 			}
@@ -279,13 +293,16 @@ public class Player extends MapObject {
 			if(fireBalls.get(j).intersects(e)) {
 				e.hit(fireBallDamage);
 				fireBalls.get(j).setHit();
+				if(e.isDead() == true) {
+					setScore(e.scorePoints);
+				}
 				break;
 			}
 		}
 			
-			// Check for enemy collision
-			if(intersects(e)) {
-				hit(e.getDamage());
+		// Check for enemy collision
+		if(intersects(e)) {
+			hit(e.getDamage(), e);
 			}
 		}
 	}
@@ -309,6 +326,7 @@ public class Player extends MapObject {
 						v.hit(scratchDamage);
 						if(v.getHealth() == 0) {
 							healPoints += v.getHealPoints();
+							setScore(v.scorePoints);
 						}
 					}
 				}
@@ -322,6 +340,7 @@ public class Player extends MapObject {
 						v.hit(scratchDamage);
 						if(v.getHealth() == 0) {
 							healPoints += v.getHealPoints();
+							setScore(v.scorePoints);
 						}
 					}
 				}	
@@ -344,6 +363,7 @@ public class Player extends MapObject {
 						v.hit(scratchDamage);
 						if(v.getHealth() == 0) {
 							atkPoints += v.getAtkPoints();
+							setScore(v.scorePoints);
 						}
 					}
 				}
@@ -357,6 +377,7 @@ public class Player extends MapObject {
 						v.hit(scratchDamage);
 						if(v.getHealth() == 0) {
 							atkPoints += v.getAtkPoints();
+							setScore(v.scorePoints);
 						}
 					}
 				}
@@ -365,7 +386,52 @@ public class Player extends MapObject {
 		}
 	}
 	
-	public void hit(int damage) {
+	public void checkCapturedProtein(ArrayList<Vittle> vittles) {
+		for(int i = 0; i < vittles.size(); i++) {
+			Vittle v = vittles.get(i);
+			
+			if(scratching) {
+				if(facingRight) {	
+					if(
+							v.getx() > x &&
+							v.getx() < x + scratchRange &&
+							v.gety() > y - height / 2 &&
+							v.gety() < y + height / 2
+							) {
+						v.hit(scratchDamage);
+						if(v.getHealth() == 0) {
+							defPoints += v.getDefPoints();
+							setScore(v.scorePoints);
+						}
+					}
+				}
+				else {
+					if(
+							v.getx() < x &&
+							v.getx() > x - scratchRange &&
+							v.gety() > y - height / 2 &&
+							v.gety() < y + height / 2
+							) {
+						v.hit(scratchDamage);
+						if(v.getHealth() == 0) {
+							defPoints += v.getDefPoints();
+							setScore(v.scorePoints);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public void setScore(int scorePoints) {
+		this.scorePoints += scorePoints;
+	}
+	
+	public int getScore() {
+		return scorePoints;
+	}
+	
+	public void hit(int damage, Enemy e) {
 		if(flinching) {
 			return;
 		}
@@ -458,14 +524,13 @@ public class Player extends MapObject {
 		if(currentAction == FIREBALL) {
 			if(animation.hasPlayedOnce()) firing = false;
 		}
-		if(currentAction == BLENDING) {
-			if(animation.hasPlayedOnce()) blending = false;
-		}
 	
 		// Fireball attack
 		if(firing && currentAction != FIREBALL) {
 			if(atkPower > fireCost) {
 				atkPower -= fireCost;
+				//moveSpeed = 0.0;
+				animation.setDelay(400);
 				FireBall fb = new FireBall(tileMap, facingRight);
 				fb.setPosition(x, y + 10);
 				fireBalls.add(fb);
@@ -495,36 +560,31 @@ public class Player extends MapObject {
 			maxSpeed = 0.0;
 			health = maxHealth = 0;
 			atkPoints = maxPower = 0;
-			
-			
-			
-			/*sfx.put("jump", null);
-			sfx.put("scratch", null);
-			sfx.put("blend", null);
-			*/
 		}
 		
 		// Blending action
-		/**
-		 * @bug AS UP KEY IS PRESSED DOWN, SFX OVERLAPS
-		 * 
-		 */
-		if(up) {
+		if(blending) {
 			if(currentAction != BLENDING) {
-				health += healPoints;
-				for(int i = 0; i < fruits.size(); i++) {
-					fruits.remove(i);
-					i--;
+				for(int i = health; i <= healPoints; i++) {
+					while(i < maxHealth) {
+						health++;
+					}
+					for(int j = 0; j < fruits.size(); j++) {
+						fruits.remove(j);
+						j--;
+					}
+					healPoints = 0;
 				}
-				healPoints = 0;
 			}
 			if(currentAction != BLENDING) {
-				atkPower += atkPoints;
-				for(int i = 0; i < veggies.size(); i++) {
-					veggies.remove(i);
-					i--;
+				if((atkPower + atkPoints) < maxPower) {
+					atkPower += atkPoints;
+					for(int i = 0; i < veggies.size(); i++) {
+						veggies.remove(i);
+						i--;
+					}
+					atkPoints = 0;
 				}
-				atkPoints = 0;
 			}
 		}
 		
@@ -550,16 +610,14 @@ public class Player extends MapObject {
 				width = 100;
 			}
 		}
-		else if(up) {
+		else if(blending) {
 			if(currentAction != BLENDING) {
+				currentAction = BLENDING;
 				AudioPlayer blendsfx = new AudioPlayer("/SFX/blendersfx1.wav");
 				blendsfx.play();
-				currentAction = BLENDING;
 				animation.setDelay(100);
 				width = 100;
-				//moveSpeed = 0; // cancel movement when blending
-				//jumpStart = 0;
-			}
+			}		
 		}
 		else if(dy > 0) {
 			if(gliding) {
