@@ -30,7 +30,6 @@ public class Vittle extends MapObject{
 	protected int scorePoints;
 	protected Vittle[] category = {Fruit, Veggie, Protein, Liquid};
 	protected int element;
-	//protected boolean type;
 	protected int health = 1;
 	protected int maxHealth = health;
 	
@@ -90,6 +89,25 @@ public class Vittle extends MapObject{
 		return isVeggie;
 	}
 	
+	public void setProteinType(Vittle v) {
+		if(v == category[2]) {
+			isProtein = true;
+		}
+	}
+	
+	public boolean getProteinType() {
+		return isProtein;
+	}
+	
+	public void setLiquidType(Vittle v) {
+		if(v == category[3]) {
+			isLiquid = true;
+		}
+	}
+	
+	public boolean getLiquidType() {
+		return isLiquid;
+	}
 	
 	public void setHealth(int health) {
 		this.health = health;
@@ -121,6 +139,18 @@ public class Vittle extends MapObject{
 	
 	public int getDefPoints() {
 		return defPoints;
+	}
+	
+	public void setBoostPercentage(int boostPercentage) {
+		this.boostPercentage = boostPercentage;
+	}
+	
+	public int getBoostPercentage() {
+		return boostPercentage;
+	}
+	
+	public int getScore() {
+		return scorePoints;
 	}
 	
 	public void update() {

@@ -6,26 +6,23 @@ import java.awt.image.BufferedImage;
 
 import javax.imageio.ImageIO;
 import java.awt.Graphics2D;
-
-public class Broccoli extends Vittle {
+public class Cheese extends Vittle{
 	
 	private BufferedImage[] sprites;
 	
-	public Broccoli(TileMap tm) {
+	public Cheese(TileMap tm) {
 		super(tm);
 		
-		// Broccoli Stats
-		atkPoints = 7;
-		defPoints = 4;
-		scorePoints = 14;
+		healPoints = 2;
+		defPoints = 5;
+		scorePoints = 15;
 		
-		// Load Sprites
 		try {
-					
+			
 			BufferedImage spritesheet = ImageIO.read(getClass().getResourceAsStream(
-					"/Sprites/Vittles/spritesheet (3).png"));
+					"/Sprites/Vittles/spritesheet (5).png"));
 					
-			sprites = new BufferedImage[4];
+			sprites = new BufferedImage[5];
 			for(int i = 0; i < sprites.length; i++) {
 				sprites[i] = spritesheet.getSubimage(
 						i * width,
@@ -53,10 +50,10 @@ public class Broccoli extends Vittle {
 		checkTileMapCollision();
 		checkWallCollision();
 		setPosition(xtemp, ytemp);
-		setAtkPoints(atkPoints);
-		getAtkPoints();
-		setVegType(Veggie);
-		getVegType();
+		setDefPoints(defPoints);
+		getDefPoints();
+		setProteinType(Protein);
+		getProteinType();
 		animation.update();
 	}
 	

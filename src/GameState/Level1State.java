@@ -27,11 +27,13 @@ public class Level1State extends GameState{
 	private ArrayList<Enemy> enemies;
 	private ArrayList<Vittle> Fruits = new ArrayList<Vittle>();
 	private ArrayList<Vittle> Veggies = new ArrayList<Vittle>();
+	private ArrayList<Vittle> Proteins = new ArrayList<Vittle>();
 	private ArrayList<DeathExplosion> deathExplosions;
 	
 	// Location arrays for objects
 	Point[] p; // strawberries
 	Point[] pp; // broccoli
+	Point[] ppp; // cheese
 	
 	private HUD hud;
 	
@@ -73,9 +75,9 @@ public class Level1State extends GameState{
 		enemies = new ArrayList<Enemy>();
 		Slugger s;
 		Point[] points = new Point[] {
-			//new Point(200, 200),
-			//new Point(300, 200),
-			//new Point(600, 200), Enemy won't appear at this location. Tiles blocking it?
+			new Point(200, 200),
+			new Point(300, 200),
+			new Point(400, 100),// Enemy won't appear at this location. Tiles blocking it?
 			new Point(860, 200),
 			new Point(1525, 200),
 			new Point(1680, 200),
@@ -90,12 +92,12 @@ public class Level1State extends GameState{
 	
 	private void populateVittles() {
 		
-		//vittles = new ArrayList<Vittle>();
 		Strawberry fs = new Strawberry(tileMap);
 		Broccoli vb = new Broccoli(tileMap);
+		Cheese pc = new Cheese(tileMap);
 		
 		p = new Point[] {
-				//new Point(200, 160),
+				new Point(250, 160),
 				new Point(300, 160)
 		};
 		for(int i = 0; i < p.length; i++) {
@@ -105,18 +107,29 @@ public class Level1State extends GameState{
 		}
 		
 		pp = new Point[] {
-				new Point(200, 130)
+				new Point(100, 160)
 		};
 		for(int i = 0; i < pp.length; i++) {
 			vb = new Broccoli(tileMap);
 			vb.setPosition(pp[i].x, pp[i].y);
 			Veggies.add(vb);
 		}
+		
+		ppp = new Point[] {
+				new Point(200, 130)
+		};
+		for(int i = 0; i < ppp.length; i++) {
+			pc = new Cheese(tileMap);
+			pc.setPosition(ppp[i].x, ppp[i].y);
+			Proteins.add(pc);
+		}
 	}
 		
 	public void update() {
+		Enemy e; // enemy entity
 		Vittle f; // fruit entity
-		Vittle v; // veg entity
+		Vittle v; // vegetable entity
+		Vittle p; // protein entity
 		
 		
 		// Update player
@@ -138,10 +151,11 @@ public class Level1State extends GameState{
 		player.checkAttack(enemies);
 		player.checkCapturedFruit(Fruits);
 		player.checkCapturedVeg(Veggies);
+		player.checkCapturedProtein(Proteins);
 		
 		// Update all enemies
 		for(int i = 0; i < enemies.size(); i++) {
-			Enemy e = enemies.get(i);
+			e = enemies.get(i);
 			e.update();
 			if(e.isDead()) {
 				enemies.remove(i);
@@ -151,7 +165,7 @@ public class Level1State extends GameState{
 			}
 		}
 		
-		// Update all Fruit vittles
+		// Update all fruit vittles
 		for(int i = 0; i < Fruits.size(); i++) {
 			f = Fruits.get(i);
 			f.update();
@@ -164,7 +178,7 @@ public class Level1State extends GameState{
 			}
 		}
 		
-		// Update all Veggie vittles
+		// Update all veggie vittles
 		for(int i = 0; i < Veggies.size(); i++) {
 			 v = Veggies.get(i);
 			v.update();
@@ -177,6 +191,19 @@ public class Level1State extends GameState{
 			}
 		}
 		
+		// Update all protein vittles
+		for(int i = 0; i < Proteins.size(); i++) {
+			p = Proteins.get(i);
+			p.update();
+			if(p.isCaptured()) {
+				player.addToInventory(p);
+				Proteins.remove(i);
+				i--;
+				deathExplosions.add(new DeathExplosion(
+						p.getx(), p.gety()));
+			}
+		}
+		
 		// Update death explosions
 		for(int i = 0; i < deathExplosions.size(); i++) {
 			deathExplosions.get(i).update();
@@ -184,7 +211,7 @@ public class Level1State extends GameState{
 				deathExplosions.remove(i);
 				i--;
 			}
-		}
+		}	
 	}
 	
 	public void draw(Graphics2D g) {
@@ -214,6 +241,10 @@ public class Level1State extends GameState{
 		// Draw vittles
 		for(int i = 0; i < Veggies.size(); i++) {
 			Veggies.get(i).draw(g);
+		}
+		
+		for(int i = 0; i < Proteins.size(); i++) {
+			Proteins.get(i).draw(g);
 		}
 		
 		// Draw death explosions
@@ -250,11 +281,23 @@ public class Level1State extends GameState{
 	}
 	
 	public void keyReleased(int k) {
-		if(k == KeyEvent.VK_A) player.setLeft(false);
-		if(k == KeyEvent.VK_D) player.setRight(false);
-		if(k == KeyEvent.VK_UP) player.setBlending(false);
-		if(k == KeyEvent.VK_DOWN) player.setDown(false);
-		if(k == KeyEvent.VK_SPACE) player.setJumping(false);
-		if(k == KeyEvent.VK_E) player.setGliding(false);
+		if(k == KeyEvent.VK_A) {
+			player.setLeft(false);
+		}
+		if(k == KeyEvent.VK_D) {
+			player.setRight(false);
+		}
+		if(k == KeyEvent.VK_UP) {
+			player.setBlending(false);
+		}
+		if(k == KeyEvent.VK_DOWN) {
+			player.setDown(false);
+		}
+		if(k == KeyEvent.VK_SPACE) {
+			player.setJumping(false);
+		}
+		if(k == KeyEvent.VK_E) {
+			player.setGliding(false);
+		}
 	}
 }
