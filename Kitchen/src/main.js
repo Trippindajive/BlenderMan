@@ -1,5 +1,12 @@
 const { app, BrowserWindow } = require("electron"); 
 
+const PAGE = {
+    HOME: 'src/home/home.html', 
+}
+
+require('electron-reload')(__dirname);
+
+
 function createWindow() {
     let window = new BrowserWindow({
         width: 800,
@@ -8,7 +15,7 @@ function createWindow() {
             nodeIntegration: true
         }
     });
-    window.loadFile('src/index.html');
+    window.loadFile(PAGE.HOME);
 }
 
 app.whenReady().then(createWindow);

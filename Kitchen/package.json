@@ -6,7 +6,7 @@
   "scripts": {
     "test": "test",
     "start": "electron .",
-    "iterate": "electron-packager src/ && mv kitchen-win32-x64/kitchen.exe ./ && rm -rf kitchen-win32-x64" 
+    "iterate": "electron-packager src/ && mv kitchen-win32-x64/kitchen.exe ./ && rm -rf kitchen-win32-x64"
   },
   "keywords": [
     "level",
@@ -17,5 +17,8 @@
   "license": "ISC",
   "devDependencies": {
     "electron": "^9.0.4"
+  },
+  "dependencies": {
+    "electron-reload": "^1.5.0"
   }
 }

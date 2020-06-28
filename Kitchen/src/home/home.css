@@ -1,0 +1,35 @@
+body {
+    overflow: hidden;
+}
+
+img {
+    margin-left: 50%;
+    transform: translateX(-50%);
+}
+
+section {
+    display: flex;
+    flex-direction: column;
+}
+
+button {
+    width: 35%;
+    margin: 0 auto;
+    padding: 20px;
+    background: white;
+    border-radius:40px;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-size: 1.2em;
+    box-shadow: 0px 3px;
+}
+
+button:hover {
+    background: red;
+    color: white;
+    cursor: pointer;
+    /* box-shadow: inset 0px 3px black; */
+}
+
+#new, img {
+    margin-bottom: 30px;
+}
