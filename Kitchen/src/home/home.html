@@ -2,16 +2,26 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Hello World!</title>
+    <title>Kitchen - A  level creator for the Blenderman game</title>
     <!-- https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
     <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
     <link rel="stylesheet" type="text/css" href="home.css">
   </head>
   <body>
-    <img src="../../assets/logo.PNG"/>
-    <section>
-      <button id="new">Create New Level</button>
-      <button id="existing">Edit Existing Level</button>
-    </section>
+    <div id="home">
+      <img src="../../assets/logo.PNG"/>
+      <section>
+        <button id="new" onclick="setPage('newLevel')">Create New Level</button>
+        <button id="existing" onclick="setPage('loadLevel')">Edit Existing Level</button>
+      </section>
+    </div>
+    <div id="newLevel" class="hide">
+      <h1>Hi I'm a new Level</h1>
+    </div>
+    <div id="loadLevel" class="hide">
+      <h1>Hi I'm load level</h1>
+    </div>
+    <span>V1.0</span>
   </body>
+  <script src="./home.js"></script>
 </html>

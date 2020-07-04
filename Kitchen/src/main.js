@@ -15,6 +15,8 @@ function createWindow() {
             nodeIntegration: true
         }
     });
+    window.setFullScreenable(false);
+    window.setResizable(false);
     window.loadFile(PAGE.HOME);
 }
 

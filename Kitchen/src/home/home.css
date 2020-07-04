@@ -33,3 +33,18 @@ button:hover {
 #new, img {
     margin-bottom: 30px;
 }
+
+span {
+    position: absolute;
+    top: 96%;
+    left: 95%;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+.hide {
+    display: none;
+}
+
+.show {
+    display: inline;
+}
