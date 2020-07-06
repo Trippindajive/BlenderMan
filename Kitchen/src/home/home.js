@@ -18,3 +18,5 @@ function setPage(str) {
         currentPage.classList = DISPLAY.SHOW;
     }
 }
+
+setPage('newLevel');

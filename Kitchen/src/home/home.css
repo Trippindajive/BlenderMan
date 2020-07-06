@@ -1,5 +1,6 @@
 body {
     overflow: hidden;
+    margin: 0;
 }
 
 img {
@@ -12,15 +13,9 @@ section {
     flex-direction: column;
 }
 
-button {
-    width: 35%;
-    margin: 0 auto;
-    padding: 20px;
-    background: white;
-    border-radius:40px;
-    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-    font-size: 1.2em;
-    box-shadow: 0px 3px;
+fieldset {
+    display: flex;
+    flex-direction: column;
 }
 
 button:hover {
@@ -34,7 +29,7 @@ button:hover {
     margin-bottom: 30px;
 }
 
-span {
+.version {
     position: absolute;
     top: 96%;
     left: 95%;
@@ -47,4 +42,35 @@ span {
 
 .show {
     display: inline;
+}
+
+.level-area {
+    width: 100%;
+    height: 60vh;
+    border: 1px solid black;
+    overflow: auto;
+}
+
+.ui-button {
+    width: 35%;
+    margin: 0 auto;
+    padding: 20px;
+    background: white;
+    border-radius:40px;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-size: 1.2em;
+    box-shadow: 0px 3px;
+}
+
+.ui-tab {
+    width: 10vw;
+    height: 25px;
+    transform: skew(-20deg);
+    background: teal;
+    border: 0 1px 0 0;
+    border-color: white;
+}
+
+.ui-tab:not(.first) {
+    margin-left: -7px;
 }

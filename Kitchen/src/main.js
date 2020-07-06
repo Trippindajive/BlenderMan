@@ -17,6 +17,8 @@ function createWindow() {
     });
     window.setFullScreenable(false);
     window.setResizable(false);
+    window.removeMenu();
+    window.setMenuBarVisibility = false;
     window.loadFile(PAGE.HOME);
 }
 

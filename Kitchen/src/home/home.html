@@ -11,17 +11,51 @@
     <div id="home">
       <img src="../../assets/logo.PNG"/>
       <section>
-        <button id="new" onclick="setPage('newLevel')">Create New Level</button>
-        <button id="existing" onclick="setPage('loadLevel')">Edit Existing Level</button>
+        <button class="ui-button" id="new" onclick="setPage('newLevel')">Create New Level</button>
+        <button class="ui-button" id="existing" onclick="setPage('loadLevel')">Edit Existing Level</button>
       </section>
     </div>
     <div id="newLevel" class="hide">
-      <h1>Hi I'm a new Level</h1>
+      <fieldset>
+        <legend>Statistics</legend>
+        <section>
+          <label>
+            Total Objects: <span id="totalTiles">0</span>
+          </label>
+          <label>
+            Empty Spaces: <span id="blankTiles">0</span>
+          </label>
+        </section>
+        <section>
+          <label>
+            Total Land Tiles: <span id="totalLandTiles">0</span>
+          </label>
+          <label>
+            Total Hazards: <span id="totalHazards">0</span>
+          </label>
+        </section>
+      </fieldset>
+
+      <section class="level-area">
+        <!-- all the divs for the levels-->
+      </section>
+
+      <section>
+        <div class="tabs-area">
+          <button class="ui-tab first">Land</button>
+          <button class="ui-tab">Hazards</button>
+          <button class="ui-tab">Decor</button>
+          <button class="ui-tab">Misc</button>
+        </div>
+        <div class="tabs-content">
+          <!-- Where all divs for content go-->
+        </div>
+      </section>
     </div>
     <div id="loadLevel" class="hide">
       <h1>Hi I'm load level</h1>
     </div>
-    <span>V1.0</span>
+    <span class="version">V1.0</span>
   </body>
   <script src="./home.js"></script>
 </html>
