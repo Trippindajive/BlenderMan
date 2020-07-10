@@ -15,6 +15,7 @@ public class Strawberry extends Vittle{
 		super(tm);
 		
 		// Strawberry Stats
+		name = "Strawberry";
 		healPoints = 5;
 		atkPoints = 2;
 		scorePoints = 10;

@@ -15,8 +15,9 @@ public class Broccoli extends Vittle {
 		super(tm);
 		
 		// Broccoli Stats
+		name = "Broccoli";
 		atkPoints = 7;
-		defPoints = 4;
+		shieldPoints = 4;
 		scorePoints = 14;
 		
 		// Load Sprites

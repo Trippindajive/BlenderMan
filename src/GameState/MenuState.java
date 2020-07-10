@@ -5,7 +5,7 @@ import java.awt.event.KeyEvent;
 
 import Audio.AudioPlayer;
 import TileMap.Background;
-
+import java.util.ArrayList;
 /**
  * A subclass of GameState, it defines the properties of the main menu.
  * @author Tim Riggins
@@ -20,8 +20,6 @@ public class MenuState extends GameState {
 	private Font titleFont;
 	private Font font;
 	
-	private AudioPlayer bgMusic;
-	
 	public MenuState(GameStateManager gsm) {
 		this.gsm = gsm;
 		
@@ -33,9 +31,6 @@ public class MenuState extends GameState {
 			titleFont = new Font("Century Gothic", Font.PLAIN, 72);
 			
 			font = new Font("Arial", Font.PLAIN, 24);
-			
-			//bgMusic = new AudioPlayer("/Music/Red-MarKer-DMC-12-Gauge.wav");
-			//bgMusic.play();
 			
 		} catch(Exception e) {
 			e.printStackTrace();

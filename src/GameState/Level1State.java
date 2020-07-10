@@ -8,8 +8,7 @@ import TileMap.TileMap;
 import Main.GamePanel;
 import java.awt.event.KeyEvent;
 import Entity.Enemies.*;
-import Entity.Vittles.*;;
-
+import Entity.Vittles.*;
 /**
  * A subclass of GameState, it defines the properties of Level 1, such as: graphics, functions, objects, etc.
  * @author Tim Riggins
@@ -28,16 +27,16 @@ public class Level1State extends GameState{
 	private ArrayList<Vittle> Fruits = new ArrayList<Vittle>();
 	private ArrayList<Vittle> Veggies = new ArrayList<Vittle>();
 	private ArrayList<Vittle> Proteins = new ArrayList<Vittle>();
+	private ArrayList<Vittle> Liquids = new ArrayList<Vittle>();
 	private ArrayList<DeathExplosion> deathExplosions;
 	
 	// Location arrays for objects
 	Point[] p; // strawberries
 	Point[] pp; // broccoli
 	Point[] ppp; // cheese
+	Point[] pw; // water
 	
 	private HUD hud;
-	
-	//private AudioPlayer bgMusic;
 	
 	public Level1State(GameStateManager gsm) {
 		this.gsm = gsm;
@@ -53,7 +52,7 @@ public class Level1State extends GameState{
 		tileMap.setTween(1); //Corrects "twitching" behavior of moving entities
 		
 		bg = new Background("/Backgrounds/retro arcade.gif", 0.1); // double value is a move scale
-		
+
 		player = new Player(tileMap);
 		player.setPosition(50.0, 180.0);
 		
@@ -75,10 +74,11 @@ public class Level1State extends GameState{
 		enemies = new ArrayList<Enemy>();
 		Slugger s;
 		Point[] points = new Point[] {
-			new Point(200, 200),
-			new Point(300, 200),
-			new Point(400, 100),// Enemy won't appear at this location. Tiles blocking it?
-			new Point(860, 200),
+			//new Point(200, 200),
+			//new Point(300, 200),
+			//new Point(400, 100),
+			//new Point(860, 200),
+			//new Point(1000, 200),
 			new Point(1525, 200),
 			new Point(1680, 200),
 			new Point(1800, 200)
@@ -91,37 +91,56 @@ public class Level1State extends GameState{
 	}
 	
 	private void populateVittles() {
-		
+		int i;
 		Strawberry fs = new Strawberry(tileMap);
 		Broccoli vb = new Broccoli(tileMap);
 		Cheese pc = new Cheese(tileMap);
+		Water lw = new Water(tileMap);
 		
 		p = new Point[] {
 				new Point(250, 160),
-				new Point(300, 160)
+				new Point(300, 160),
+				new Point(1300, 160)
 		};
-		for(int i = 0; i < p.length; i++) {
+		for(i = 0; i < p.length; i++) {
 			fs = new Strawberry(tileMap);
 			fs.setPosition(p[i].x, p[i].y);
 			Fruits.add(fs);
 		}
 		
 		pp = new Point[] {
-				new Point(100, 160)
+				new Point(100, 160),
+				new Point(150, 160),
+				//new Point(250, 160),
+				//new Point(300, 160),
+				new Point(750, 80)
 		};
-		for(int i = 0; i < pp.length; i++) {
+		for(i = 0; i < pp.length; i++) {
 			vb = new Broccoli(tileMap);
 			vb.setPosition(pp[i].x, pp[i].y);
 			Veggies.add(vb);
 		}
 		
 		ppp = new Point[] {
-				new Point(200, 130)
+				new Point(860, 130),
+				new Point(1000, 130),
+				new Point(1820, 130)
 		};
-		for(int i = 0; i < ppp.length; i++) {
+		for(i = 0; i < ppp.length; i++) {
 			pc = new Cheese(tileMap);
 			pc.setPosition(ppp[i].x, ppp[i].y);
 			Proteins.add(pc);
+		}
+		
+		pw = new Point[] {
+				new Point(200, 130),
+				new Point(400, 130),
+				new Point(900, 140)
+		};
+		for(i = 0; i < pw.length; i++) {
+			lw = new Water(tileMap);
+			lw.setPosition(pw[i].x, pw[i].y);
+			Liquids.add(lw);
 		}
 	}
 		
@@ -130,10 +149,12 @@ public class Level1State extends GameState{
 		Vittle f; // fruit entity
 		Vittle v; // vegetable entity
 		Vittle p; // protein entity
+		Vittle l; // liquid entity
 		
 		
 		// Update player
 		player.update();
+		
 		tileMap.setPosition(
 				GamePanel.WIDTH / 2 - player.getx(),
 				GamePanel.HEIGHT / 2 - player.gety());
@@ -152,6 +173,7 @@ public class Level1State extends GameState{
 		player.checkCapturedFruit(Fruits);
 		player.checkCapturedVeg(Veggies);
 		player.checkCapturedProtein(Proteins);
+		player.checkCapturedLiquid(Liquids);
 		
 		// Update all enemies
 		for(int i = 0; i < enemies.size(); i++) {
@@ -204,6 +226,19 @@ public class Level1State extends GameState{
 			}
 		}
 		
+		// Update all liquid vittles
+		for(int i = 0; i < Liquids.size(); i++) {
+			l = Liquids.get(i);
+			l.update();
+			if(l.isCaptured()) {
+				player.addToInventory(l);
+				Liquids.remove(i);
+				i--;
+				deathExplosions.add(new DeathExplosion(
+						l.getx(), l.gety()));
+			}
+		}
+		
 		// Update death explosions
 		for(int i = 0; i < deathExplosions.size(); i++) {
 			deathExplosions.get(i).update();
@@ -238,13 +273,16 @@ public class Level1State extends GameState{
 			Fruits.get(i).draw(g);
 		}
 		
-		// Draw vittles
 		for(int i = 0; i < Veggies.size(); i++) {
 			Veggies.get(i).draw(g);
 		}
 		
 		for(int i = 0; i < Proteins.size(); i++) {
 			Proteins.get(i).draw(g);
+		}
+		
+		for(int i = 0; i < Liquids.size(); i++) {
+			Liquids.get(i).draw(g);
 		}
 		
 		// Draw death explosions

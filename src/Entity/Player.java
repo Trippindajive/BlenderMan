@@ -7,6 +7,8 @@ import javax.imageio.ImageIO; // Package that contains classes which can read sp
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
+import Entity.Vittles.*;
+import java.util.Arrays;
 
 /**
  * The subclass of MapObject which handles all Player attributes
@@ -21,7 +23,12 @@ public class Player extends MapObject {
 	private int atkPower;
 	private int maxPower;
 	private int atkPoints;
-	private int defPoints;
+	private int shield;
+	private int maxShield;
+	private int shieldPoints;
+	private double boostPercent;
+	private boolean hasBoost;
+	private boolean hasShield;
 	private boolean dead;
 	private boolean flinching;
 	private long flinchTimer;
@@ -44,13 +51,20 @@ public class Player extends MapObject {
 	private boolean gliding;
 	
 	// Blending
-	//private boolean blend;
+	private final int FRUITS_SIZE_MAX = 3;
+	private final int VEGGIES_SIZE_MAX = 3;
+	private final int PROTEINS_SIZE_MAX = 3;
+	private final int LIQUIDS_SIZE_MAX = 0;
+	private boolean onlyHasFruits;
+	private boolean onlyHasVeggies;
+	private boolean onlyHasProteins;
 	
 	// Vittles inventory
 	public ArrayList<Vittle> fruits = new ArrayList<Vittle>();
 	public ArrayList<Vittle> veggies = new ArrayList<Vittle>();
 	private ArrayList<Vittle> proteins = new ArrayList<Vittle>();
-	//private ArrayList<Vittle> liquids = new ArrayList<Liquids>();
+	public ArrayList<Vittle> liquids = new ArrayList<Vittle>();
+	public String[] fruitNames = fruits.toArray(new String[fruits.size()]);
 	
 	// Animations
 	private ArrayList<BufferedImage[]> sprites;
@@ -94,10 +108,11 @@ public class Player extends MapObject {
 		facingRight = true;
 		
 		health = 5;
-		maxHealth = 10;
-		atkPower = 24;
+		maxHealth = 50;
+		atkPower = 0;
 		maxPower = 25;
-		
+		shield = 0;
+		maxShield = 50;
 		
 		fireCost = 5;
 		fireBallDamage = 10;
@@ -111,7 +126,7 @@ public class Player extends MapObject {
 			
 			spritesheet = ImageIO.read(
 					getClass().getResourceAsStream(
-							"/Sprites/Player/BMSpriteIdleWalk.gif"
+							"/Sprites/Player/BMIdleWalkingSpriteNew.gif"
 							)
 					);
 			
@@ -176,9 +191,18 @@ public class Player extends MapObject {
 		return maxPower;
 	}
 	
+	// Actual Shield Power
+	public int getShield() {
+		return shield;
+	}
+	
+	// Actual Max Shield Power
+	public int getMaxShield() {
+		return maxShield;
+	}
+	
 	// Potential Heal Points in Inventory
 	public int getHealPoints() {
-		System.out.println(healPoints);
 		return healPoints;
 	}
 	
@@ -187,17 +211,31 @@ public class Player extends MapObject {
 		return atkPoints;
 	}
 	
-	public void setHealPoints() {
+	// Potential Shield points in inventory
+	public int getShieldPoints() {
+		return shieldPoints;
+	}
+	
+	/*public void setHealPoints() {
 		for(int i = 0; i < fruits.size(); i++) {
 			healPoints += fruits.get(i).getHealPoints();
 		}
 	}
+	*/
 	
-	public void setAtkPoints() {
+	/*public void setAtkPoints() {
 		for(int i = 0; i < veggies.size(); i++) {
 			atkPoints += veggies.get(i).getAtkPoints();
 		}
 	}
+	*/
+	
+	/*public void setShieldPoints(int defPoints) {
+		for(int i = 0; i < proteins.size(); i++) {
+			shieldPoints += proteins.get(i).getShieldPoints();
+		}
+	}
+	*/
 	
 	public void setFiring() {
 		firing = true;
@@ -239,15 +277,40 @@ public class Player extends MapObject {
 		return proteins.size();
 	}
 	
+	public void setLiquid(Vittle v) {
+		liquids.add(v);
+	}
+	
+	public String getLiquid() {
+		if(liquids.size() < 1) {
+			return "none";
+		}
+		else if(liquids.get(0) instanceof Water) {
+			return "WATER";
+		}
+		return "-1";
+	}
+	
+	public void setScore(int scorePoints) {
+		this.scorePoints += scorePoints;
+	}
+	
+	public int getScore() {
+		return scorePoints;
+	}
+	
 	public void addToInventory(Vittle v) {
-		if(v.isCaptured() == true && v.getFruitType()) {
+		if(v.isCaptured() == true && v.getFruitType() && fruits.size() < FRUITS_SIZE_MAX) {
 			setFruits(v);
 		}
-		if(v.isCaptured() == true && v.getVegType()) {
+		if(v.isCaptured() == true && v.getVegType() && veggies.size() < VEGGIES_SIZE_MAX) {
 			setVeggies(v);
 		}
-		if(v.isCaptured() == true && v.getProteinType()) {
+		if(v.isCaptured() == true && v.getProteinType() && proteins.size() <= PROTEINS_SIZE_MAX) {
 			setProteins(v);
+		}
+		if(v.isCaptured() == true && v.getLiquidType() && liquids.size() <= LIQUIDS_SIZE_MAX) {
+			setLiquid(v);
 		}
 	}
 	
@@ -302,7 +365,12 @@ public class Player extends MapObject {
 			
 		// Check for enemy collision
 		if(intersects(e)) {
-			hit(e.getDamage(), e);
+			if(hasShield) {
+				hitShield(e.getDamage(), e);
+			} 
+			else {
+				hit(e.getDamage(), e);
+				}
 			}
 		}
 	}
@@ -400,7 +468,7 @@ public class Player extends MapObject {
 							) {
 						v.hit(scratchDamage);
 						if(v.getHealth() == 0) {
-							defPoints += v.getDefPoints();
+							shieldPoints += v.getShieldPoints();
 							setScore(v.scorePoints);
 						}
 					}
@@ -414,7 +482,7 @@ public class Player extends MapObject {
 							) {
 						v.hit(scratchDamage);
 						if(v.getHealth() == 0) {
-							defPoints += v.getDefPoints();
+							shieldPoints += v.getShieldPoints();
 							setScore(v.scorePoints);
 						}
 					}
@@ -423,12 +491,42 @@ public class Player extends MapObject {
 		}
 	}
 	
-	public void setScore(int scorePoints) {
-		this.scorePoints += scorePoints;
-	}
-	
-	public int getScore() {
-		return scorePoints;
+	public void checkCapturedLiquid(ArrayList<Vittle> vittles) {
+		for(int i = 0; i < vittles.size(); i++) {
+			Vittle v = vittles.get(i);
+			
+			if(scratching) {
+				if(facingRight) {	
+					if(
+							v.getx() > x &&
+							v.getx() < x + scratchRange &&
+							v.gety() > y - height / 2 &&
+							v.gety() < y + height / 2
+							) {
+						v.hit(scratchDamage);
+						if(v.getHealth() == 0) {
+							boostPercent += v.getBoostPercentage();
+							hasBoost = true;
+							}
+						}
+				}
+				else {
+					if(
+							v.getx() < x &&
+							v.getx() > x - scratchRange &&
+							v.gety() > y - height / 2 &&
+							v.gety() < y + height / 2
+							) {
+						v.hit(scratchDamage);
+						if(v.getHealth() == 0) {
+							boostPercent += v.getBoostPercentage();
+							hasBoost = true;
+							
+						}
+					}
+				}
+			}
+		}
 	}
 	
 	public void hit(int damage, Enemy e) {
@@ -446,9 +544,18 @@ public class Player extends MapObject {
 		flinchTimer = System.nanoTime();
 	}
 	
-	/**
-	 * Determines the next position the player must be at
-	 */
+	public void hitShield(int damage, Enemy e) {
+		shield -= damage;
+		if(shield < 0) {
+			shield = 0;
+		}
+		if(shield == 0) {
+			hasShield = false;
+		}
+		flinching = true;
+		flinchTimer = System.nanoTime();
+	}
+	
 	public void getNextPosition() {
 		
 		// Movement
@@ -504,40 +611,32 @@ public class Player extends MapObject {
 			if(dy < 0 && !jumping) dy += stopJumpSpeed;
 			
 			if(dy > terminalSpeed) dy = terminalSpeed;
+			if(notOnScreen()) dead = true;
 		}
 	}
-	/**
-	 * Updates the positioning of the player
-	 * @param blending 
-	 */
-	public void update() {
-		
-		// Update position
-		getNextPosition();
-		checkTileMapCollision();
-		setPosition(xtemp, ytemp);
-		
-		// Checks if attack has stopped
+	
+	public void checkIfAttacksStopped() {
 		if(currentAction == SCRATCHING) {
 			if(animation.hasPlayedOnce()) scratching = false;
 		}
 		if(currentAction == FIREBALL) {
 			if(animation.hasPlayedOnce()) firing = false;
 		}
+	}
 	
-		// Fireball attack
+	public void fireBallAtk() {
 		if(firing && currentAction != FIREBALL) {
 			if(atkPower > fireCost) {
 				atkPower -= fireCost;
-				//moveSpeed = 0.0;
 				animation.setDelay(400);
 				FireBall fb = new FireBall(tileMap, facingRight);
 				fb.setPosition(x, y + 10);
 				fireBalls.add(fb);
 			}
 		}
-		
-		// Update fireballs
+	}
+	
+	public void updateFireBalls() {
 		for(int i = 0; i < fireBalls.size(); i++) {
 			fireBalls.get(i).update();
 			if(fireBalls.get(i).shouldRemove()) {
@@ -545,50 +644,195 @@ public class Player extends MapObject {
 				i--;
 			}
 		}
-		
-		// Check for flinching
+	}
+	
+	public void checkFlinching() {
 		if(flinching) {
 			long elapsed = (System.nanoTime() - flinchTimer) / 1000000;
 			if(elapsed > 1000) {
 				flinching = false;
 			}
 		}
-		
-		// Check if dead
+	}
+	
+	public void checkShield() {
+		if(shield > 0) {
+			hasShield = true;
+		}
+	}
+	
+	public void checkDead() {
 		if(dead) {
 			moveSpeed = 0.0;
 			maxSpeed = 0.0;
-			health = maxHealth = 0;
-			atkPoints = maxPower = 0;
+			health = 0;
+		}
+	}
+	
+	public void implementBoost(String name) {
+		
+		switch (name) {
+		
+		case "Milk":
+			health += (int)(healPoints * boostPercent);
+			atkPower += atkPoints;
+			shield += 0;
+			break;
+			
+		case "Water":
+			health  += (int)(healPoints * boostPercent);
+			atkPower += (int)(atkPoints * boostPercent);
+			shield += (int)(shieldPoints * boostPercent);
+			break;
+			
+		case "Stock":
+			health += healPoints;
+			atkPower += (int)(atkPoints * boostPercent);
+			shield += (int)(shieldPoints * 1.75);
+			break;
+			
+		case "Wine":
+			health += (int)(healPoints * boostPercent);
+			atkPower += atkPoints;
+			shield += (int)(healPoints * boostPercent);
+			break;
+			
+		case "Oil":
+			health += 0;
+			atkPower += (int)(atkPoints * 1.5);
+			shield += (int)(shieldPoints * boostPercent);
+			break;
+			
+		default:
+			break;
 		}
 		
-		// Blending action
-		if(blending) {
-			if(currentAction != BLENDING) {
-				for(int i = health; i <= healPoints; i++) {
-					while(i < maxHealth) {
-						health++;
-					}
-					for(int j = 0; j < fruits.size(); j++) {
-						fruits.remove(j);
-						j--;
-					}
-					healPoints = 0;
-				}
+		hasBoost = false;
+		boostPercent = 0.0;
+	}
+	
+	public void removeFromInventory(ArrayList<Vittle> vittle) {
+		if(vittle == fruits) {
+			for(int j = 0; j < fruits.size(); j++) {
+				fruits.remove(j);
+				j--;
 			}
-			if(currentAction != BLENDING) {
-				if((atkPower + atkPoints) < maxPower) {
-					atkPower += atkPoints;
-					for(int i = 0; i < veggies.size(); i++) {
-						veggies.remove(i);
-						i--;
-					}
-					atkPoints = 0;
-				}
+			if(health > maxHealth) {
+				health = maxHealth;
 			}
+			healPoints = 0;
+			onlyHasFruits = false;
+		}
+		if(vittle == veggies) {
+			for(int i = 0; i < veggies.size(); i++) {
+				veggies.remove(i);
+				i--;
+			}
+			if(atkPower > maxPower) {
+				atkPower = maxPower;
+			}
+			atkPoints = 0;
+			onlyHasVeggies = false;
+		}
+		if(vittle == proteins) {
+			for(int i = 0; i < proteins.size(); i++) {
+				proteins.remove(i);
+				i--;
+			}
+			if(shield > maxShield) {
+				shield = maxShield;
+			}
+			shieldPoints = 0;
+			onlyHasProteins = false;
+		}
+	}
+	
+	public boolean checkForOtherVittles() {
+		if(fruits.size() > 0 && veggies.size() == 0 && proteins.size() == 0) {
+			onlyHasFruits = true;
+			return onlyHasFruits;
+		}
+		else if(veggies.size() > 0 && fruits.size() == 0 && proteins.size() == 0) {
+			onlyHasVeggies = true;
+			return onlyHasVeggies;
+		}
+		else if(proteins.size() > 0 && fruits.size() == 0 && veggies.size() == 0) {
+			onlyHasProteins = true;
+			return onlyHasProteins;
+		}
+		return false;
+	}
+	
+	public double calcForCombo(ArrayList<Vittle> v) {
+		for(int i = 0; i < v.size(); i++) {
+			
+		}
+		return -1.0;
+	}
+	
+	public double checkForBonuses() {
+		if(onlyHasFruits == true || onlyHasVeggies == true || onlyHasProteins == true) {
+			return 0.0;
 		}
 		
-		// Set animation
+		System.out.print(sortVittleArray(fruitNames));
+		sortVittleArray(veggies.toArray(new String[veggies.size()]));
+		sortVittleArray(proteins.toArray(new String[proteins.size()]));
+		System.out.println("afd");
+		return -1.0;
+	}
+	
+	public double checkForMaluses() {
+		return -1.0;
+	}
+	
+	public boolean sortVittleArray(String[] names) {
+		Arrays.sort(names);
+		
+		for(int i = 0; i < names.length; i++) {
+			System.out.println(names[i] + " ");
+		}
+		return false;
+	}
+	
+	public void checkBlending() {
+		if(blending && hasBoost != true) {
+			if(currentAction != BLENDING) {
+				checkForOtherVittles();
+				if(onlyHasFruits == true) {
+					healPoints += calcForCombo(fruits);
+				}
+				if(onlyHasVeggies == true) {
+					atkPoints += calcForCombo(veggies);
+				}
+				if(onlyHasProteins == true) {
+					shieldPoints += calcForCombo(proteins);
+				}
+				checkForBonuses();
+				checkForMaluses();
+				health += healPoints;
+				removeFromInventory(fruits);
+				atkPower += atkPoints;
+				removeFromInventory(veggies);
+				shield += shieldPoints;
+				removeFromInventory(proteins);
+			}
+		}
+		else if (blending) {
+			if(currentAction != BLENDING) {
+				if(fruits.size() > 0 || veggies.size() > 0 || proteins.size() > 0) {
+				implementBoost(liquids.get(0).getName());
+				removeFromInventory(fruits);
+				removeFromInventory(veggies);
+				removeFromInventory(proteins);
+				liquids.remove(0);
+				}
+			
+			}
+		}
+	}
+	
+	public void setAnimation() {
 		if(scratching) {
 			if(currentAction != SCRATCHING) {
 				sfx.put("scratch", new AudioPlayer("/SFX/zapsplat_household_band_aid_plaster_strip_rip_tear_002_11599.wav"));
@@ -613,11 +857,12 @@ public class Player extends MapObject {
 		else if(blending) {
 			if(currentAction != BLENDING) {
 				currentAction = BLENDING;
+				//Thread.sleep(4000);
 				AudioPlayer blendsfx = new AudioPlayer("/SFX/blendersfx1.wav");
 				blendsfx.play();
 				animation.setDelay(100);
 				width = 100;
-			}		
+			}	
 		}
 		else if(dy > 0) {
 			if(gliding) {
@@ -661,12 +906,34 @@ public class Player extends MapObject {
 		}
 		
 		animation.update();
-		
-		// Set direction of player after attacking
+	}
+	
+	public void setDirection() {
 		if(currentAction != SCRATCHING && currentAction != FIREBALL) {
 			if(right) facingRight = true;
 			if(left) facingRight = false;
 		}
+	}
+	
+	/** 
+	 * Probably the most important method of this class
+	 */
+	public void update() {
+	
+		getNextPosition();
+		checkTileMapCollision();
+		setPosition(xtemp, ytemp);
+		notOnScreen();
+		checkIfAttacksStopped();
+		fireBallAtk();
+		updateFireBalls();
+		checkFlinching();
+		checkShield();
+		checkBlending();
+		checkDead();
+		setAnimation();
+		setDirection();
+	
 	}
 	/**
 	 * Actually draws the player

@@ -20,18 +20,25 @@ public class Vittle extends MapObject{
 	protected boolean isLiquid;
 	protected boolean[] types = {isFruit, isVeggie, isProtein, isLiquid};
 	
-	//protected boolean isVeggie;
+	protected boolean isWater;
+	protected boolean isOil;
+	protected boolean isMilk;
+	protected boolean isStock;
+	protected boolean isWine;
+	protected boolean isJuice;
+	protected boolean[] liquidTypes = {isWater, isOil, isMilk, isStock, isWine, isJuice};
 	
 	// Attributes of vittle
 	protected int healPoints;
 	protected int atkPoints;
-	protected int defPoints;
-	protected int boostPercentage;
+	protected int shieldPoints;
+	protected double boostPercentage;
 	protected int scorePoints;
 	protected Vittle[] category = {Fruit, Veggie, Protein, Liquid};
 	protected int element;
 	protected int health = 1;
 	protected int maxHealth = health;
+	protected String name;
 	
 	// Behavior of vittle
 	protected boolean captured;
@@ -121,7 +128,7 @@ public class Vittle extends MapObject{
 		this.healPoints = healPoints;
 	}
 	
-	public int getHealPoints() {
+	public double getHealPoints() {
 		return healPoints;
 	}
 	
@@ -133,24 +140,37 @@ public class Vittle extends MapObject{
 		return atkPoints;
 	}
 	
-	public void setDefPoints(int defPoints) {
-		this.defPoints = defPoints;
+	public void setShieldPoints(int defPoints) {
+		this.shieldPoints = defPoints;
 	}
 	
-	public int getDefPoints() {
-		return defPoints;
+	public int getShieldPoints() {
+		return shieldPoints;
 	}
 	
-	public void setBoostPercentage(int boostPercentage) {
+	public void setBoostPercentage(double boostPercentage, boolean b) {
+		for(int i = 0; i < liquidTypes.length; i++) {
+			if(!liquidTypes[i] == false) {
+				return;
+			}
+		}
 		this.boostPercentage = boostPercentage;
 	}
 	
-	public int getBoostPercentage() {
+	public double getBoostPercentage() {
 		return boostPercentage;
 	}
 	
 	public int getScore() {
 		return scorePoints;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public String getName() {
+		return name;
 	}
 	
 	public void update() {

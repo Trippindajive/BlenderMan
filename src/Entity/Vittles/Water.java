@@ -6,24 +6,22 @@ import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import java.awt.Graphics2D;
 
-public class Cheese extends Vittle {
+public class Water extends Vittle {
 	
 	private BufferedImage[] sprites;
 	
-	public Cheese(TileMap tm) {
+	public Water(TileMap tm) {
 		super(tm);
 		
-		name = "Cheese";
-		healPoints = 2;
-		shieldPoints = 5;
-		scorePoints = 15;
-		
+		name = "Water";
+		boostPercentage = 1.25;
+	
 		try {
 			
 			BufferedImage spritesheet = ImageIO.read(getClass().getResourceAsStream(
-					"/Sprites/Vittles/spritesheet (5).png"));
-					
-			sprites = new BufferedImage[5];
+					"/Sprites/Vittles/spritesheet(water).png"));
+			
+			sprites = new BufferedImage[7];
 			for(int i = 0; i < sprites.length; i++) {
 				sprites[i] = spritesheet.getSubimage(
 						i * width,
@@ -31,16 +29,16 @@ public class Cheese extends Vittle {
 						width,
 						height
 						);
-			}	
-					
+			}
+			
 			animation = new Animation();
 			animation.setFrames(sprites);
 			animation.setDelay(300);
-					
+			
 			right = true;
 			facingRight = true;
 			
-		} catch (Exception e) {
+		} catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -51,10 +49,8 @@ public class Cheese extends Vittle {
 		checkTileMapCollision();
 		checkWallCollision();
 		setPosition(xtemp, ytemp);
-		setShieldPoints(shieldPoints);
-		getShieldPoints();
-		setProteinType(Protein);
-		getProteinType();
+		setLiquidType(Liquid);
+		getLiquidType();
 		animation.update();
 	}
 	

@@ -34,11 +34,18 @@ public class HUD {
 				30, 25);
 		g.drawString(player.getAtkPower() + "/" + player.getMaxPower(),
 				30, 45);
+		g.setColor(Color.YELLOW);
+		g.drawString("Shield: " + player.getShield() + "/" + player.getMaxShield(),
+				0, 65);
 		g.setColor(Color.RED);
 		g.drawString("Fruits: " + player.getFruits(), 80, 25);
 		g.drawString("Veggies: " + player.getVeggies(), 150, 25);
 		g.drawString("Proteins: " + player.getProteins(), 230, 25);
+		g.drawString("Liquid: ", 310, 25);
 		g.setColor(Color.WHITE);
-		g.drawString("SCORE: " + player.getScore(), 0, 65);
+		g.drawString("SCORE: " + player.getScore(), 0, 85);
+		g.setColor(Color.YELLOW);
+		g.drawString(player.getLiquid(), 360, 25);
+		
 	}
 }

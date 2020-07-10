@@ -1,5 +1,7 @@
 package GameState;
 
+import Audio.AudioPlayer;
+
 /**
  * This handles the GameState properties within our game.
  * @author Tim Riggins
@@ -15,13 +17,16 @@ public class GameStateManager {
 	public static final int HELPSCREEN = 11;
 	//private STATE currentState = STATE.MENU; // Default screen state
 	
-	
+	private AudioPlayer bgMusic;
 	public GameStateManager() {
 		gameStates = new GameState[NUMGAMESTATES];
 		//currentState = STATE.MENU;
 		currentState = MENUSTATE;
 		
 		loadState(currentState);
+		
+		//bgMusic = new AudioPlayer("/Music/Red-MarKer-DMC-12-Gauge.wav");
+		//bgMusic.play();
 	}
 	
 	private void loadState(int state) {
