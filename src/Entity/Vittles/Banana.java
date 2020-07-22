@@ -7,26 +7,24 @@ import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import java.awt.Graphics2D;
 
-public class Strawberry extends Vittle {
+public class Banana extends Vittle {
 	
 	private BufferedImage[] sprites;
 	
-	public Strawberry(TileMap tm) {
+	public Banana(TileMap tm) {
 		super(tm);
 		
-		// Strawberry Stats
-		name = "Strawberry";
-		healPoints = 5;
-		atkPoints = 2;
-		scorePoints = 10;
+		name = "Banana";
+		healPoints = 7;
+		atkPoints = 4;
+		scorePoints = 14;
 		
-		// Load Sprites
 		try {
 			
 			BufferedImage spritesheet = ImageIO.read(getClass().getResourceAsStream(
-					"/Sprites/Vittles/spritesheet.png"));
+					"/Sprites/Vittles/spritesheet(nanner).png"));
 			
-			sprites = new BufferedImage[4];
+			sprites = new BufferedImage[3];
 			for(int i = 0; i < sprites.length; i++) {
 				sprites[i] = spritesheet.getSubimage(
 						i * width,

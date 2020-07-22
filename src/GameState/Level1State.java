@@ -31,10 +31,12 @@ public class Level1State extends GameState{
 	private ArrayList<DeathExplosion> deathExplosions;
 	
 	// Location arrays for objects
-	Point[] p; // strawberries
-	Point[] pp; // broccoli
-	Point[] ppp; // cheese
-	Point[] pw; // water
+	Point[] F; // strawberries
+	Point[] V; // broccoli
+	Point[] P; // cheese
+	Point[] L; // water
+	Point[] FB; // banana
+	Point[] FO; // orange
 	
 	private HUD hud;
 	
@@ -79,9 +81,9 @@ public class Level1State extends GameState{
 			//new Point(400, 100),
 			//new Point(860, 200),
 			//new Point(1000, 200),
-			new Point(1525, 200),
-			new Point(1680, 200),
-			new Point(1800, 200)
+			//new Point(1525, 200),
+			//new Point(1680, 200),
+			//new Point(1800, 200)
 		};
 		for(int i = 0; i < points.length; i++) {
 			s = new Slugger(tileMap);
@@ -96,50 +98,76 @@ public class Level1State extends GameState{
 		Broccoli vb = new Broccoli(tileMap);
 		Cheese pc = new Cheese(tileMap);
 		Water lw = new Water(tileMap);
+		Banana fb = new Banana(tileMap);
+		Orange fo = new Orange(tileMap);
 		
-		p = new Point[] {
+		F = new Point[] {
 				new Point(250, 160),
 				new Point(300, 160),
-				new Point(1300, 160)
+				new Point(270, 160),
+				new Point(860, 130),
+				new Point(1300, 160),
+				new Point(1800, 160)
 		};
-		for(i = 0; i < p.length; i++) {
+		for(i = 0; i < F.length; i++) {
 			fs = new Strawberry(tileMap);
-			fs.setPosition(p[i].x, p[i].y);
-			Fruits.add(fs);
+			fs.setPosition(F[i].x, F[i].y);
+			Fruits.add(fs);	
 		}
 		
-		pp = new Point[] {
+		FB = new Point[] {
+				new Point(350, 130),
+				new Point(1680, 160)
+		};
+		for(i = 0; i < FB.length; i++) {
+			fb = new Banana(tileMap);
+			fb.setPosition(FB[i].x, FB[i].y);
+			Fruits.add(fb);
+		}
+		
+		FO = new Point[] {
+				new Point(150, 130),
+				new Point(400, 100)
+		};
+		for(i = 0; i < FO.length; i++) {
+			fo = new Orange(tileMap);
+			fo.setPosition(FO[i].x, FO[i].y);
+			Fruits.add(fo);
+		}
+		
+		V = new Point[] {
 				new Point(100, 160),
-				new Point(150, 160),
-				//new Point(250, 160),
+				//new Point(150, 160),
+				//new Point(270, 160),
 				//new Point(300, 160),
+				new Point(1525, 160),
 				new Point(750, 80)
 		};
-		for(i = 0; i < pp.length; i++) {
+		for(i = 0; i < V.length; i++) {
 			vb = new Broccoli(tileMap);
-			vb.setPosition(pp[i].x, pp[i].y);
+			vb.setPosition(V[i].x, V[i].y);
 			Veggies.add(vb);
 		}
 		
-		ppp = new Point[] {
-				new Point(860, 130),
+		P = new Point[] {
+				//new Point(860, 130),
 				new Point(1000, 130),
 				new Point(1820, 130)
 		};
-		for(i = 0; i < ppp.length; i++) {
+		for(i = 0; i < P.length; i++) {
 			pc = new Cheese(tileMap);
-			pc.setPosition(ppp[i].x, ppp[i].y);
+			pc.setPosition(P[i].x, P[i].y);
 			Proteins.add(pc);
 		}
 		
-		pw = new Point[] {
-				new Point(200, 130),
-				new Point(400, 130),
+		L = new Point[] {
+				//new Point(200, 130),
+				//new Point(400, 130),
 				new Point(900, 140)
 		};
-		for(i = 0; i < pw.length; i++) {
+		for(i = 0; i < L.length; i++) {
 			lw = new Water(tileMap);
-			lw.setPosition(pw[i].x, pw[i].y);
+			lw.setPosition(L[i].x, L[i].y);
 			Liquids.add(lw);
 		}
 	}

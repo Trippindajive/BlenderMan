@@ -64,7 +64,14 @@ public class Player extends MapObject {
 	public ArrayList<Vittle> veggies = new ArrayList<Vittle>();
 	private ArrayList<Vittle> proteins = new ArrayList<Vittle>();
 	public ArrayList<Vittle> liquids = new ArrayList<Vittle>();
-	public String[] fruitNames = fruits.toArray(new String[fruits.size()]);
+	private final int MAX_INVENTORY_SIZE = 3;
+	private String[] fruitNames = new String[MAX_INVENTORY_SIZE ];
+	private String[] veggieNames = new String[MAX_INVENTORY_SIZE ];
+	private String[] proteinNames = new String[MAX_INVENTORY_SIZE ];
+	private double bonusMultiplierFruit = 0.0;
+	private double bonusMultiplierVeg = 0.0;
+	private double bonusMultiplierPro= 0.0;
+	private double malusModifier = 0.0;
 	
 	// Animations
 	private ArrayList<BufferedImage[]> sprites;
@@ -683,6 +690,11 @@ public class Player extends MapObject {
 			health  += (int)(healPoints * boostPercent);
 			atkPower += (int)(atkPoints * boostPercent);
 			shield += (int)(shieldPoints * boostPercent);
+			System.out.println("Boost detected!!!");
+			System.out.println("TOTAL HEALTH RECOVERED: " + health);
+			System.out.println("TOTAL ATTACK POWER RECOVERED: " + atkPower);
+			System.out.println("TOTAL SHIELD POWER RECOVERED: " + shield);
+			System.out.println();
 			break;
 			
 		case "Stock":
@@ -750,49 +762,179 @@ public class Player extends MapObject {
 	public boolean checkForOtherVittles() {
 		if(fruits.size() > 0 && veggies.size() == 0 && proteins.size() == 0) {
 			onlyHasFruits = true;
+			System.out.println("only fruits");
 			return onlyHasFruits;
 		}
 		else if(veggies.size() > 0 && fruits.size() == 0 && proteins.size() == 0) {
 			onlyHasVeggies = true;
+			System.out.println("only veggies");
 			return onlyHasVeggies;
 		}
 		else if(proteins.size() > 0 && fruits.size() == 0 && veggies.size() == 0) {
 			onlyHasProteins = true;
+			System.out.println("only proteins");
 			return onlyHasProteins;
 		}
 		return false;
 	}
 	
-	public double calcForCombo(ArrayList<Vittle> v) {
+	public int calcForCombo(ArrayList<Vittle> v) {
 		for(int i = 0; i < v.size(); i++) {
-			
-		}
-		return -1.0;
-	}
-	
-	public double checkForBonuses() {
-		if(onlyHasFruits == true || onlyHasVeggies == true || onlyHasProteins == true) {
-			return 0.0;
+			System.out.println("FINISH CALCFORCOMBO");
 		}
 		
-		System.out.print(sortVittleArray(fruitNames));
-		sortVittleArray(veggies.toArray(new String[veggies.size()]));
-		sortVittleArray(proteins.toArray(new String[proteins.size()]));
-		System.out.println("afd");
-		return -1.0;
+		return -100;
 	}
 	
-	public double checkForMaluses() {
-		return -1.0;
-	}
-	
-	public boolean sortVittleArray(String[] names) {
-		Arrays.sort(names);
+	public void checkForBonuses() {
+		int i, j, numRepeatFruit = 0, numRepeatVeg = 0, numRepeatPro = 0;
 		
-		for(int i = 0; i < names.length; i++) {
-			System.out.println(names[i] + " ");
+		System.out.println("BEGIN CHECKING FOR BONUSES");
+		// Populate vittles' String arrays
+		createStringArrays();
+		
+		// Check through vittle String arrays for any duplicate vittles
+		for(i = 0; i < fruits.size(); i++) {
+			for(j = i + 1; j < fruits.size(); j++) {
+				if(fruitNames[i].equals(fruitNames[j])) {
+					numRepeatFruit++;
+				}
+			}
 		}
-		return false;
+		for(i = 0; i < veggies.size(); i++) {
+			for(j = i + 1; j < veggies.size(); j++) {
+				if(veggieNames[i].equals(veggieNames[j])) {
+					numRepeatVeg++;
+				}
+			}
+		}
+		for(i = 0; i < proteins.size(); i++) {
+			for(j = i + 1; j < proteins.size(); j++) {
+				if(proteinNames[i].equals(proteinNames[j])) {
+					numRepeatPro++;
+				}
+			}
+		}
+		
+		
+		if(numRepeatFruit == 0 && fruits.size() == 3) {
+			bonusMultiplierFruit = 2.00;
+			System.out.println("All fruit different: "  + bonusMultiplierFruit);
+		}
+		else if(numRepeatFruit == 0 && fruits.size() == 2) {
+			bonusMultiplierFruit = 1.50;
+			System.out.println("Both fruit different: " + bonusMultiplierFruit);
+		}
+		else if(numRepeatFruit == 1 && fruits.size() == 3) {
+			bonusMultiplierFruit = 1.75;
+			System.out.println("2 of the same fruit but three fruits total: "  + bonusMultiplierFruit);
+		}
+		else {
+			bonusMultiplierFruit = 1.00;
+			System.out.println("No fruit bonuses: "  + bonusMultiplierFruit);
+		}
+		if(numRepeatVeg == 0 && veggies.size() == 3) {
+			bonusMultiplierVeg = 2.00;
+			System.out.println("All veggies different: " + bonusMultiplierVeg);
+		}
+		else if(numRepeatVeg == 0 && veggies.size() == 2) {
+			bonusMultiplierVeg = 1.50;
+			System.out.println("Both veggies different: " + bonusMultiplierVeg);
+		}
+		else if(numRepeatVeg == 1 && veggies.size() == 3) {
+			bonusMultiplierVeg = 1.75;
+			System.out.println("2 of the same veggies but three veggies total: " + bonusMultiplierVeg);
+		}
+		else {
+			bonusMultiplierVeg = 1.00;
+			System.out.println("No veggie bonuses: " + bonusMultiplierVeg);
+		}
+		if(numRepeatPro == 0 && proteins.size() == 3) {
+			bonusMultiplierPro = 2.00;
+			System.out.println("All proteins different: " + bonusMultiplierPro);
+		}
+		else if(numRepeatPro == 0 && proteins.size() == 2) {
+			bonusMultiplierPro = 1.50;
+			System.out.println("Both proteins different: " + bonusMultiplierPro);
+		}
+		else if(numRepeatPro == 1 && proteins.size() == 3) {
+			bonusMultiplierPro = 1.75;
+			System.out.println("2 of the same proteins but three proteins total: " + bonusMultiplierPro);
+		}
+		else {
+			bonusMultiplierPro = 1.00;
+			System.out.println("No protein bonuses: " + bonusMultiplierPro);
+		}
+		
+		healPoints = (int)(healPoints * bonusMultiplierFruit);
+		atkPoints = (int)(atkPoints * bonusMultiplierVeg);
+		shieldPoints = (int)(shieldPoints * bonusMultiplierPro);
+		
+		System.out.println("healpoints: " + healPoints + " atkPoints: " + atkPoints + " shieldPoints: " + shieldPoints);
+		System.out.println("END CHECKING FOR BONUSES");
+		
+	}
+	
+	public void createStringArrays() {
+		int i;
+		
+		for(i = 0; i < fruits.size(); i++) {
+			fruitNames[i] = fruits.get(i).getName();
+			System.out.println(fruitNames[i]);
+		}
+		
+		for(i = 0; i < veggies.size(); i++) {
+			veggieNames[i] = veggies.get(i).getName();
+			System.out.println(veggieNames[i]);
+		}
+		
+		for(i = 0; i < proteins.size(); i++) {
+			proteinNames[i] = proteins.get(i).getName();
+			System.out.println(proteinNames[i]);
+		}
+	}
+	
+	public void clearStringArrays() {
+		int i;
+		for(i = 0; i < fruitNames.length; i++) {
+			fruitNames[i] = null;
+		}
+		for(i = 0; i < veggieNames.length; i++) {
+			veggieNames[i] = null;
+		}
+		for(i = 0; i < proteinNames.length; i++) {
+			proteinNames[i] = null;
+		}
+	}
+	
+	public void checkForMaluses() {
+		
+		System.out.println("BEGIN CHECKING FOR MALUSES");
+		
+		if((fruits.size() > 0 && veggies.size() > 0 && proteins.size() == 0) ||
+				(fruits.size() > 0 && veggies.size() == 0 && proteins.size() > 0) ||
+				(fruits.size() == 0 && veggies.size() > 0 && proteins.size() > 0)) {
+			malusModifier = 0.75;
+			System.out.println("Malus because of fruits with veggies, fruits with proteins, or veggies with proteins: " + malusModifier);
+		}
+		else if(fruits.size() > 0 && veggies.size() > 0 && proteins.size() > 0) {
+			malusModifier = 0.50;
+			System.out.println("Malus because of fruits with veggies and proteins: " + malusModifier);
+		}
+		else {
+			System.out.println("No maluses detected");
+		}
+		
+		healPoints = (int)(healPoints * malusModifier);
+		atkPoints = (int)(atkPoints * malusModifier);
+		shieldPoints = (int)(shieldPoints * malusModifier);
+		
+		System.out.println("END CHECKING FOR MALUSES");
+		System.out.println("TOTAL HEAL POINTS RECOVERED: " + healPoints);
+		System.out.println("TOTAL ATK POINTS RECOVERED: " + atkPoints);
+		System.out.println("TOTAL SHIELD POINTS RECOVERED: " + shieldPoints);
+		System.out.println();
+		
 	}
 	
 	public void checkBlending() {
@@ -800,22 +942,32 @@ public class Player extends MapObject {
 			if(currentAction != BLENDING) {
 				checkForOtherVittles();
 				if(onlyHasFruits == true) {
-					healPoints += calcForCombo(fruits);
+					//healPoints += calcForCombo(fruits);
+					health += healPoints;
+					removeFromInventory(fruits);
 				}
-				if(onlyHasVeggies == true) {
-					atkPoints += calcForCombo(veggies);
+				else if(onlyHasVeggies == true) {
+					//atkPoints += calcForCombo(veggies);
+					atkPower += atkPoints;
+					removeFromInventory(veggies);
 				}
-				if(onlyHasProteins == true) {
-					shieldPoints += calcForCombo(proteins);
+				else if(onlyHasProteins == true) {
+					//shieldPoints += calcForCombo(proteins);
+					shield += shieldPoints;
+					removeFromInventory(proteins);
 				}
-				checkForBonuses();
-				checkForMaluses();
-				health += healPoints;
-				removeFromInventory(fruits);
-				atkPower += atkPoints;
-				removeFromInventory(veggies);
-				shield += shieldPoints;
-				removeFromInventory(proteins);
+				else {
+					checkForBonuses();
+					checkForMaluses();
+					health += healPoints;
+					removeFromInventory(fruits);
+					atkPower += atkPoints;
+					removeFromInventory(veggies);
+					shield += shieldPoints;
+					removeFromInventory(proteins);
+					clearStringArrays();
+					bonusMultiplierFruit = bonusMultiplierVeg = bonusMultiplierPro = 0;
+				}
 			}
 		}
 		else if (blending) {
@@ -827,7 +979,6 @@ public class Player extends MapObject {
 				removeFromInventory(proteins);
 				liquids.remove(0);
 				}
-			
 			}
 		}
 	}
