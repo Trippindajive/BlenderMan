@@ -45,7 +45,12 @@ public class Player extends MapObject {
 	private int maxXP;
 	private double energy;
 	private double maxEnergy;
-	private Timestamp time;
+	
+	//private Timestamp time;
+	//private int counter = 0;
+	private long energyDecayTime;
+	private long previousTime = System.nanoTime() / 1000000000;
+	//private long futureTime;
 	
 	// Fireball
 	private boolean firing;
@@ -106,8 +111,6 @@ public class Player extends MapObject {
 	private BufferedImage spritesheet;
 	
 	private LoadGameState lsm;
-	
-	private long previousTime = System.nanoTime() / 1000000000;
 	
 	/**
 	 * Constructor for making player object with its appropriate tilemap
@@ -989,36 +992,40 @@ public class Player extends MapObject {
 		
 	}
 	
-<<<<<<< HEAD
-	public void setTimeDelay() {
+
+	public int setTimeDelay() {
 		int counter = 0;
-		System.out.println("Previous Time: " + previousTime);
-		long futureTime = (System.nanoTime() - previousTime) / 1000000000;
-		System.out.println("Future Time: " + futureTime);
 		
-		if(futureTime > previousTime + 2) {
+		long futureTime = (System.nanoTime() - previousTime) / 1_000_000_000;
+		long elapsedTime = futureTime - previousTime;
+		energyDecayTime = elapsedTime;
+		
+		if(futureTime == previousTime + 2) {
 			counter++;
-			System.out.println("Counter: " + counter);
-			//previousTime = System.nanoTime() / 1000000000;
+			//System.out.println("Counter: " + counter + " Elapsed Time: " + elapsedTime);
+			
+			double seconds = (double)elapsedTime / 1_000_000_000.0;
+			//System.out.println("In seconds: " + seconds);
 		}
+		if(counter > 0) {
+			previousTime = System.nanoTime() / 1000000000;
+			return counter;
+		} return -1;
 	}
 	
 	public void checkBlending() {
-		
-		setTimeDelay();
-=======
-	
-	public void checkBlending() {
-		 Timestamp newTime = new Timestamp(System.currentTimeMillis());
+		 /*Timestamp newTime = new Timestamp(System.currentTimeMillis());
 		 if (this.time == null || this.time.getTime() - newTime.getTime() == 2000) {
 			 this.time = new Timestamp(System.currentTimeMillis());
 			 // run animation here (I think)
-		 }
->>>>>>> 83335ba535572aae7faf7ebdfdbd737ce774a495
-		
+			 
+		System.out.println(this.time.getTime() - newTime.getTime()); 
+ 		*/
+		if(energyDecayTime == 2) {
+			
 		if(blending && hasBoost != true) {
-			energy -= 10.0;
-			if(currentAction != BLENDING) {
+			System.out.println("Started blending...");
+			energy -= 20.0;
 				checkForOtherVittles();
 				if(onlyHasFruits == true) {
 					//healPoints += calcForCombo(fruits);
@@ -1047,11 +1054,10 @@ public class Player extends MapObject {
 					clearStringArrays();
 					bonusMultiplierFruit = bonusMultiplierVeg = bonusMultiplierPro = 0;
 				}
-			}
+			System.out.println("Ended blending.");
 		}
 		else if (blending) {
-			energy -= 10.0;
-			if(currentAction != BLENDING) {
+			energy -= 20.0;
 				if(fruits.size() > 0 || veggies.size() > 0 || proteins.size() > 0) {
 				implementBoost(liquids.get(0).getName());
 				removeFromInventory(fruits);
@@ -1060,7 +1066,7 @@ public class Player extends MapObject {
 				liquids.remove(0);
 				}
 			}
-		}
+		} 
 	}
 	
 	public void setAnimation() {
@@ -1150,22 +1156,8 @@ public class Player extends MapObject {
 	 * WIP: Trying to subtract x amount of energy per every in-game second
 	 */
 	public void bleedEnergy() {
-		int secondsCounted = 0;
-		long startTime = System.nanoTime() / 10000000;
-		long elapsedTime1 = (System.nanoTime() - startTime) / 1000000000;
-		long elapsedTime2 = (System.nanoTime() - startTime) / 1000000000;
-		
-		System.out.println("Nanoseconds: " + startTime);
-		System.out.println("Seconds: " + elapsedTime1);
-		System.out.println();
-		
-		if(elapsedTime1 > elapsedTime2) {
-			secondsCounted++;
-			System.out.println("Seconds Passed: " + secondsCounted);
-		}
-		else {
-			//secondsCounted++;
-			
+		if(energyDecayTime == 2) {
+			energy -= 10.00;
 		}
 	}
 	
@@ -1187,7 +1179,8 @@ public class Player extends MapObject {
 		checkDead();
 		setAnimation();
 		setDirection();
-		//bleedEnergy();
+		setTimeDelay();
+		bleedEnergy();
 	
 	}
 	/**
