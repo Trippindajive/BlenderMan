@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Scanner;
 import GameState.LoadGameState;
 import Entity.Vittles.*;
+import java.sql.Timestamp;
 
 /**
  * The subclass of MapObject which handles all Player attributes
@@ -20,6 +21,8 @@ import Entity.Vittles.*;
  * WIP: Lines 1110 bleedEnergy() method
  */
 public class Player extends MapObject {
+	
+	
 	
 	// Player Variables
 	private int health;
@@ -42,6 +45,7 @@ public class Player extends MapObject {
 	private int maxXP;
 	private double energy;
 	private double maxEnergy;
+	private Timestamp time;
 	
 	// Fireball
 	private boolean firing;
@@ -985,6 +989,7 @@ public class Player extends MapObject {
 		
 	}
 	
+<<<<<<< HEAD
 	public void setTimeDelay() {
 		int counter = 0;
 		System.out.println("Previous Time: " + previousTime);
@@ -1001,6 +1006,15 @@ public class Player extends MapObject {
 	public void checkBlending() {
 		
 		setTimeDelay();
+=======
+	
+	public void checkBlending() {
+		 Timestamp newTime = new Timestamp(System.currentTimeMillis());
+		 if (this.time == null || this.time.getTime() - newTime.getTime() == 2000) {
+			 this.time = new Timestamp(System.currentTimeMillis());
+			 // run animation here (I think)
+		 }
+>>>>>>> 83335ba535572aae7faf7ebdfdbd737ce774a495
 		
 		if(blending && hasBoost != true) {
 			energy -= 10.0;
