@@ -81,7 +81,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 			}
 			
 			try {
+				
 				Thread.sleep(wait);
+				
 			} catch(Exception e) {
 				e.printStackTrace(); // When catching exceptions, always call printStackTrace to ensure I can see any problems
 			}

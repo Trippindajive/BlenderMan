@@ -37,6 +37,9 @@ public class HUD {
 		g.setColor(Color.YELLOW);
 		g.drawString("Shield: " + player.getShield() + "/" + player.getMaxShield(),
 				0, 65);
+		g.setColor(Color.GREEN);
+		g.drawString("Energy: " + player.getEnergy() + "/" + player.getMaxEnergy(),
+				420, 25);
 		g.setColor(Color.RED);
 		g.drawString("Fruits: " + player.getFruits(), 80, 25);
 		g.drawString("Veggies: " + player.getVeggies(), 150, 25);
@@ -44,6 +47,7 @@ public class HUD {
 		g.drawString("Liquid: ", 310, 25);
 		g.setColor(Color.WHITE);
 		g.drawString("SCORE: " + player.getScore(), 0, 85);
+		g.drawString("EXP: " + player.getXP() + "/" + player.getMaxXP(), 0, 105);
 		g.setColor(Color.YELLOW);
 		g.drawString(player.getLiquid(), 360, 25);
 		

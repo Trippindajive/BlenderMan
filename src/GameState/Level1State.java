@@ -23,6 +23,10 @@ public class Level1State extends GameState{
 	
 	private Player player;
 	
+	//private LoadGameState lsm;
+	
+	//private boolean paused;
+	
 	private ArrayList<Enemy> enemies;
 	private ArrayList<Vittle> Fruits = new ArrayList<Vittle>();
 	private ArrayList<Vittle> Veggies = new ArrayList<Vittle>();
@@ -76,13 +80,13 @@ public class Level1State extends GameState{
 		enemies = new ArrayList<Enemy>();
 		Slugger s;
 		Point[] points = new Point[] {
-			//new Point(200, 200),
+			new Point(200, 200),
 			//new Point(300, 200),
 			//new Point(400, 100),
-			//new Point(860, 200),
-			//new Point(1000, 200),
+			new Point(860, 200),
+			new Point(1000, 200),
 			//new Point(1525, 200),
-			//new Point(1680, 200),
+			new Point(1680, 200),
 			//new Point(1800, 200)
 		};
 		for(int i = 0; i < points.length; i++) {
@@ -171,7 +175,8 @@ public class Level1State extends GameState{
 			Liquids.add(lw);
 		}
 	}
-		
+
+	
 	public void update() {
 		Enemy e; // enemy entity
 		Vittle f; // fruit entity
@@ -179,6 +184,11 @@ public class Level1State extends GameState{
 		Vittle p; // protein entity
 		Vittle l; // liquid entity
 		
+		/*if(paused) {
+			sleep();
+			System.out.println("Game Paused");
+		}
+		*/
 		
 		// Update player
 		player.update();
@@ -340,6 +350,7 @@ public class Level1State extends GameState{
 			if(k == KeyEvent.VK_E) player.setGliding(true);			
 			if(k == KeyEvent.VK_R) player.setScratching();
 			if(k == KeyEvent.VK_F) player.setFiring();
+			//if(k == KeyEvent.VK_P) paused = true;
 		}
 		else {
 			if(k == KeyEvent.VK_ENTER) gsm.setState(0);

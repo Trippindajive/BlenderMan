@@ -11,6 +11,7 @@ public class Enemy extends MapObject {
 	protected boolean flinching;
 	protected long flinchTimer;
 	protected int scorePoints;
+	protected int xpPoints;
 	
 	public Enemy(TileMap tm) {
 		super(tm);
@@ -22,6 +23,14 @@ public class Enemy extends MapObject {
 	
 	public int getDamage() {
 		return damage;
+	}
+	
+	public void setXPPoints(int xpPoints) {
+		this.xpPoints = xpPoints;
+	}
+	
+	public int getXPPoints() {
+		return xpPoints;
 	}
 	
 	public void hit(int damage) {

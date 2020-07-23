@@ -27,6 +27,7 @@ public class Slugger extends Enemy {
 		health = maxHealth = 10;
 		damage = 1;
 		scorePoints = 5;
+		xpPoints = 2;
 		
 		// Load Sprites
 		try {
@@ -80,6 +81,7 @@ public class Slugger extends Enemy {
 		checkTileMapCollision();
 		checkWallCollision();
 		setPosition(xtemp, ytemp);
+		setXPPoints(xpPoints);
 		
 		// check flinching
 		if(flinching) {
@@ -95,9 +97,8 @@ public class Slugger extends Enemy {
 	
 	@Override
 	public void draw(Graphics2D g) {
-		//if(notOnScreen()) return;
+		
 		setMapPosition();
-		//System.out.println("strawberry here");
 		super.draw(g);
 	}
 }

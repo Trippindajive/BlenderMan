@@ -7,13 +7,17 @@ import javax.imageio.ImageIO; // Package that contains classes which can read sp
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
+import java.util.Scanner;
+import GameState.LoadGameState;
 import Entity.Vittles.*;
-import java.util.Arrays;
 
 /**
  * The subclass of MapObject which handles all Player attributes
  * @author Tim Riggins
  *
+ *
+ * WIP: Lines 331 saveGame() method
+ * WIP: Lines 1110 bleedEnergy() method
  */
 public class Player extends MapObject {
 	
@@ -34,7 +38,10 @@ public class Player extends MapObject {
 	private long flinchTimer;
 	private int healPoints;
 	private int scorePoints;
-	
+	private int xp;
+	private int maxXP;
+	private double energy;
+	private double maxEnergy;
 	
 	// Fireball
 	private boolean firing;
@@ -59,11 +66,14 @@ public class Player extends MapObject {
 	private boolean onlyHasVeggies;
 	private boolean onlyHasProteins;
 	
+	// Save Game Data
+	public String playerSave = "";
+	
 	// Vittles inventory
-	public ArrayList<Vittle> fruits = new ArrayList<Vittle>();
-	public ArrayList<Vittle> veggies = new ArrayList<Vittle>();
+	private ArrayList<Vittle> fruits = new ArrayList<Vittle>();
+	private ArrayList<Vittle> veggies = new ArrayList<Vittle>();
 	private ArrayList<Vittle> proteins = new ArrayList<Vittle>();
-	public ArrayList<Vittle> liquids = new ArrayList<Vittle>();
+	private ArrayList<Vittle> liquids = new ArrayList<Vittle>();
 	private final int MAX_INVENTORY_SIZE = 3;
 	private String[] fruitNames = new String[MAX_INVENTORY_SIZE ];
 	private String[] veggieNames = new String[MAX_INVENTORY_SIZE ];
@@ -90,6 +100,8 @@ public class Player extends MapObject {
 	private HashMap<String, AudioPlayer> sfx;
 	
 	private BufferedImage spritesheet;
+	
+	private LoadGameState lsm;
 	
 	/**
 	 * Constructor for making player object with its appropriate tilemap
@@ -120,6 +132,11 @@ public class Player extends MapObject {
 		maxPower = 25;
 		shield = 0;
 		maxShield = 50;
+		
+		
+		xp = 0;
+		maxXP = 100;
+		energy = maxEnergy = 10000.00;
 		
 		fireCost = 5;
 		fireBallDamage = 10;
@@ -208,6 +225,46 @@ public class Player extends MapObject {
 		return maxShield;
 	}
 	
+	public void setScore(int scorePoints) {
+		this.scorePoints += scorePoints;
+	}
+	
+	public int getScore() {
+		return scorePoints;
+	}
+	
+	public void setXP(int xp) {
+		this.xp += xp;
+	}
+	
+	public int getXP() {
+		return xp;
+	}
+	
+	public void setMaxXP(int maxXP) {
+		this.maxXP = maxXP;
+	}
+	
+	public int getMaxXP() {
+		return maxXP;
+	}
+	
+	public void setEnergy(double energy) {
+		this.energy = energy;
+	}
+	
+	public double getEnergy() {
+		return energy;
+	}
+	
+	public void setMaxEnergy(double maxEnergy) {
+		this.maxEnergy = maxEnergy;
+	}
+	
+	public double getMaxEnergy() {
+		return maxEnergy;
+	}
+	
 	// Potential Heal Points in Inventory
 	public int getHealPoints() {
 		return healPoints;
@@ -222,27 +279,6 @@ public class Player extends MapObject {
 	public int getShieldPoints() {
 		return shieldPoints;
 	}
-	
-	/*public void setHealPoints() {
-		for(int i = 0; i < fruits.size(); i++) {
-			healPoints += fruits.get(i).getHealPoints();
-		}
-	}
-	*/
-	
-	/*public void setAtkPoints() {
-		for(int i = 0; i < veggies.size(); i++) {
-			atkPoints += veggies.get(i).getAtkPoints();
-		}
-	}
-	*/
-	
-	/*public void setShieldPoints(int defPoints) {
-		for(int i = 0; i < proteins.size(); i++) {
-			shieldPoints += proteins.get(i).getShieldPoints();
-		}
-	}
-	*/
 	
 	public void setFiring() {
 		firing = true;
@@ -298,12 +334,20 @@ public class Player extends MapObject {
 		return "-1";
 	}
 	
-	public void setScore(int scorePoints) {
-		this.scorePoints += scorePoints;
-	}
-	
-	public int getScore() {
-		return scorePoints;
+	/**
+	 *  WIP: need to assign player name to game data,
+	 *  load it to LoadGameState, and pause game while typing
+	 */
+	public void saveGame() {
+		Scanner scnr = new Scanner(System.in);
+		
+		System.out.println("Enter your name to save the game...");
+		playerSave = scnr.nextLine();
+		System.out.println("The game is saved as: " + playerSave);
+		
+		lsm.gameSaves[0] = playerSave;
+		
+		scnr.close();
 	}
 	
 	public void addToInventory(Vittle v) {
@@ -339,6 +383,7 @@ public class Player extends MapObject {
 						e.hit(scratchDamage);
 						if(e.isDead() == true) {
 							setScore(e.scorePoints);
+							setXP(e.getXPPoints());
 						}
 					}
 							
@@ -353,6 +398,7 @@ public class Player extends MapObject {
 						e.hit(scratchDamage);
 						if(e.isDead() == true) {
 							setScore(e.scorePoints);
+							setXP(e.getXPPoints());
 						}
 					}
 				}
@@ -603,7 +649,7 @@ public class Player extends MapObject {
 		// Jumping
 		if(jumping && !falling) {
 			if(currentAction != BLENDING) {
-				sfx.put("jump", new AudioPlayer("/SFX/zapsplat_multimedia_game_sound_classic_jump_002_41725.wav"));
+				//sfx.put("jump", new AudioPlayer("/SFX/zapsplat_multimedia_game_sound_classic_jump_002_41725.wav"));
 			}
 			dy = jumpStart;
 			falling = true;
@@ -939,6 +985,12 @@ public class Player extends MapObject {
 	
 	public void checkBlending() {
 		if(blending && hasBoost != true) {
+			try {
+				Thread.sleep(1000);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			energy -= 10.0;
 			if(currentAction != BLENDING) {
 				checkForOtherVittles();
 				if(onlyHasFruits == true) {
@@ -971,6 +1023,7 @@ public class Player extends MapObject {
 			}
 		}
 		else if (blending) {
+			energy -= 10.0;
 			if(currentAction != BLENDING) {
 				if(fruits.size() > 0 || veggies.size() > 0 || proteins.size() > 0) {
 				implementBoost(liquids.get(0).getName());
@@ -1009,8 +1062,8 @@ public class Player extends MapObject {
 			if(currentAction != BLENDING) {
 				currentAction = BLENDING;
 				//Thread.sleep(4000);
-				AudioPlayer blendsfx = new AudioPlayer("/SFX/blendersfx1.wav");
-				blendsfx.play();
+				//AudioPlayer blendsfx = new AudioPlayer("/SFX/blendersfx1.wav");
+				//blendsfx.play();
 				animation.setDelay(100);
 				width = 100;
 			}	
@@ -1066,6 +1119,29 @@ public class Player extends MapObject {
 		}
 	}
 	
+	/**
+	 * WIP: Trying to subtract x amount of energy per every in-game second
+	 */
+	public void bleedEnergy() {
+		int secondsCounted = 0;
+		long startTime = System.nanoTime() / 10000000;
+		long elapsedTime1 = (System.nanoTime() - startTime) / 1000000000;
+		long elapsedTime2 = (System.nanoTime() - startTime) / 1000000000;
+		
+		System.out.println("Nanoseconds: " + startTime);
+		System.out.println("Seconds: " + elapsedTime1);
+		System.out.println();
+		
+		if(elapsedTime1 > elapsedTime2) {
+			secondsCounted++;
+			System.out.println("Seconds Passed: " + secondsCounted);
+		}
+		else {
+			//secondsCounted++;
+			
+		}
+	}
+	
 	/** 
 	 * Probably the most important method of this class
 	 */
@@ -1084,6 +1160,7 @@ public class Player extends MapObject {
 		checkDead();
 		setAnimation();
 		setDirection();
+		//bleedEnergy();
 	
 	}
 	/**

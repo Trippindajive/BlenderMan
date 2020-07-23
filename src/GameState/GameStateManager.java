@@ -14,6 +14,7 @@ public class GameStateManager {
 	public static final int NUMGAMESTATES = 12;
 	public static final int MENUSTATE = 0;
 	public static final int LEVEL1STATE = 1;
+	public static final int LOADGAMESTATE = 2;
 	public static final int HELPSCREEN = 11;
 	//private STATE currentState = STATE.MENU; // Default screen state
 	
@@ -36,6 +37,8 @@ public class GameStateManager {
 			gameStates[state] = new Level1State(this);
 		if(state == HELPSCREEN)
 			gameStates[state] = new HelpScreen(this);
+		if(state == LOADGAMESTATE)
+			gameStates[state] = new LoadGameState(this);
 	}
 	
 	private void unloadState(int state) {

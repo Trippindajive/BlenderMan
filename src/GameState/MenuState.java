@@ -15,7 +15,7 @@ public class MenuState extends GameState {
 	
 	private Background bg;
 	private int currentChoice = 0;
-	private String[] options = {"Start", "Load(WIP)", "Password(WIP)", "Leaderboards(WIP)", "Help", "Quit"};
+	private String[] options = {"Start New Adventure", "Load Old Adventure(WIP)", "Password(WIP)", "Leaderboards(WIP)", "Help", "Quit"};
 	private Color titleColor;
 	private Font titleFont;
 	private Font font;
@@ -75,6 +75,7 @@ public class MenuState extends GameState {
 		}
 		if(currentChoice == 1) {
 			//Log-Ins
+			gsm.setState(2);
 		}
 		if(currentChoice == 2) {
 			// Passwords
