@@ -2,6 +2,7 @@ package Entity;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.text.DecimalFormat;
 import javax.imageio.ImageIO;
 
 public class HUD {
@@ -28,6 +29,8 @@ public class HUD {
 	
 	public void draw(Graphics2D g) {
 		
+		DecimalFormat df = new DecimalFormat(".##");
+		
 		g.drawImage(image, 0, 10, null);
 		g.setFont(font);
 		g.drawString(player.getHealth() + "/" + player.getMaxHealth(),
@@ -38,7 +41,7 @@ public class HUD {
 		g.drawString("Shield: " + player.getShield() + "/" + player.getMaxShield(),
 				0, 65);
 		g.setColor(Color.GREEN);
-		g.drawString("Energy: " + player.getEnergy() + "/" + player.getMaxEnergy(),
+		g.drawString("Energy: " + df.format(player.getEnergy()) + "/" + player.getMaxEnergy(),
 				420, 25);
 		g.setColor(Color.RED);
 		g.drawString("Fruits: " + player.getFruits(), 80, 25);

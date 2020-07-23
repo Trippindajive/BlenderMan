@@ -47,8 +47,8 @@ public class Player extends MapObject {
 	private double maxEnergy;
 	
 	//private Timestamp time;
-	//private int counter = 0;
-	private long energyDecayTime;
+	private int secondCounter = 0;
+	private long energyDecayRate;
 	private long previousTime = System.nanoTime() / 1000000000;
 	//private long futureTime;
 	
@@ -95,6 +95,7 @@ public class Player extends MapObject {
 	// Animations
 	private ArrayList<BufferedImage[]> sprites;
 	private final int[] numFrames = {8, 11}; // An array of the number of frames for each animation action
+	private boolean alreadyPlaying;
 	
 	// (ENUMS) Animation actions (describes index of array of animation sprites)
 	private static final int IDLE = 0;
@@ -107,6 +108,8 @@ public class Player extends MapObject {
 	private static final int BLENDING = 7;
 	
 	private HashMap<String, AudioPlayer> sfx;
+	
+	//private AudioPlayer blendingSound = new AudioPlayer("/SFX/blendersfx1.wav");
 	
 	private BufferedImage spritesheet;
 	
@@ -658,7 +661,7 @@ public class Player extends MapObject {
 		// Jumping
 		if(jumping && !falling) {
 			if(currentAction != BLENDING) {
-				//sfx.put("jump", new AudioPlayer("/SFX/zapsplat_multimedia_game_sound_classic_jump_002_41725.wav"));
+				sfx.put("jump", new AudioPlayer("/SFX/zapsplat_multimedia_game_sound_classic_jump_002_41725.wav"));
 			}
 			dy = jumpStart;
 			falling = true;
@@ -688,7 +691,7 @@ public class Player extends MapObject {
 	
 	public void fireBallAtk() {
 		if(firing && currentAction != FIREBALL) {
-			if(atkPower > fireCost) {
+			if(atkPower >= fireCost) {
 				atkPower -= fireCost;
 				animation.setDelay(400);
 				FireBall fb = new FireBall(tileMap, facingRight);
@@ -728,6 +731,13 @@ public class Player extends MapObject {
 			moveSpeed = 0.0;
 			maxSpeed = 0.0;
 			health = 0;
+			energy = 0.0;
+		}
+	}
+	
+	public void checkEnergy() {
+		if(energy < 0.1) {
+			dead = true;
 		}
 	}
 	
@@ -993,24 +1003,23 @@ public class Player extends MapObject {
 	}
 	
 
-	public int setTimeDelay() {
-		int counter = 0;
+	public long setTimeDelay(int key) {
 		
-		long futureTime = (System.nanoTime() - previousTime) / 1_000_000_000;
-		long elapsedTime = futureTime - previousTime;
-		energyDecayTime = elapsedTime;
+		long currentTime = System.nanoTime() / 1_000_000_000; //(System.nanoTime() - previousTime) / 1_000_000_000;
+		long elapsedTime = currentTime - previousTime;
+		energyDecayRate = elapsedTime;
 		
-		if(futureTime == previousTime + 2) {
-			counter++;
-			//System.out.println("Counter: " + counter + " Elapsed Time: " + elapsedTime);
+		if(currentTime == previousTime + key) {
+			secondCounter++;
 			
-			double seconds = (double)elapsedTime / 1_000_000_000.0;
-			//System.out.println("In seconds: " + seconds);
-		}
-		if(counter > 0) {
+			//System.out.println("Counter: " + secondCounter);
+			//System.out.println("Elapsed Time (in seconds): " + elapsedTime);
+			//System.out.println("Previous Time: " + previousTime);
+			//System.out.println("Future Time: " + currentTime);
+			//System.out.println();
 			previousTime = System.nanoTime() / 1000000000;
-			return counter;
-		} return -1;
+			
+		} return elapsedTime;
 	}
 	
 	public void checkBlending() {
@@ -1021,11 +1030,11 @@ public class Player extends MapObject {
 			 
 		System.out.println(this.time.getTime() - newTime.getTime()); 
  		*/
-		if(energyDecayTime == 2) {
-			
-		if(blending && hasBoost != true) {
-			System.out.println("Started blending...");
-			energy -= 20.0;
+		
+		if(secondCounter == 1) {
+			if(blending && hasBoost != true) {
+				energy -= 20.0;
+				System.out.println("CONSUMED 20 ENERGY");
 				checkForOtherVittles();
 				if(onlyHasFruits == true) {
 					//healPoints += calcForCombo(fruits);
@@ -1054,10 +1063,10 @@ public class Player extends MapObject {
 					clearStringArrays();
 					bonusMultiplierFruit = bonusMultiplierVeg = bonusMultiplierPro = 0;
 				}
-			System.out.println("Ended blending.");
-		}
-		else if (blending) {
-			energy -= 20.0;
+			}
+			else if (blending) {
+				energy -= 30.0;
+				System.out.println("CONSUMED 30 ENERGY");
 				if(fruits.size() > 0 || veggies.size() > 0 || proteins.size() > 0) {
 				implementBoost(liquids.get(0).getName());
 				removeFromInventory(fruits);
@@ -1066,6 +1075,7 @@ public class Player extends MapObject {
 				liquids.remove(0);
 				}
 			}
+		secondCounter = 0;
 		} 
 	}
 	
@@ -1093,10 +1103,8 @@ public class Player extends MapObject {
 		}
 		else if(blending) {
 			if(currentAction != BLENDING) {
+				sfx.put("blending", new AudioPlayer("/SFX/blendersfx1.wav"));
 				currentAction = BLENDING;
-				//Thread.sleep(4000);
-				//AudioPlayer blendsfx = new AudioPlayer("/SFX/blendersfx1.wav");
-				//blendsfx.play();
 				animation.setDelay(100);
 				width = 100;
 			}	
@@ -1156,8 +1164,8 @@ public class Player extends MapObject {
 	 * WIP: Trying to subtract x amount of energy per every in-game second
 	 */
 	public void bleedEnergy() {
-		if(energyDecayTime == 2) {
-			energy -= 10.00;
+		if(energyDecayRate == 2 && !dead) {
+			energy -= 10.10;
 		}
 	}
 	
@@ -1177,9 +1185,10 @@ public class Player extends MapObject {
 		checkShield();
 		checkBlending();
 		checkDead();
+		checkEnergy();
 		setAnimation();
 		setDirection();
-		setTimeDelay();
+		setTimeDelay(2);
 		bleedEnergy();
 	
 	}
