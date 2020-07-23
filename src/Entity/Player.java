@@ -103,6 +103,8 @@ public class Player extends MapObject {
 	
 	private LoadGameState lsm;
 	
+	private long previousTime = System.nanoTime() / 1000000000;
+	
 	/**
 	 * Constructor for making player object with its appropriate tilemap
 	 * @param tm Tilemap
@@ -983,13 +985,24 @@ public class Player extends MapObject {
 		
 	}
 	
+	public void setTimeDelay() {
+		int counter = 0;
+		System.out.println("Previous Time: " + previousTime);
+		long futureTime = (System.nanoTime() - previousTime) / 1000000000;
+		System.out.println("Future Time: " + futureTime);
+		
+		if(futureTime > previousTime + 2) {
+			counter++;
+			System.out.println("Counter: " + counter);
+			//previousTime = System.nanoTime() / 1000000000;
+		}
+	}
+	
 	public void checkBlending() {
+		
+		setTimeDelay();
+		
 		if(blending && hasBoost != true) {
-			try {
-				Thread.sleep(1000);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
 			energy -= 10.0;
 			if(currentAction != BLENDING) {
 				checkForOtherVittles();
