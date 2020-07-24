@@ -22,8 +22,6 @@ import java.sql.Timestamp;
  */
 public class Player extends MapObject {
 	
-	
-	
 	// Player Variables
 	private int health;
 	private int maxHealth;
@@ -109,8 +107,6 @@ public class Player extends MapObject {
 	
 	private HashMap<String, AudioPlayer> sfx;
 	
-	//private AudioPlayer blendingSound = new AudioPlayer("/SFX/blendersfx1.wav");
-	
 	private BufferedImage spritesheet;
 	
 	private LoadGameState lsm;
@@ -144,7 +140,6 @@ public class Player extends MapObject {
 		maxPower = 25;
 		shield = 0;
 		maxShield = 50;
-		
 		
 		xp = 0;
 		maxXP = 100;
@@ -659,9 +654,9 @@ public class Player extends MapObject {
 		}
 		
 		// Jumping
-		if(jumping && !falling) {
+		if(jumping && !falling && !blending) {
 			if(currentAction != BLENDING) {
-				sfx.put("jump", new AudioPlayer("/SFX/zapsplat_multimedia_game_sound_classic_jump_002_41725.wav"));
+				//sfx.put("jump", new AudioPlayer("/SFX/zapsplat_multimedia_game_sound_classic_jump_002_41725.wav"));
 			}
 			dy = jumpStart;
 			falling = true;
@@ -1002,7 +997,6 @@ public class Player extends MapObject {
 		
 	}
 	
-
 	public long setTimeDelay(int key) {
 		
 		long currentTime = System.nanoTime() / 1_000_000_000; //(System.nanoTime() - previousTime) / 1_000_000_000;
@@ -1021,7 +1015,7 @@ public class Player extends MapObject {
 			
 		} return elapsedTime;
 	}
-	
+
 	public void checkBlending() {
 		 /*Timestamp newTime = new Timestamp(System.currentTimeMillis());
 		 if (this.time == null || this.time.getTime() - newTime.getTime() == 2000) {
@@ -1032,7 +1026,7 @@ public class Player extends MapObject {
  		*/
 		
 		if(secondCounter == 1) {
-			if(blending && hasBoost != true) {
+			if(blending && hasBoost != true && left == false && right == false && jumping == false) {
 				energy -= 20.0;
 				System.out.println("CONSUMED 20 ENERGY");
 				checkForOtherVittles();
@@ -1064,7 +1058,7 @@ public class Player extends MapObject {
 					bonusMultiplierFruit = bonusMultiplierVeg = bonusMultiplierPro = 0;
 				}
 			}
-			else if (blending) {
+			else if (blending && left == false && right == false && jumping == false) {
 				energy -= 30.0;
 				System.out.println("CONSUMED 30 ENERGY");
 				if(fruits.size() > 0 || veggies.size() > 0 || proteins.size() > 0) {
@@ -1101,13 +1095,14 @@ public class Player extends MapObject {
 				width = 100;
 			}
 		}
-		else if(blending) {
+		else if(blending && falling == false && jumping == false) {
 			if(currentAction != BLENDING) {
-				sfx.put("blending", new AudioPlayer("/SFX/blendersfx1.wav"));
 				currentAction = BLENDING;
+				animation.setFrames(sprites.get(IDLE));
+				//sfx.put("blending", new AudioPlayer("/SFX/blendersfx1.wav"));
 				animation.setDelay(100);
 				width = 100;
-			}	
+			}
 		}
 		else if(dy > 0) {
 			if(gliding) {
@@ -1161,7 +1156,7 @@ public class Player extends MapObject {
 	}
 	
 	/**
-	 * WIP: Trying to subtract x amount of energy per every in-game second
+	 * Subtracts 10.1 energy per every two in-game seconds
 	 */
 	public void bleedEnergy() {
 		if(energyDecayRate == 2 && !dead) {

@@ -37,7 +37,8 @@ public class AudioPlayer {
 					FloatControl.Type.MASTER_GAIN);
 			// Reduce volume by 10 decibels.
 			//gainControl.setValue(-10.0f); 
-			clip.start();
+			//clip.start();
+			play();
 			
 		} catch(Exception e) {
 			e.printStackTrace();
