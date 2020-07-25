@@ -184,6 +184,10 @@ public abstract class MapObject {
 		return (int) x;
 	}
 	
+	public double getCurrentXPosition() {
+		return (double)x;
+	}
+	
 	public int gety() {
 		return (int) y;
 	}
@@ -213,6 +217,7 @@ public abstract class MapObject {
 		this.dx = dx;
 		this.dy = dy;
 	}
+	
 	/**
 	 * Determines where to draw the entity on the map.
 	 * x position + dx positon (final position) compensates for the dislocation between the entity and the map when it moves

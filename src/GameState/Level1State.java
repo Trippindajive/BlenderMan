@@ -9,6 +9,7 @@ import Main.GamePanel;
 import java.awt.event.KeyEvent;
 import Entity.Enemies.*;
 import Entity.Vittles.*;
+import Entity.EnemyAI;
 /**
  * A subclass of GameState, it defines the properties of Level 1, such as: graphics, functions, objects, etc.
  * @author Tim Riggins
@@ -44,6 +45,8 @@ public class Level1State extends GameState{
 	
 	private HUD hud;
 	
+	private EnemyAI AI;
+	
 	public Level1State(GameStateManager gsm) {
 		this.gsm = gsm;
 		init();
@@ -69,6 +72,10 @@ public class Level1State extends GameState{
 		deathExplosions = new ArrayList<DeathExplosion>();
 		
 		hud = new HUD(player);
+
+		
+		
+		AI = new EnemyAI(player, enemies);
 		
 	}
 	/**
@@ -77,16 +84,16 @@ public class Level1State extends GameState{
 	 */
 	private void populateEnemies() {
 		
-		enemies = new ArrayList<Enemy>();
+		enemies = new ArrayList<Enemy>(); // Slugger Enemies
 		Slugger s;
 		Point[] points = new Point[] {
 			new Point(200, 200),
-			//new Point(300, 200),
-			//new Point(400, 100),
-			new Point(860, 200),
-			new Point(1000, 200),
+			new Point(300, 200),
+			new Point(400, 100),
+			//new Point(860, 200),
+			//new Point(1000, 200),
 			//new Point(1525, 200),
-			new Point(1680, 200),
+			//new Point(1680, 200),
 			//new Point(1800, 200)
 		};
 		for(int i = 0; i < points.length; i++) {
@@ -106,9 +113,9 @@ public class Level1State extends GameState{
 		Orange fo = new Orange(tileMap);
 		
 		F = new Point[] {
-				new Point(250, 160),
-				new Point(300, 160),
-				new Point(270, 160),
+				//new Point(250, 160),
+				//new Point(300, 160),
+				//new Point(270, 160),
 				new Point(860, 130),
 				new Point(1300, 160),
 				new Point(1800, 160)
@@ -120,8 +127,8 @@ public class Level1State extends GameState{
 		}
 		
 		FB = new Point[] {
-				new Point(350, 130),
-				new Point(1680, 160)
+				//new Point(350, 130),
+				//new Point(1680, 160)
 		};
 		for(i = 0; i < FB.length; i++) {
 			fb = new Banana(tileMap);
@@ -130,8 +137,8 @@ public class Level1State extends GameState{
 		}
 		
 		FO = new Point[] {
-				new Point(150, 130),
-				new Point(400, 100)
+				//new Point(150, 130),
+				//new Point(400, 100)
 		};
 		for(i = 0; i < FO.length; i++) {
 			fo = new Orange(tileMap);
@@ -140,7 +147,7 @@ public class Level1State extends GameState{
 		}
 		
 		V = new Point[] {
-				new Point(100, 160),
+				//new Point(100, 160),
 				//new Point(150, 160),
 				//new Point(270, 160),
 				//new Point(300, 160),
@@ -284,7 +291,11 @@ public class Level1State extends GameState{
 				deathExplosions.remove(i);
 				i--;
 			}
-		}	
+		}
+		
+		// Update Artificial Intelligence
+		AI.update();
+		
 	}
 	
 	public void draw(Graphics2D g) {

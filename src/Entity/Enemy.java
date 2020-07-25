@@ -63,4 +63,6 @@ public class Enemy extends MapObject {
 			facingRight = true;
 		}
 	}
+	
+	
 }

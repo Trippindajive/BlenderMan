@@ -7,9 +7,12 @@ import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import java.awt.Graphics2D;
 
+import Entity.EnemyAI;
+
 public class Slugger extends Enemy {
 	
 	private BufferedImage[] sprites;
+	private EnemyAI AI;
 	
 	public Slugger(TileMap tm) {
 		super(tm);
@@ -93,6 +96,7 @@ public class Slugger extends Enemy {
 		
 		// Update animation
 		animation.update();
+		
 	}
 	
 	@Override

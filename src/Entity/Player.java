@@ -93,7 +93,6 @@ public class Player extends MapObject {
 	// Animations
 	private ArrayList<BufferedImage[]> sprites;
 	private final int[] numFrames = {8, 11}; // An array of the number of frames for each animation action
-	private boolean alreadyPlaying;
 	
 	// (ENUMS) Animation actions (describes index of array of animation sprites)
 	private static final int IDLE = 0;
