@@ -38,7 +38,7 @@ public class AudioPlayer {
 			// Reduce volume by 10 decibels.
 			//gainControl.setValue(-10.0f); 
 			//clip.start();
-			play();
+			//play();
 			
 		} catch(Exception e) {
 			e.printStackTrace();

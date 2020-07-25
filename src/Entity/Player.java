@@ -1071,12 +1071,13 @@ public class Player extends MapObject {
 		secondCounter = 0;
 		} 
 	}
+
 	
 	public void setAnimation() {
 		if(scratching) {
 			if(currentAction != SCRATCHING) {
-				sfx.put("scratch", new AudioPlayer("/SFX/zapsplat_household_band_aid_plaster_strip_rip_tear_002_11599.wav"));
 				currentAction = SCRATCHING;
+				sfx.put("scratch", new AudioPlayer("/SFX/zapsplat_household_band_aid_plaster_strip_rip_tear_002_11599.wav"));
 				/*scratching animation does not exist for now
 				animation.setFrames(sprites.get(SCRATCHING));
 				*/
@@ -1097,8 +1098,8 @@ public class Player extends MapObject {
 		else if(blending && falling == false && jumping == false) {
 			if(currentAction != BLENDING) {
 				currentAction = BLENDING;
+				sfx.put("blending", new AudioPlayer("/SFX/blendersfx1.wav"));
 				animation.setFrames(sprites.get(IDLE));
-				//sfx.put("blending", new AudioPlayer("/SFX/blendersfx1.wav"));
 				animation.setDelay(100);
 				width = 100;
 			}
@@ -1129,10 +1130,13 @@ public class Player extends MapObject {
 		}
 		else if(left || right) {
 			if(currentAction != WALKING) {
-					currentAction = WALKING;
-					animation.setFrames(sprites.get(WALKING));
-					animation.setDelay(40);
-					width = 100;
+				
+				
+				//sfx.get("blending").stop();
+				currentAction = WALKING;
+				animation.setFrames(sprites.get(WALKING));
+				animation.setDelay(40);
+				width = 100;
 			}
 		}
 		else {

@@ -58,7 +58,7 @@ public class Slugger extends Enemy {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void getNextPosition() {
 		
 		if(left) {
@@ -78,6 +78,12 @@ public class Slugger extends Enemy {
 		}
 	}
 	
+	private void checkIfStill() {
+		if(dx == 0) {
+			animation.setFrame(0);
+		}
+	}
+	
 	public void update() {
 		
 		getNextPosition();
@@ -85,6 +91,7 @@ public class Slugger extends Enemy {
 		checkWallCollision();
 		setPosition(xtemp, ytemp);
 		setXPPoints(xpPoints);
+		checkIfStill();
 		
 		// check flinching
 		if(flinching) {
