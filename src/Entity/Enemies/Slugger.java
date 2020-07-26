@@ -3,6 +3,7 @@ package Entity.Enemies;
 import Entity.*;
 import TileMap.TileMap;
 import java.awt.image.BufferedImage;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
 import java.awt.Graphics2D;
@@ -32,6 +33,10 @@ public class Slugger extends Enemy {
 		scorePoints = 5;
 		xpPoints = 2;
 		
+		rangeModifier = 100;
+		kickBack = 5;
+		timeFlinching = 1500;
+		
 		// Load Sprites
 		try {
 			
@@ -59,8 +64,7 @@ public class Slugger extends Enemy {
 		}
 	}
 
-	private void getNextPosition() {
-		
+	public void getNextPosition() {
 		if(left) {
 			dx -= moveSpeed;
 			if(dx < -maxSpeed) {
@@ -84,6 +88,10 @@ public class Slugger extends Enemy {
 		}
 	}
 	
+	public void randomizeXDirection() {
+		
+	}
+	
 	public void update() {
 		
 		getNextPosition();
@@ -92,14 +100,7 @@ public class Slugger extends Enemy {
 		setPosition(xtemp, ytemp);
 		setXPPoints(xpPoints);
 		checkIfStill();
-		
-		// check flinching
-		if(flinching) {
-			long elapsed = (System.nanoTime() - flinchTimer) / 1000000;
-			if(elapsed > 400) {
-				flinching = false;
-			}
-		}
+		checkFlinching();
 		
 		// Update animation
 		animation.update();
@@ -110,6 +111,14 @@ public class Slugger extends Enemy {
 	public void draw(Graphics2D g) {
 		
 		setMapPosition();
+		
+		if(flinching && !dead) {
+			long elapsed = (System.nanoTime() - flinchTimer) / 1000000;
+			if(elapsed / 100 % 2 == 0) {
+				return;
+			}
+		}
+		
 		super.draw(g);
 	}
 }

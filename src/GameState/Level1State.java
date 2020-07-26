@@ -90,9 +90,9 @@ public class Level1State extends GameState{
 			new Point(200, 200),
 			new Point(300, 200),
 			new Point(400, 100),
-			//new Point(860, 200),
-			//new Point(1000, 200),
-			//new Point(1525, 200),
+			new Point(100, 200),
+			new Point(150, 200),
+			new Point(180, 200),
 			//new Point(1680, 200),
 			//new Point(1800, 200)
 		};

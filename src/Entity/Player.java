@@ -133,7 +133,7 @@ public class Player extends MapObject {
 		
 		facingRight = true;
 		
-		health = 5;
+		health = 50;
 		maxHealth = 50;
 		atkPower = 0;
 		maxPower = 25;
@@ -1078,6 +1078,7 @@ public class Player extends MapObject {
 			if(currentAction != SCRATCHING) {
 				currentAction = SCRATCHING;
 				sfx.put("scratch", new AudioPlayer("/SFX/zapsplat_household_band_aid_plaster_strip_rip_tear_002_11599.wav"));
+				sfx.get("scratch").play();
 				/*scratching animation does not exist for now
 				animation.setFrames(sprites.get(SCRATCHING));
 				*/

@@ -5,6 +5,11 @@ import java.awt.Rectangle;
 import Entity.Enemies.*;
 import Entity.Player;
 import java.util.ArrayList;
+import java.util.Random;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import Main.GamePanel;
 
 public class EnemyAI {
 	
@@ -17,12 +22,20 @@ public class EnemyAI {
 	private double enemyPlayerRange;
 	private boolean chaseIsOn;
 	private boolean playerWithinRange;
-	private boolean imTouchingYou;
 	private int collisionRange;
+	
+	ScheduledExecutorService sed = Executors.newScheduledThreadPool(2);
 	
 	public EnemyAI(Player p, ArrayList<Enemy> enemies) {
 		this.p = p;
 		this.enemies = enemies;
+		
+		Runnable randMove = () -> {
+			randomizeXMovement();
+		};
+		
+		sed.scheduleAtFixedRate(randMove, 2, 3, TimeUnit.SECONDS);
+		
 	}
 	
 	private void makeYouJump() {
@@ -33,10 +46,10 @@ public class EnemyAI {
 		}
 	}
 	
-	public boolean checkIfPlayerWithinReach() {
+	private boolean checkIfPlayerWithinReach(int rangeModifier) {
 		enemyPlayerRange = p.getCurrentXPosition() - e.getCurrentXPosition(); 
 		
-		if(enemyPlayerRange <= 100 && enemyPlayerRange >= -100) {
+		if(enemyPlayerRange <= rangeModifier && enemyPlayerRange >= -rangeModifier) {
 			chaseIsOn = true;
 			playerWithinRange = true;
 		}
@@ -48,11 +61,10 @@ public class EnemyAI {
 		return chaseIsOn;
 	}
 	
-	public void chasePlayer() {
+	private void chasePlayer() {
 		for(i = 0; i < enemies.size(); i++) {
 			e = enemies.get(i);
-			if(checkIfPlayerWithinReach()) {
-				//System.out.println("I'm following you.\n");
+			if(checkIfPlayerWithinReach(e.rangeModifier) && !p.isDead()) {
 				if(e.right && e.getx() != p.getx() && p.getx() < e.getx() && playerWithinRange) {
 					e.right = false;
 					e.left = true;
@@ -63,43 +75,65 @@ public class EnemyAI {
 				}
 			}
 			else {
-				//System.out.println("Player out of reach\n");
 				chaseIsOn = false;
 			}
 		}
 	}
 	
-	public void intersects() {
+	// Want a better enemy/enemy collision system but this will work for now
+	private void intersects() {
 		for(i = 0; i < enemies.size(); i++) {
 			e = enemies.get(i);
 			for(int j = i + 1; j < enemies.size(); j++) {
 				ej = enemies.get(j);
 				collisionRange = e.getx() - ej.getx();
-				//System.out.println(collisionRange);
 				if(collisionRange >= -20 && collisionRange <= 20) {
-					imTouchingYou = true;
-				}
-				else {
-					imTouchingYou = false;
+					if(e.right && ej.right) {
+						e.dx = -e.moveSpeed;
+					}
+					else if(e.left && ej.left) {
+						e.dx = -e.moveSpeed;
+					}
 				}
 			}
 		}
 	}
 	
-	public void doNotTouchMe(boolean b) {
+	private void randomizeXMovement() {
+		Random r = new Random();
+		int randomDir = r.nextInt(3) - 1;
+		int randomEnemy = r.nextInt(enemies.size());
+		
+		for(i = 0; i < enemies.size(); i++) {
+			e = enemies.get(randomEnemy);
+			if(randomDir == -1) {
+				e.right = false;
+				e.left = true;
+			}
+			else if(randomDir == 0) {
+				e.dx = -e.moveSpeed;
+				System.out.println("someone stopped");
+			}
+			else if(randomDir == 1) {
+				e.left = false;
+				e.right = true;
+			}
+		}
+	}
+	
+	/*public void doNotTouchMe(boolean b) {
 		for(i = 0; i < enemies.size(); i++) {
 			if(b)
 				enemies.get(i).x = 1.0;
 		}
-	}
+	}*/
 	
 	
 	public void update() {
+		
 		//makeYouJump();
 		chasePlayer();
 		intersects();
-		doNotTouchMe(imTouchingYou);
-			
 	}
 	
 	// WIP: Trying to return boolean when a block is hit

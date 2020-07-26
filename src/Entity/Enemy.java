@@ -13,6 +13,12 @@ public class Enemy extends MapObject {
 	protected int scorePoints;
 	protected int xpPoints;
 	
+	public int rangeModifier; // How close enemy must be close to player for it to follow
+	protected int kickBack; // Amount of x distance removed after taking damage
+	protected int timeFlinching; // How long flinching will occur
+	
+	protected int zeroSpeed = 0;
+	
 	public Enemy(TileMap tm) {
 		super(tm);
 	}
@@ -37,6 +43,12 @@ public class Enemy extends MapObject {
 		if(dead || flinching) 
 			return;
 		health -= damage;
+		if(right) {
+			x -= kickBack;
+		}
+		else if(left) {
+			x += kickBack;
+		}
 		if(health < 0)
 			health = 0;
 		if(health == 0) {
@@ -61,6 +73,15 @@ public class Enemy extends MapObject {
 			right = true;
 			left = false;
 			facingRight = true;
+		}
+	}
+	
+	protected void checkFlinching() {
+		if(flinching) {
+			long elapsed = (System.nanoTime() - flinchTimer) / 1000000;
+			if(elapsed > timeFlinching) { // Used to be 400
+				flinching = false;
+			}
 		}
 	}
 }
