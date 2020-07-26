@@ -101,14 +101,16 @@ public class EnemyAI {
 	}
 	
 	private void randomizeXMovement(Random r) {
-		int randomDir = r.nextInt(3) - 1;
-		int randomEnemy = r.nextInt(enemies.size());
+		
+		//int randomEnemy = r.nextInt(enemies.size());
 		
 		for(i = 0; i < enemies.size(); i++) {
 			e = enemies.get(i);
+			int randomDir = r.nextInt(3) - 1;
 			if(randomDir == -1) {
 				e.right = false;
 				e.left = true;
+				System.out.println("switched left\n");
 			}
 			else if(randomDir == 0) {
 				e.dx = -e.moveSpeed;
@@ -117,6 +119,7 @@ public class EnemyAI {
 			else if(randomDir == 1) {
 				e.left = false;
 				e.right = true;
+				System.out.println("switched right\n");
 			}
 		}
 	}
@@ -133,7 +136,7 @@ public class EnemyAI {
 		
 		//makeYouJump();
 		chasePlayer();
-		intersects();
+		//intersects();
 	}
 	
 	// WIP: Trying to return boolean when a block is hit
