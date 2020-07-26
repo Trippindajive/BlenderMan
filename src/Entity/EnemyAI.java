@@ -105,7 +105,7 @@ public class EnemyAI {
 		int randomEnemy = r.nextInt(enemies.size());
 		
 		for(i = 0; i < enemies.size(); i++) {
-			e = enemies.get(randomEnemy);
+			e = enemies.get(i);
 			if(randomDir == -1) {
 				e.right = false;
 				e.left = true;
