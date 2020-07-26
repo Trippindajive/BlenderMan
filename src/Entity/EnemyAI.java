@@ -31,7 +31,8 @@ public class EnemyAI {
 		this.enemies = enemies;
 		
 		Runnable randMove = () -> {
-			randomizeXMovement();
+			Random r = new Random();
+			randomizeXMovement(r);
 		};
 		
 		sed.scheduleAtFixedRate(randMove, 2, 3, TimeUnit.SECONDS);
@@ -99,8 +100,7 @@ public class EnemyAI {
 		}
 	}
 	
-	private void randomizeXMovement() {
-		Random r = new Random();
+	private void randomizeXMovement(Random r) {
 		int randomDir = r.nextInt(3) - 1;
 		int randomEnemy = r.nextInt(enemies.size());
 		
