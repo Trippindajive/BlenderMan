@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.Scanner;
 import GameState.LoadGameState;
 import Entity.Vittles.*;
-import java.sql.Timestamp;
 
 /**
  * The subclass of MapObject which handles all Player attributes
@@ -123,8 +122,8 @@ public class Player extends MapObject {
 		cheight = 50;
 		
 		// These variables define the player physics which had been tested by the instructor as being well-balanced
-		moveSpeed = 0.3;
-		maxSpeed = 1.6;
+		moveSpeed = 0.3; // 0.3
+		maxSpeed = 1.6; // 1.6
 		stopSpeed = 0.4;
 		fallSpeed = 0.15;
 		terminalSpeed = 5.0;
@@ -135,7 +134,7 @@ public class Player extends MapObject {
 		
 		health = 50;
 		maxHealth = 50;
-		atkPower = 0;
+		atkPower = 100;
 		maxPower = 25;
 		shield = 0;
 		maxShield = 50;
@@ -1004,25 +1003,12 @@ public class Player extends MapObject {
 		
 		if(currentTime == previousTime + key) {
 			secondCounter++;
-			
-			//System.out.println("Counter: " + secondCounter);
-			//System.out.println("Elapsed Time (in seconds): " + elapsedTime);
-			//System.out.println("Previous Time: " + previousTime);
-			//System.out.println("Future Time: " + currentTime);
-			//System.out.println();
 			previousTime = System.nanoTime() / 1000000000;
 			
 		} return elapsedTime;
 	}
 
 	public void checkBlending() {
-		 /*Timestamp newTime = new Timestamp(System.currentTimeMillis());
-		 if (this.time == null || this.time.getTime() - newTime.getTime() == 2000) {
-			 this.time = new Timestamp(System.currentTimeMillis());
-			 // run animation here (I think)
-			 
-		System.out.println(this.time.getTime() - newTime.getTime()); 
- 		*/
 		
 		if(secondCounter == 1) {
 			if(blending && hasBoost != true && left == false && right == false && jumping == false) {

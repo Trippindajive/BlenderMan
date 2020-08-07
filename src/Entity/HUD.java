@@ -29,7 +29,7 @@ public class HUD {
 	
 	public void draw(Graphics2D g) {
 		
-		DecimalFormat df = new DecimalFormat(".##");
+		DecimalFormat df = new DecimalFormat("#.#");
 		
 		g.drawImage(image, 0, 10, null);
 		g.setFont(font);

@@ -17,8 +17,6 @@ public class Enemy extends MapObject {
 	protected int kickBack; // Amount of x distance removed after taking damage
 	protected int timeFlinching; // How long flinching will occur
 	
-	protected int zeroSpeed = 0;
-	
 	public Enemy(TileMap tm) {
 		super(tm);
 	}

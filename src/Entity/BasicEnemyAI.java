@@ -1,17 +1,14 @@
 package Entity;
 
-import TileMap.TileMap;
-import java.awt.Rectangle;
-import Entity.Enemies.*;
 import Entity.Player;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import Main.GamePanel;
 
-public class EnemyAI {
+
+public class BasicEnemyAI {
 	
 	private Player p;
 	private ArrayList<Enemy> enemies;
@@ -26,7 +23,7 @@ public class EnemyAI {
 	
 	ScheduledExecutorService sed = Executors.newScheduledThreadPool(2);
 	
-	public EnemyAI(Player p, ArrayList<Enemy> enemies) {
+	public BasicEnemyAI(Player p, ArrayList<Enemy> enemies) {
 		this.p = p;
 		this.enemies = enemies;
 		
@@ -35,7 +32,7 @@ public class EnemyAI {
 			randomizeXMovement(r);
 		};
 		
-		sed.scheduleAtFixedRate(randMove, 2, 3, TimeUnit.SECONDS);
+		sed.scheduleAtFixedRate(randMove, 2, 4, TimeUnit.SECONDS);
 		
 	}
 	
@@ -101,25 +98,16 @@ public class EnemyAI {
 	}
 	
 	private void randomizeXMovement(Random r) {
-		
-		//int randomEnemy = r.nextInt(enemies.size());
-		
 		for(i = 0; i < enemies.size(); i++) {
 			e = enemies.get(i);
-			int randomDir = r.nextInt(3) - 1;
+			int randomDir = r.nextInt(2) - 1;
 			if(randomDir == -1) {
-				e.right = false;
-				e.left = true;
-				System.out.println("switched left\n");
+				e.dx = e.moveSpeed;
+				System.out.println("switched right\n");
 			}
 			else if(randomDir == 0) {
 				e.dx = -e.moveSpeed;
-				System.out.println("someone stopped");
-			}
-			else if(randomDir == 1) {
-				e.left = false;
-				e.right = true;
-				System.out.println("switched right\n");
+				System.out.println("switched left\n");
 			}
 		}
 	}
@@ -136,7 +124,7 @@ public class EnemyAI {
 		
 		//makeYouJump();
 		chasePlayer();
-		//intersects();
+		intersects();
 	}
 	
 	// WIP: Trying to return boolean when a block is hit

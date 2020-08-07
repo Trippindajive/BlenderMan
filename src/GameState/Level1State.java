@@ -9,7 +9,7 @@ import Main.GamePanel;
 import java.awt.event.KeyEvent;
 import Entity.Enemies.*;
 import Entity.Vittles.*;
-import Entity.EnemyAI;
+import Entity.BasicEnemyAI;
 /**
  * A subclass of GameState, it defines the properties of Level 1, such as: graphics, functions, objects, etc.
  * @author Tim Riggins
@@ -22,13 +22,13 @@ public class Level1State extends GameState{
 	private Background bg;
 	private GameOver gameOver;
 	
-	private Player player;
+	public Player player;
 	
 	//private LoadGameState lsm;
 	
 	//private boolean paused;
 	
-	private ArrayList<Enemy> enemies;
+	public ArrayList<Enemy> enemies;
 	private ArrayList<Vittle> Fruits = new ArrayList<Vittle>();
 	private ArrayList<Vittle> Veggies = new ArrayList<Vittle>();
 	private ArrayList<Vittle> Proteins = new ArrayList<Vittle>();
@@ -45,7 +45,7 @@ public class Level1State extends GameState{
 	
 	private HUD hud;
 	
-	private EnemyAI AI;
+	private BasicEnemyAI basicAI;
 	
 	public Level1State(GameStateManager gsm) {
 		this.gsm = gsm;
@@ -63,7 +63,7 @@ public class Level1State extends GameState{
 		bg = new Background("/Backgrounds/retro arcade.gif", 0.1); // double value is a move scale
 
 		player = new Player(tileMap);
-		player.setPosition(50.0, 180.0);
+		player.setPosition(50.0, 0.0);
 		
 		// Populate enemies & vittles
 		populateEnemies();
@@ -73,9 +73,7 @@ public class Level1State extends GameState{
 		
 		hud = new HUD(player);
 
-		
-		
-		AI = new EnemyAI(player, enemies);
+		basicAI = new BasicEnemyAI(player, enemies);
 		
 	}
 	/**
@@ -294,7 +292,7 @@ public class Level1State extends GameState{
 		}
 		
 		// Update Artificial Intelligence
-		AI.update();
+		basicAI.update();
 		
 	}
 	
@@ -369,23 +367,18 @@ public class Level1State extends GameState{
 	}
 	
 	public void keyReleased(int k) {
-		if(k == KeyEvent.VK_A) {
+		if(k == KeyEvent.VK_A) 
 			player.setLeft(false);
-		}
-		if(k == KeyEvent.VK_D) {
+		if(k == KeyEvent.VK_D) 
 			player.setRight(false);
-		}
-		if(k == KeyEvent.VK_UP) {
+		if(k == KeyEvent.VK_UP) 
 			player.setBlending(false);
-		}
-		if(k == KeyEvent.VK_DOWN) {
+		if(k == KeyEvent.VK_DOWN) 
 			player.setDown(false);
-		}
-		if(k == KeyEvent.VK_SPACE) {
+		if(k == KeyEvent.VK_SPACE) 
 			player.setJumping(false);
-		}
-		if(k == KeyEvent.VK_E) {
+		if(k == KeyEvent.VK_E) 
 			player.setGliding(false);
-		}
+		
 	}
 }
