@@ -132,9 +132,9 @@ public class Player extends MapObject {
 		
 		facingRight = true;
 		
-		health = 50;
+		health = 30;
 		maxHealth = 50;
-		atkPower = 100;
+		atkPower = 10;
 		maxPower = 25;
 		shield = 0;
 		maxShield = 50;
@@ -591,6 +591,8 @@ public class Player extends MapObject {
 		if(flinching) {
 			return;
 		}
+		sfx.put("playerHit", new AudioPlayer("/SFX/player_hit.wav"));
+		sfx.get("playerHit").play();
 		health -= damage;
 		if(health < 0) {
 			health = 0;
@@ -654,7 +656,8 @@ public class Player extends MapObject {
 		// Jumping
 		if(jumping && !falling && !blending) {
 			if(currentAction != BLENDING) {
-				//sfx.put("jump", new AudioPlayer("/SFX/zapsplat_multimedia_game_sound_classic_jump_002_41725.wav"));
+				sfx.put("jump", new AudioPlayer("/SFX/zapsplat_multimedia_game_sound_classic_jump_002_41725.wav"));
+				sfx.get("jump").play();
 			}
 			dy = jumpStart;
 			falling = true;
@@ -1064,7 +1067,7 @@ public class Player extends MapObject {
 			if(currentAction != SCRATCHING) {
 				currentAction = SCRATCHING;
 				sfx.put("scratch", new AudioPlayer("/SFX/zapsplat_household_band_aid_plaster_strip_rip_tear_002_11599.wav"));
-				//sfx.get("scratch").play();
+				sfx.get("scratch").play();
 				/*scratching animation does not exist for now
 				animation.setFrames(sprites.get(SCRATCHING));
 				*/
@@ -1078,6 +1081,8 @@ public class Player extends MapObject {
 				/*firing animation does not exist for now
 				animation.setFrames(sprites.get(0));
 				*/
+				sfx.put("firing", new AudioPlayer("/SFX/ranged_attack.wav"));
+				sfx.get("firing").play();
 				animation.setDelay(100);
 				width = 100;
 			}
@@ -1086,6 +1091,7 @@ public class Player extends MapObject {
 			if(currentAction != BLENDING) {
 				currentAction = BLENDING;
 				sfx.put("blending", new AudioPlayer("/SFX/blendersfx1.wav"));
+				sfx.get("blending").play();
 				animation.setFrames(sprites.get(IDLE));
 				animation.setDelay(100);
 				width = 100;
@@ -1151,6 +1157,9 @@ public class Player extends MapObject {
 	public void bleedEnergy() {
 		if(energyDecayRate == 2 && !dead) {
 			energy -= 10.10;
+		}
+		if(gliding) {
+			energy -= 1.00;
 		}
 	}
 	

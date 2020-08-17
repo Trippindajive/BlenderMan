@@ -26,7 +26,7 @@ public class GameStateManager {
 		
 		loadState(currentState);
 		
-		//bgMusic = new AudioPlayer("/Music/Red-MarKer-DMC-12-Gauge.wav");
+		bgMusic = new AudioPlayer("/Music/Red-MarKer-DMC-12-Gauge.wav");
 		//bgMusic.play();
 	}
 	

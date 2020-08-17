@@ -19,6 +19,7 @@ public class MenuState extends GameState {
 	private Color titleColor;
 	private Font titleFont;
 	private Font font;
+	private AudioPlayer bgMusic;
 	
 	public MenuState(GameStateManager gsm) {
 		this.gsm = gsm;

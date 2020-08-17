@@ -2,6 +2,8 @@ package GameState;
 
 import java.awt.*;
 import java.util.ArrayList;
+
+import Audio.AudioPlayer;
 import Entity.*;
 import TileMap.Background;
 import TileMap.TileMap;
@@ -10,6 +12,7 @@ import java.awt.event.KeyEvent;
 import Entity.Enemies.*;
 import Entity.Vittles.*;
 import Entity.BasicEnemyAI;
+
 /**
  * A subclass of GameState, it defines the properties of Level 1, such as: graphics, functions, objects, etc.
  * @author Tim Riggins
@@ -35,6 +38,8 @@ public class Level1State extends GameState{
 	private ArrayList<Vittle> Liquids = new ArrayList<Vittle>();
 	private ArrayList<DeathExplosion> deathExplosions;
 	
+	
+	
 	// Location arrays for objects
 	Point[] F; // strawberries
 	Point[] V; // broccoli
@@ -56,14 +61,14 @@ public class Level1State extends GameState{
 		
 		tileMap = new TileMap(30);
 		tileMap.loadTiles("/Tilesets/grasstileset.gif");
-		tileMap.loadMap("/Maps/level1-1.map");
+		tileMap.loadMap("/Maps/TaylorDemo");
 		tileMap.setPosition(0, 0);
 		tileMap.setTween(1); //Corrects "twitching" behavior of moving entities
 		
 		bg = new Background("/Backgrounds/retro arcade.gif", 0.1); // double value is a move scale
 
 		player = new Player(tileMap);
-		player.setPosition(50.0, 0.0);
+		player.setPosition(80.0, 365);
 		
 		// Populate enemies & vittles
 		populateEnemies();
@@ -83,19 +88,28 @@ public class Level1State extends GameState{
 	private void populateEnemies() {
 		
 		enemies = new ArrayList<Enemy>(); // Slugger Enemies
-		Slugger s;
+		Chairmawn s;
 		Point[] points = new Point[] {
-			new Point(200, 200),
-			new Point(300, 200),
-			new Point(400, 100),
-			new Point(100, 200),
-			new Point(150, 200),
-			new Point(180, 200),
-			//new Point(1680, 200),
-			//new Point(1800, 200)
+			//new Point(200, 365),
+			new Point(300, 365),
+			new Point(400, 365),
+			//new Point(100, 365),
+			//new Point(150, 365),
+			//new Point(180, 365),
+			new Point(1680, 200),
+			new Point(1730, 370),
+			new Point(1800, 370),
+			new Point(2270, 170),
+			new Point(2420, 200),
+			new Point(2750, 350),
+			new Point(2800, 350),
+			new Point(2900, 350),
+			new Point(2970, 350),
+			new Point(2670, 650)
+			
 		};
 		for(int i = 0; i < points.length; i++) {
-			s = new Slugger(tileMap);
+			s = new Chairmawn(tileMap);
 			s.setPosition(points[i].x, points[i].y);
 			enemies.add(s);
 		}
@@ -116,7 +130,10 @@ public class Level1State extends GameState{
 				//new Point(270, 160),
 				new Point(860, 130),
 				new Point(1300, 160),
-				new Point(1800, 160)
+				new Point(1800, 160),
+				new Point(2850, 650),
+				new Point(3000, 650),
+				new Point(2660, 690)
 		};
 		for(i = 0; i < F.length; i++) {
 			fs = new Strawberry(tileMap);
@@ -126,7 +143,7 @@ public class Level1State extends GameState{
 		
 		FB = new Point[] {
 				//new Point(350, 130),
-				//new Point(1680, 160)
+				new Point(1680, 160)
 		};
 		for(i = 0; i < FB.length; i++) {
 			fb = new Banana(tileMap);
@@ -136,7 +153,7 @@ public class Level1State extends GameState{
 		
 		FO = new Point[] {
 				//new Point(150, 130),
-				//new Point(400, 100)
+			new Point(400, 100)
 		};
 		for(i = 0; i < FO.length; i++) {
 			fo = new Orange(tileMap);
@@ -207,9 +224,8 @@ public class Level1State extends GameState{
 			player.getNextPosition();
 		}
 		
-		
-		// Update background
-		bg.setPosition(tileMap.getx(), tileMap.gety());
+		// UPDATE BACKGROUND
+		//bg.setPosition(tileMap.getx(), tileMap.gety());
 		
 		// Check if player is attacking
 		player.checkAttack(enemies);

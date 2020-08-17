@@ -1,5 +1,8 @@
 package Entity;
 
+import java.util.HashMap;
+
+import Audio.AudioPlayer;
 import TileMap.TileMap;
 
 public class Enemy extends MapObject {
@@ -16,6 +19,7 @@ public class Enemy extends MapObject {
 	public int rangeModifier; // How close enemy must be close to player for it to follow
 	protected int kickBack; // Amount of x distance removed after taking damage
 	protected int timeFlinching; // How long flinching will occur
+	
 	
 	public Enemy(TileMap tm) {
 		super(tm);
@@ -59,6 +63,7 @@ public class Enemy extends MapObject {
 	public void update() {
 		
 	}
+	
 	
 	public void checkWallCollision() {
 		// If hits wall, move other way

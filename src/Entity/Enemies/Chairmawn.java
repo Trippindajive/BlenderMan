@@ -7,11 +7,11 @@ import javax.imageio.ImageIO;
 import java.awt.Graphics2D;
 
 
-public class Slugger extends Enemy {
+public class Chairmawn extends Enemy {
 	
 	private BufferedImage[] sprites;
 	
-	public Slugger(TileMap tm) {
+	public Chairmawn(TileMap tm) {
 		super(tm);
 		
 		moveSpeed = 0.3;
@@ -19,8 +19,8 @@ public class Slugger extends Enemy {
 		fallSpeed = 0.2;
 		terminalSpeed = 10.0;
 		
-		width = 30; // Width of actual spritesheet
-		height = 30;
+		width = 40; // Width of actual spritesheet
+		height = 40;
 		cwidth = 20; // Width of actual entity
 		cheight = 20;
 		
@@ -37,9 +37,9 @@ public class Slugger extends Enemy {
 		try {
 			
 			BufferedImage spritesheet = ImageIO.read(getClass().getResourceAsStream(
-					"/Sprites/Enemies/slugger.gif"));
+					"/Sprites/Enemies/chairmander.png"));
 			
-			sprites = new BufferedImage[3];
+			sprites = new BufferedImage[4];
 			for(int i = 0; i < sprites.length; i++) {
 				sprites[i] = spritesheet.getSubimage(
 						i * width,
@@ -97,7 +97,6 @@ public class Slugger extends Enemy {
 		setXPPoints(xpPoints);
 		checkIfStill();
 		checkFlinching();
-		
 		// Update animation
 		animation.update();
 		
