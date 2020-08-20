@@ -5,7 +5,7 @@ import javax.sound.sampled.*;
 public class AudioPlayer {
 	
 	private Clip clip;
-	
+
 	public AudioPlayer(String s) {
 		
 		try {
@@ -47,16 +47,15 @@ public class AudioPlayer {
 	
 	public void play() {
 		if(clip == null) return;
-		stop();
+		if(clip.isRunning()) {
+			stop();
+		}
 		clip.setFramePosition(0);
 		clip.start();
-		if(clip.isRunning()) {
-			close();
-		}
 	}
 	
 	public void stop() {
-		if(clip.isRunning()) clip.stop();
+		clip.stop();
 	}
 	
 	public void close() {

@@ -107,6 +107,8 @@ public class Player extends MapObject {
 	private static final int BLENDING = 7;
 	private static final int POWERUP = 8;
 	
+	private AudioPlayer BLENDING_SOUND = new AudioPlayer("/SFX/blendersfx1.wav");
+	
 	private HashMap<String, AudioPlayer> sfx;
 	
 	private BufferedImage spritesheet;
@@ -696,6 +698,7 @@ public class Player extends MapObject {
 			if(currentAction != BLENDING) {
 				sfx.put("jump", new AudioPlayer("/SFX/zapsplat_multimedia_game_sound_classic_jump_002_41725.wav"));
 				sfx.get("jump").play();
+				
 			}
 			dy = jumpStart;
 			falling = true;
@@ -1137,7 +1140,7 @@ public class Player extends MapObject {
 		else if(blending && falling == false && jumping == false) {
 			if(currentAction != BLENDING) {
 				currentAction = BLENDING;
-				sfx.put("blending", new AudioPlayer("/SFX/blendersfx1.wav"));
+				sfx.put("blending", BLENDING_SOUND);
 				sfx.get("blending").play();
 				animation.setFrames(sprites.get(IDLE));
 				animation.setDelay(50);
