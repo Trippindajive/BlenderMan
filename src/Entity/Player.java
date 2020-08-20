@@ -38,8 +38,6 @@ public class Player extends MapObject {
 	private long flinchTimer;
 	private int healPoints;
 	private int scorePoints;
-	private int xp;
-	private int maxXP;
 	private double energy;
 	private double maxEnergy;
 	
@@ -72,6 +70,11 @@ public class Player extends MapObject {
 	private boolean onlyHasVeggies;
 	private boolean onlyHasProteins;
 	
+	// Use Powerups
+	public boolean usingPowerUp;
+	public String powerUpName;
+	private ArrayList<PowerUp> powerups = new ArrayList<PowerUp>();
+	
 	// Save Game Data
 	public String playerSave = "";
 	
@@ -102,6 +105,7 @@ public class Player extends MapObject {
 	private static final int FIREBALL = 5;
 	private static final int SCRATCHING = 6;
 	private static final int BLENDING = 7;
+	private static final int POWERUP = 8;
 	
 	private HashMap<String, AudioPlayer> sfx;
 	
@@ -138,9 +142,6 @@ public class Player extends MapObject {
 		maxPower = 25;
 		shield = 0;
 		maxShield = 50;
-		
-		xp = 0;
-		maxXP = 100;
 		energy = maxEnergy = 10000.00;
 		
 		fireCost = 5;
@@ -238,22 +239,6 @@ public class Player extends MapObject {
 		return scorePoints;
 	}
 	
-	public void setXP(int xp) {
-		this.xp += xp;
-	}
-	
-	public int getXP() {
-		return xp;
-	}
-	
-	public void setMaxXP(int maxXP) {
-		this.maxXP = maxXP;
-	}
-	
-	public int getMaxXP() {
-		return maxXP;
-	}
-	
 	public void setEnergy(double energy) {
 		this.energy = energy;
 	}
@@ -297,6 +282,25 @@ public class Player extends MapObject {
 		gliding = b;
 	}
 	
+	public void setPowerUp() {
+		if(powerups.size() > 0) {
+			usingPowerUp = true;
+			powerups.get(0).usePowerUp(powerups.get(0).getName());
+			powerups.remove(0);
+		} else {
+			sfx.put("powerupError", new AudioPlayer("/SFX/error_tone.wav"));
+			sfx.get("powerupError").play();
+		}
+	}
+	
+	/*public void setPowerUpInInventory(PowerUp pu) {
+		powerUpName = pu.getName();
+	}*/
+	
+	/*public String getPowerUpInInventory() {
+		return powerUpName;
+	}*/
+	
 	public boolean isDead() {
 		return dead;
 	}
@@ -337,6 +341,23 @@ public class Player extends MapObject {
 			return "WATER";
 		}
 		return "-1";
+	}
+	
+	/**
+	 * 
+	 * @param Adds powerups to the player's inventory
+	 */
+	public void setPowerUps(PowerUp p) {
+		powerups.add(p);
+	}
+	
+	public String getPowerUps() {
+		if(powerups.size() == 0) {
+			return "none";
+		}
+		else {
+			return powerups.get(0).getName();
+		}
 	}
 	
 	/**
@@ -388,7 +409,6 @@ public class Player extends MapObject {
 						e.hit(scratchDamage);
 						if(e.isDead() == true) {
 							setScore(e.scorePoints);
-							setXP(e.getXPPoints());
 						}
 					}
 							
@@ -403,7 +423,6 @@ public class Player extends MapObject {
 						e.hit(scratchDamage);
 						if(e.isDead() == true) {
 							setScore(e.scorePoints);
-							setXP(e.getXPPoints());
 						}
 					}
 				}
@@ -427,7 +446,7 @@ public class Player extends MapObject {
 				hitShield(e.getDamage(), e);
 			} 
 			else {
-				hit(e.getDamage(), e);
+				hit(e.getDamage(), e, e.knockBackPlayer);
 				}
 			}
 		}
@@ -440,7 +459,6 @@ public class Player extends MapObject {
 			Vittle v = vittles.get(i);
 			
 			// Check scratch attack
-				
 			if(scratching) {
 				if(facingRight) {
 					if(
@@ -587,13 +605,33 @@ public class Player extends MapObject {
 		}
 	}
 	
-	public void hit(int damage, Enemy e) {
+	public void checkObtainedPowerUps(ArrayList<PowerUp> powerups) {
+		for(int i = 0; i < powerups.size(); i++) {
+			PowerUp pu = powerups.get(i);
+			int range = pu.getx() - getx();
+			
+			if(range >= -25 && range <= 25) {
+				pu.obtained = true;
+				if(pu.obtained) {
+					setPowerUps(pu);
+				}
+			}
+		}
+	}
+	
+	public void hit(int damage, Enemy e, int knockback) {
 		if(flinching) {
 			return;
 		}
 		sfx.put("playerHit", new AudioPlayer("/SFX/player_hit.wav"));
 		sfx.get("playerHit").play();
 		health -= damage;
+		if(e.right) {
+			x += knockback;
+		}
+		if(e.left) {
+			x -= knockback;
+		}
 		if(health < 0) {
 			health = 0;
 		}
@@ -682,6 +720,9 @@ public class Player extends MapObject {
 		}
 		if(currentAction == FIREBALL) {
 			if(animation.hasPlayedOnce()) firing = false;
+		}
+		if(currentAction == POWERUP) {
+			if(animation.hasPlayedOnce()) usingPowerUp = false;
 		}
 	}
 	
@@ -1060,7 +1101,13 @@ public class Player extends MapObject {
 		secondCounter = 0;
 		} 
 	}
-
+	
+	public void usingPowerUp() {
+		System.out.println("inside method 'usingPowerUp'");
+		if(usingPowerUp) {
+			System.out.println("using powerup");
+		}
+	}
 	
 	public void setAnimation() {
 		if(scratching) {
@@ -1093,8 +1140,14 @@ public class Player extends MapObject {
 				sfx.put("blending", new AudioPlayer("/SFX/blendersfx1.wav"));
 				sfx.get("blending").play();
 				animation.setFrames(sprites.get(IDLE));
-				animation.setDelay(100);
+				animation.setDelay(50);
 				width = 100;
+			}
+		}
+		else if(usingPowerUp) {
+			if(currentAction != POWERUP) {
+				currentAction = POWERUP;
+				animation.setDelay(100);
 			}
 		}
 		else if(dy > 0) {
@@ -1123,9 +1176,6 @@ public class Player extends MapObject {
 		}
 		else if(left || right) {
 			if(currentAction != WALKING) {
-				
-				
-				//sfx.get("blending").stop();
 				currentAction = WALKING;
 				animation.setFrames(sprites.get(WALKING));
 				animation.setDelay(40);

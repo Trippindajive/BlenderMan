@@ -50,7 +50,7 @@ public class HUD {
 		g.drawString("Liquid: ", 310, 25);
 		g.setColor(Color.WHITE);
 		g.drawString("SCORE: " + player.getScore(), 0, 85);
-		g.drawString("EXP: " + player.getXP() + "/" + player.getMaxXP(), 0, 105);
+		g.drawString("POWERUP: " + player.getPowerUps(), 0, 105);
 		g.setColor(Color.YELLOW);
 		g.drawString(player.getLiquid(), 360, 25);
 		

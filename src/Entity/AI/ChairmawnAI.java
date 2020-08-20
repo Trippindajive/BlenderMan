@@ -1,5 +1,6 @@
-package Entity;
+package Entity.AI;
 
+import Entity.Enemy;
 import Entity.Player;
 import java.util.ArrayList;
 import java.util.Random;
@@ -8,7 +9,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 
-public class BasicEnemyAI {
+public class ChairmawnAI {
 	
 	private Player p;
 	private ArrayList<Enemy> enemies;
@@ -23,7 +24,7 @@ public class BasicEnemyAI {
 	
 	ScheduledExecutorService sed = Executors.newScheduledThreadPool(2);
 	
-	public BasicEnemyAI(Player p, ArrayList<Enemy> enemies) {
+	public ChairmawnAI(Player p, ArrayList<Enemy> enemies) {
 		this.p = p;
 		this.enemies = enemies;
 		
@@ -103,11 +104,9 @@ public class BasicEnemyAI {
 			int randomDir = r.nextInt(2) - 1;
 			if(randomDir == -1) {
 				e.dx = e.moveSpeed;
-				System.out.println("switched right\n");
 			}
 			else if(randomDir == 0) {
 				e.dx = -e.moveSpeed;
-				System.out.println("switched left\n");
 			}
 		}
 	}

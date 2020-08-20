@@ -44,8 +44,8 @@ public class Vittle extends MapObject{
 	protected boolean captured;
 	protected boolean flinching;
 	protected long flinchTimer;
-	//protected boolean fleeing;
 	protected long fleeTimer;
+	public int rangeModifier;
 	
 	public Vittle(TileMap tm) {
 		super(tm);
@@ -55,10 +55,11 @@ public class Vittle extends MapObject{
 		fallSpeed = 0.2;
 		terminalSpeed = 10.0;
 		
-		width = 40;
-		height = 40;
+		width = 42;
+		height = 42;
 		cwidth = 30;
 		cheight = 30;
+		rangeModifier = 200;
 	}
 	
 	public boolean isCaptured() {

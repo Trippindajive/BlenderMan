@@ -20,8 +20,8 @@ public abstract class MapObject {
 	// Position and Vector
 	protected double x; // Global Positions
 	protected double y;
-	protected double dx; // Local Positions
-	protected double dy;
+	public double dx; // Local Positions
+	public double dy;
 	
 	// Dimensions of sprite sheets
 	protected int width;
@@ -47,12 +47,12 @@ public abstract class MapObject {
 	protected Animation animation;
 	protected int currentAction;
 	protected int previousAction;
-	protected boolean facingRight;
-	protected boolean facingLeft;
+	public boolean facingRight;
+	public boolean facingLeft;
 	
 	// Movement
-	protected boolean left;
-	protected boolean right;
+	public boolean left;
+	public boolean right;
 	protected boolean down;
 	protected boolean jumping;
 	protected boolean falling;
@@ -61,8 +61,8 @@ public abstract class MapObject {
 	protected boolean blending; // Blending action
 	
 	// Movement Attributes (Physics)
-	protected double moveSpeed;
-	protected double maxSpeed;
+	public double moveSpeed;
+	public double maxSpeed;
 	protected double stopSpeed;
 	protected double fallSpeed; // Gravity
 	protected double terminalSpeed; // Terminal Velocity

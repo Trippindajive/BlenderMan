@@ -19,6 +19,7 @@ public class Enemy extends MapObject {
 	public int rangeModifier; // How close enemy must be close to player for it to follow
 	protected int kickBack; // Amount of x distance removed after taking damage
 	protected int timeFlinching; // How long flinching will occur
+	protected int knockBackPlayer;
 	
 	
 	public Enemy(TileMap tm) {

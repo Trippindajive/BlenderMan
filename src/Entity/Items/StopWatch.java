@@ -1,32 +1,29 @@
-package Entity.Vittles;
+package Entity.Items;
 
-import Entity.*;
-import TileMap.TileMap;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import javax.imageio.ImageIO;
-import java.awt.Graphics2D;
 
-public class Orange extends Vittle {
-	
+import Entity.Animation;
+import Entity.PowerUp;
+import TileMap.TileMap;
+
+public class StopWatch extends PowerUp{
+
 	private BufferedImage[] sprites;
 	
-	public Orange(TileMap tm) {
+	public StopWatch(TileMap tm) {
 		super(tm);
+		name = "STOPWATCH";
 		
-		name = "Orange";
-		healPoints = 5;
-		atkPoints = 2;
-		scorePoints = 10;
-		width = 32;
-		height = 32;
-		// Load Sprites
+		
 		try {
 			
 			BufferedImage spritesheet = ImageIO.read(getClass().getResourceAsStream(
-					"/Sprites/Vittles/spritesheet(orange).png"));
+					"/Sprites/Items/stopwatch_spritesheet.png"));
 			
-			sprites = new BufferedImage[3];
+			sprites = new BufferedImage[2];
 			for(int i = 0; i < sprites.length; i++) {
 				sprites[i] = spritesheet.getSubimage(
 						i * width,
@@ -38,10 +35,7 @@ public class Orange extends Vittle {
 			
 			animation = new Animation();
 			animation.setFrames(sprites);
-			animation.setDelay(300);
-			
-			right = true;
-			facingRight = true;
+			animation.setDelay(250);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -50,14 +44,8 @@ public class Orange extends Vittle {
 	
 	@Override
 	public void update() {
-		getNextPosition();
-		checkTileMapCollision();
-		checkWallCollision();
-		setPosition(xtemp, ytemp);
-		setHealPoints(healPoints);
-		getHealPoints();
-		setFruitType(Fruit);
-		getFruitType();
+		//getNextPosition();
+		
 		animation.update();
 	}
 	

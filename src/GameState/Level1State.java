@@ -5,13 +5,16 @@ import java.util.ArrayList;
 
 import Audio.AudioPlayer;
 import Entity.*;
+
 import TileMap.Background;
 import TileMap.TileMap;
 import Main.GamePanel;
 import java.awt.event.KeyEvent;
 import Entity.Enemies.*;
+import Entity.Items.StopWatch;
 import Entity.Vittles.*;
-import Entity.BasicEnemyAI;
+import Entity.AI.ChairmawnAI;
+import Entity.AI.VittleAI;
 
 /**
  * A subclass of GameState, it defines the properties of Level 1, such as: graphics, functions, objects, etc.
@@ -20,27 +23,45 @@ import Entity.BasicEnemyAI;
  */
 public class Level1State extends GameState{
 	
-	// TileMap
+	/**
+	 * @param TileMap
+	 */
 	private TileMap tileMap;
 	private Background bg;
 	private GameOver gameOver;
 	
+	/**
+	 * @param List of entities in this level
+	 */
 	public Player player;
-	
-	//private LoadGameState lsm;
-	
-	//private boolean paused;
-	
-	public ArrayList<Enemy> enemies;
+	public ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 	private ArrayList<Vittle> Fruits = new ArrayList<Vittle>();
 	private ArrayList<Vittle> Veggies = new ArrayList<Vittle>();
 	private ArrayList<Vittle> Proteins = new ArrayList<Vittle>();
 	private ArrayList<Vittle> Liquids = new ArrayList<Vittle>();
+	
+	
+	/**
+	 * *param List of items/powerups in this level
+	 */
+	private ArrayList<PowerUp> PowerUps = new ArrayList<PowerUp>();
+	
+	/**
+	 * @param List of AI entities in this level
+	 */
+	private ChairmawnAI chairmawnAI;
+	private VittleAI fruitAI;
+	private VittleAI veggieAI;
+	private VittleAI proteinAI;
+	
+	/**
+	 * @param List of sfx/fx effects in this level
+	 */
 	private ArrayList<DeathExplosion> deathExplosions;
 	
-	
-	
-	// Location arrays for objects
+	/**
+	 * @param Location arrays for vittles
+	 */
 	Point[] F; // strawberries
 	Point[] V; // broccoli
 	Point[] P; // cheese
@@ -48,9 +69,12 @@ public class Level1State extends GameState{
 	Point[] FB; // banana
 	Point[] FO; // orange
 	
-	private HUD hud;
+	/**
+	 * @param Location arrays for powerups
+	 */
+	//Point[] stopwatchP; // stopwatches
 	
-	private BasicEnemyAI basicAI;
+	private HUD hud;
 	
 	public Level1State(GameStateManager gsm) {
 		this.gsm = gsm;
@@ -74,21 +98,25 @@ public class Level1State extends GameState{
 		populateEnemies();
 		populateVittles();
 		
+		// Populate powerups
+		populatePowerUps();
+		
+		// Populate AI entities
+		chairmawnAI = new ChairmawnAI(player, enemies);
+		fruitAI = new VittleAI(player, Fruits, PowerUps);
+		veggieAI = new VittleAI(player, Veggies, PowerUps);
+		proteinAI = new VittleAI(player, Proteins, PowerUps);
+		
 		deathExplosions = new ArrayList<DeathExplosion>();
 		
 		hud = new HUD(player);
 
-		basicAI = new BasicEnemyAI(player, enemies);
-		
 	}
-	/**
-	 * This method creates an array of enemies that will be created onto the screen 
-	 * according to their individual positions.
-	 */
+
 	private void populateEnemies() {
 		
-		enemies = new ArrayList<Enemy>(); // Slugger Enemies
-		Chairmawn s;
+		Chairmawn e;
+		
 		Point[] points = new Point[] {
 			//new Point(200, 365),
 			new Point(300, 365),
@@ -106,15 +134,20 @@ public class Level1State extends GameState{
 			new Point(2900, 350),
 			new Point(2970, 350),
 			new Point(2670, 650)
-			
 		};
+		
 		for(int i = 0; i < points.length; i++) {
-			s = new Chairmawn(tileMap);
-			s.setPosition(points[i].x, points[i].y);
-			enemies.add(s);
+			e = new Chairmawn(tileMap);
+			e.setPosition(points[i].x, points[i].y);
+			enemies.add(e);
 		}
 	}
 	
+	/*private Point enemySpawner() {
+		Point[] points = new Point[];
+		return Point
+	}
+	*/
 	private void populateVittles() {
 		int i;
 		Strawberry fs = new Strawberry(tileMap);
@@ -197,7 +230,20 @@ public class Level1State extends GameState{
 			Liquids.add(lw);
 		}
 	}
-
+	
+	private void populatePowerUps() {
+		
+		StopWatch stopwatch;
+		
+		Point[] stopwatchP = new Point[] {
+				new Point(230, 350)
+		};
+		for(int i = 0; i < stopwatchP.length; i++) {
+			stopwatch = new StopWatch(tileMap);
+			stopwatch.setPosition(stopwatchP[i].x, stopwatchP[i].y);
+			PowerUps.add(stopwatch);
+		}
+	}
 	
 	public void update() {
 		Enemy e; // enemy entity
@@ -205,6 +251,7 @@ public class Level1State extends GameState{
 		Vittle v; // vegetable entity
 		Vittle p; // protein entity
 		Vittle l; // liquid entity
+		PowerUp pw; // powerup entity
 		
 		/*if(paused) {
 			sleep();
@@ -233,6 +280,9 @@ public class Level1State extends GameState{
 		player.checkCapturedVeg(Veggies);
 		player.checkCapturedProtein(Proteins);
 		player.checkCapturedLiquid(Liquids);
+		
+		// Check if powerups intersected
+		player.checkObtainedPowerUps(PowerUps);
 		
 		// Update all enemies
 		for(int i = 0; i < enemies.size(); i++) {
@@ -298,6 +348,15 @@ public class Level1State extends GameState{
 			}
 		}
 		
+		//Update all powerups
+		for(int i = 0; i < PowerUps.size(); i++) {
+			pw = PowerUps.get(i);
+			pw.update();
+			if(pw.obtained) {
+				PowerUps.remove(i);
+			}
+		}
+		
 		// Update death explosions
 		for(int i = 0; i < deathExplosions.size(); i++) {
 			deathExplosions.get(i).update();
@@ -308,7 +367,10 @@ public class Level1State extends GameState{
 		}
 		
 		// Update Artificial Intelligence
-		basicAI.update();
+		chairmawnAI.update();
+		fruitAI.update();
+		veggieAI.update();
+		proteinAI.update();
 		
 	}
 	
@@ -348,6 +410,11 @@ public class Level1State extends GameState{
 			Liquids.get(i).draw(g);
 		}
 		
+		// Draw powerups
+		for(int i = 0; i < PowerUps.size(); i++) {
+			PowerUps.get(i).draw(g);
+		}
+		
 		// Draw death explosions
 		for(int i = 0; i < deathExplosions.size(); i++) {
 			deathExplosions.get(i).setMapPosition((int)tileMap.getx(), (int)tileMap.gety());
@@ -375,6 +442,7 @@ public class Level1State extends GameState{
 			if(k == KeyEvent.VK_E) player.setGliding(true);			
 			if(k == KeyEvent.VK_R) player.setScratching();
 			if(k == KeyEvent.VK_F) player.setFiring();
+			if(k == KeyEvent.VK_Q) player.setPowerUp();
 			//if(k == KeyEvent.VK_P) paused = true;
 		}
 		else {
@@ -383,18 +451,11 @@ public class Level1State extends GameState{
 	}
 	
 	public void keyReleased(int k) {
-		if(k == KeyEvent.VK_A) 
-			player.setLeft(false);
-		if(k == KeyEvent.VK_D) 
-			player.setRight(false);
-		if(k == KeyEvent.VK_UP) 
-			player.setBlending(false);
-		if(k == KeyEvent.VK_DOWN) 
-			player.setDown(false);
-		if(k == KeyEvent.VK_SPACE) 
-			player.setJumping(false);
-		if(k == KeyEvent.VK_E) 
-			player.setGliding(false);
-		
+		if(k == KeyEvent.VK_A) player.setLeft(false);
+		if(k == KeyEvent.VK_D) player.setRight(false);
+		if(k == KeyEvent.VK_UP) player.setBlending(false);
+		if(k == KeyEvent.VK_DOWN) player.setDown(false);
+		if(k == KeyEvent.VK_SPACE) player.setJumping(false);
+		if(k == KeyEvent.VK_E) player.setGliding(false);
 	}
 }

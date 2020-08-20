@@ -27,11 +27,11 @@ public class Chairmawn extends Enemy {
 		health = maxHealth = 10;
 		damage = 1;
 		scorePoints = 5;
-		xpPoints = 2;
 		
 		rangeModifier = 100;
 		kickBack = 5;
 		timeFlinching = 1500;
+		knockBackPlayer = 30;
 		
 		// Load Sprites
 		try {
@@ -82,10 +82,6 @@ public class Chairmawn extends Enemy {
 		if(dx == 0) {
 			animation.setFrame(0);
 		}
-	}
-	
-	public void randomizeXDirection() {
-		
 	}
 	
 	public void update() {
