@@ -2,6 +2,9 @@ package GameState;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import Audio.AudioPlayer;
 import Entity.*;
@@ -55,9 +58,9 @@ public class Level1State extends GameState{
 	private VittleAI proteinAI;
 	
 	/**
-	 * @param List of sfx/fx effects in this level
+	 * @param List of fx in this level
 	 */
-	private ArrayList<DeathExplosion> deathExplosions;
+	private ArrayList<DeathExplosion> deathExplosions = new ArrayList<DeathExplosion>();;
 	
 	/**
 	 * @param Location arrays for vittles
@@ -103,14 +106,11 @@ public class Level1State extends GameState{
 		
 		// Populate AI entities
 		chairmawnAI = new ChairmawnAI(player, enemies);
-		fruitAI = new VittleAI(player, Fruits, PowerUps);
-		veggieAI = new VittleAI(player, Veggies, PowerUps);
-		proteinAI = new VittleAI(player, Proteins, PowerUps);
-		
-		deathExplosions = new ArrayList<DeathExplosion>();
+		fruitAI = new VittleAI(player, Fruits);
+		veggieAI = new VittleAI(player, Veggies);
+		proteinAI = new VittleAI(player, Proteins);
 		
 		hud = new HUD(player);
-
 	}
 
 	private void populateEnemies() {
@@ -236,12 +236,39 @@ public class Level1State extends GameState{
 		StopWatch stopwatch;
 		
 		Point[] stopwatchP = new Point[] {
-				new Point(230, 350)
+				new Point(230, 270),
+				new Point(280, 270)
 		};
 		for(int i = 0; i < stopwatchP.length; i++) {
 			stopwatch = new StopWatch(tileMap);
 			stopwatch.setPosition(stopwatchP[i].x, stopwatchP[i].y);
 			PowerUps.add(stopwatch);
+		}
+	}
+	
+	private void checkForStopWatch() {
+		if(player.usingPowerUp) {
+			stopWatchVittles(Fruits);
+			stopWatchVittles(Veggies);
+			stopWatchVittles(Proteins);
+			player.usingPowerUp = false;
+		}
+	}
+	
+	private void stopWatchVittles(ArrayList<Vittle> vittles) {
+		int i;
+		ScheduledExecutorService sed = Executors.newScheduledThreadPool(2);
+		
+		for(i = 0; i < vittles.size(); i++) {
+			Vittle f = vittles.get(i);
+			f.moveSpeed = 0.0;
+			f.maxSpeed = 0.0;
+			
+			Runnable resumeMove = () -> {
+				f.moveSpeed = 0.3;
+				f.maxSpeed = 0.3;
+			};
+			sed.scheduleAtFixedRate(resumeMove, 5, 5, TimeUnit.SECONDS);
 		}
 	}
 	
@@ -270,6 +297,8 @@ public class Level1State extends GameState{
 		if(player.getHealth() == 0) {
 			player.getNextPosition();
 		}
+		
+		checkForStopWatch();
 		
 		// UPDATE BACKGROUND
 		//bg.setPosition(tileMap.getx(), tileMap.gety());

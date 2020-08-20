@@ -15,7 +15,7 @@ public class VittleAI {
 	private Player p;
 	private ArrayList<Vittle> vittles;
 	private Vittle v;
-	private ArrayList<PowerUp> powerups;
+	private PowerUp powerup;
 	
 	private int i;
 	private double vittlePlayerRange;
@@ -24,10 +24,12 @@ public class VittleAI {
 	
 	ScheduledExecutorService sed = Executors.newScheduledThreadPool(2);
 	
-	public VittleAI(Player p, ArrayList<Vittle> vittles, ArrayList<PowerUp> powerups) {
+	public VittleAI(Player p, ArrayList<Vittle> vittles) {
 		this.p = p;
 		this.vittles = vittles;
-		this.powerups = powerups;
+		if(p.powerups.size() > 0) {
+			this.powerup = p.powerups.get(0);
+		}
 		
 		Runnable randMove = () -> {
 			Random r = new Random();
@@ -53,18 +55,10 @@ public class VittleAI {
 		
 	}
 	
-	private void fleeFromPlayer() {
+	private void fleeFromPlayer() {	
 		for(i = 0; i < vittles.size(); i++) {
 			v = vittles.get(i);
-			if(powerups.size() > 0) {
-				System.out.println(powerups.size());
-				if(powerups.get(0).getName().equals("STOPWATCH")) {
-					if(p.usingPowerUp) {
-						System.out.println("should stop vittel");
-					}
-				}
-			}
-			else if(checkIfPlayerInRange(v.rangeModifier) && !p.isDead()) {
+			if(checkIfPlayerInRange(v.rangeModifier) && !p.isDead()) {
 				if(v.getx() != p.getx() && p.getx() > v.getx() && playerWithinRange) {
 					v.left = true;
 					v.right = false;

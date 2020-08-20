@@ -1,5 +1,7 @@
 package Entity;
 
+import java.util.ArrayList;
+
 import TileMap.TileMap;
 
 /**
@@ -11,7 +13,6 @@ public class PowerUp extends MapObject{
 	
 	protected String name;
 	public boolean obtained; 
-	public boolean stopWatchPowerOn;
 	
 	public PowerUp(TileMap tm) {
 		super(tm);
@@ -30,7 +31,7 @@ public class PowerUp extends MapObject{
 		switch(name) {
 		
 		case "STOPWATCH":
-			stopWatchPowerOn = true;
+			System.out.println("Powerup used");
 			break;
 			
 		default:

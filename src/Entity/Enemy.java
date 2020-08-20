@@ -1,8 +1,5 @@
 package Entity;
 
-import java.util.HashMap;
-
-import Audio.AudioPlayer;
 import TileMap.TileMap;
 
 public class Enemy extends MapObject {
@@ -14,7 +11,6 @@ public class Enemy extends MapObject {
 	protected boolean flinching;
 	protected long flinchTimer;
 	protected int scorePoints;
-	protected int xpPoints;
 	
 	public int rangeModifier; // How close enemy must be close to player for it to follow
 	protected int kickBack; // Amount of x distance removed after taking damage
@@ -32,14 +28,6 @@ public class Enemy extends MapObject {
 	
 	public int getDamage() {
 		return damage;
-	}
-	
-	public void setXPPoints(int xpPoints) {
-		this.xpPoints = xpPoints;
-	}
-	
-	public int getXPPoints() {
-		return xpPoints;
 	}
 	
 	public void hit(int damage) {

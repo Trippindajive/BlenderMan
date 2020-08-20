@@ -41,11 +41,9 @@ public class Player extends MapObject {
 	private double energy;
 	private double maxEnergy;
 	
-	//private Timestamp time;
 	private int secondCounter = 0;
 	private long energyDecayRate;
 	private long previousTime = System.nanoTime() / 1000000000;
-	//private long futureTime;
 	
 	// Fireball
 	private boolean firing;
@@ -73,7 +71,7 @@ public class Player extends MapObject {
 	// Use Powerups
 	public boolean usingPowerUp;
 	public String powerUpName;
-	private ArrayList<PowerUp> powerups = new ArrayList<PowerUp>();
+	public ArrayList<PowerUp> powerups = new ArrayList<PowerUp>();
 	
 	// Save Game Data
 	public String playerSave = "";
@@ -107,9 +105,18 @@ public class Player extends MapObject {
 	private static final int BLENDING = 7;
 	private static final int POWERUP = 8;
 	
-	private AudioPlayer BLENDING_SOUND = new AudioPlayer("/SFX/blendersfx1.wav");
-	
+	/**
+	 * @param Sound effects that the player can play
+	 */
 	private HashMap<String, AudioPlayer> sfx;
+	private AudioPlayer BLENDING_SFX = new AudioPlayer("/SFX/blendersfx1.wav");
+	private AudioPlayer FIRING_SFX = new AudioPlayer("/SFX/ranged_attack.wav");
+	private AudioPlayer JUMPING_SFX = new AudioPlayer("/SFX/zapsplat_multimedia_game_sound_classic_jump_002_41725.wav");
+	private AudioPlayer DAMAGED_SFX = new AudioPlayer("/SFX/player_hit.wav");
+	private AudioPlayer POWERUP_OBTAINED_SFX = new AudioPlayer("/SFX/powerup_obtained.wav");
+	private AudioPlayer SCRATCHING_SFX = new AudioPlayer("/SFX/zapsplat_household_band_aid_plaster_strip_rip_tear_002_11599.wav");
+	private AudioPlayer ERROR_SFX = new AudioPlayer("/SFX/error_tone.wav");
+	private AudioPlayer POWERUP_USED = new AudioPlayer("/SFX/powerup_used.wav");
 	
 	private BufferedImage spritesheet;
 	
@@ -138,7 +145,7 @@ public class Player extends MapObject {
 		
 		facingRight = true;
 		
-		health = 30;
+		health = 1;
 		maxHealth = 50;
 		atkPower = 10;
 		maxPower = 25;
@@ -288,20 +295,14 @@ public class Player extends MapObject {
 		if(powerups.size() > 0) {
 			usingPowerUp = true;
 			powerups.get(0).usePowerUp(powerups.get(0).getName());
+			sfx.put("powerupUsed", POWERUP_USED);
+			sfx.get("powerupUsed").play();
 			powerups.remove(0);
 		} else {
-			sfx.put("powerupError", new AudioPlayer("/SFX/error_tone.wav"));
+			sfx.put("powerupError", ERROR_SFX);
 			sfx.get("powerupError").play();
 		}
 	}
-	
-	/*public void setPowerUpInInventory(PowerUp pu) {
-		powerUpName = pu.getName();
-	}*/
-	
-	/*public String getPowerUpInInventory() {
-		return powerUpName;
-	}*/
 	
 	public boolean isDead() {
 		return dead;
@@ -350,9 +351,14 @@ public class Player extends MapObject {
 	 * @param Adds powerups to the player's inventory
 	 */
 	public void setPowerUps(PowerUp p) {
+		if(this.powerups.size() == 0)
 		powerups.add(p);
 	}
 	
+	/**
+	 * 
+	 * @return Returns name of powerup in inventory to HUD
+	 */
 	public String getPowerUps() {
 		if(powerups.size() == 0) {
 			return "none";
@@ -608,15 +614,18 @@ public class Player extends MapObject {
 	}
 	
 	public void checkObtainedPowerUps(ArrayList<PowerUp> powerups) {
+		
 		for(int i = 0; i < powerups.size(); i++) {
 			PowerUp pu = powerups.get(i);
-			int range = pu.getx() - getx();
+			int xRange = pu.getx() - getx();
+			int yRange = pu.gety() - gety();
 			
-			if(range >= -25 && range <= 25) {
+			if(xRange >= -25 && xRange <= 25 && yRange >= -30 && yRange <= 30) {
 				pu.obtained = true;
-				if(pu.obtained) {
-					setPowerUps(pu);
-				}
+				sfx.put("powerup obtained", POWERUP_OBTAINED_SFX);
+				sfx.get("powerup obtained").play();
+				setPowerUps(pu);
+				System.out.println("powerup obtained");
 			}
 		}
 	}
@@ -625,14 +634,15 @@ public class Player extends MapObject {
 		if(flinching) {
 			return;
 		}
-		sfx.put("playerHit", new AudioPlayer("/SFX/player_hit.wav"));
-		sfx.get("playerHit").play();
+		sfx.put("playerHit", DAMAGED_SFX);
 		health -= damage;
-		if(e.right) {
-			x += knockback;
+		if(e.right && !dead) {
+			x += e.knockBackPlayer;
+			sfx.get("playerHit").play();
 		}
-		if(e.left) {
-			x -= knockback;
+		if(e.left && !dead) {
+			x -= e.knockBackPlayer;
+			sfx.get("playerHit").play();
 		}
 		if(health < 0) {
 			health = 0;
@@ -696,7 +706,7 @@ public class Player extends MapObject {
 		// Jumping
 		if(jumping && !falling && !blending) {
 			if(currentAction != BLENDING) {
-				sfx.put("jump", new AudioPlayer("/SFX/zapsplat_multimedia_game_sound_classic_jump_002_41725.wav"));
+				sfx.put("jump", JUMPING_SFX);
 				sfx.get("jump").play();
 				
 			}
@@ -737,6 +747,12 @@ public class Player extends MapObject {
 				FireBall fb = new FireBall(tileMap, facingRight);
 				fb.setPosition(x, y + 10);
 				fireBalls.add(fb);
+				sfx.put("firing", FIRING_SFX);
+				sfx.get("firing").play();
+			}
+			else if(atkPower < fireCost) {
+				sfx.put("no fire", ERROR_SFX);
+				sfx.get("no fire").play();
 			}
 		}
 	}
@@ -1106,7 +1122,6 @@ public class Player extends MapObject {
 	}
 	
 	public void usingPowerUp() {
-		System.out.println("inside method 'usingPowerUp'");
 		if(usingPowerUp) {
 			System.out.println("using powerup");
 		}
@@ -1116,7 +1131,7 @@ public class Player extends MapObject {
 		if(scratching) {
 			if(currentAction != SCRATCHING) {
 				currentAction = SCRATCHING;
-				sfx.put("scratch", new AudioPlayer("/SFX/zapsplat_household_band_aid_plaster_strip_rip_tear_002_11599.wav"));
+				sfx.put("scratch", SCRATCHING_SFX);
 				sfx.get("scratch").play();
 				/*scratching animation does not exist for now
 				animation.setFrames(sprites.get(SCRATCHING));
@@ -1131,8 +1146,7 @@ public class Player extends MapObject {
 				/*firing animation does not exist for now
 				animation.setFrames(sprites.get(0));
 				*/
-				sfx.put("firing", new AudioPlayer("/SFX/ranged_attack.wav"));
-				sfx.get("firing").play();
+				
 				animation.setDelay(100);
 				width = 100;
 			}
@@ -1140,7 +1154,7 @@ public class Player extends MapObject {
 		else if(blending && falling == false && jumping == false) {
 			if(currentAction != BLENDING) {
 				currentAction = BLENDING;
-				sfx.put("blending", BLENDING_SOUND);
+				sfx.put("blending", BLENDING_SFX);
 				sfx.get("blending").play();
 				animation.setFrames(sprites.get(IDLE));
 				animation.setDelay(50);

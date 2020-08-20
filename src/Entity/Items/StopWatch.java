@@ -17,7 +17,6 @@ public class StopWatch extends PowerUp{
 		super(tm);
 		name = "STOPWATCH";
 		
-		
 		try {
 			
 			BufferedImage spritesheet = ImageIO.read(getClass().getResourceAsStream(
@@ -44,8 +43,6 @@ public class StopWatch extends PowerUp{
 	
 	@Override
 	public void update() {
-		//getNextPosition();
-		
 		animation.update();
 	}
 	

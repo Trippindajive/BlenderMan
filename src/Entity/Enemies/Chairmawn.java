@@ -14,8 +14,8 @@ public class Chairmawn extends Enemy {
 	public Chairmawn(TileMap tm) {
 		super(tm);
 		
-		moveSpeed = 0.3;
-		maxSpeed = 0.3;
+		moveSpeed = 0.4;
+		maxSpeed = 0.4;
 		fallSpeed = 0.2;
 		terminalSpeed = 10.0;
 		
@@ -28,7 +28,7 @@ public class Chairmawn extends Enemy {
 		damage = 1;
 		scorePoints = 5;
 		
-		rangeModifier = 100;
+		rangeModifier = 150;
 		kickBack = 5;
 		timeFlinching = 1500;
 		knockBackPlayer = 30;
@@ -90,7 +90,6 @@ public class Chairmawn extends Enemy {
 		checkTileMapCollision();
 		checkWallCollision();
 		setPosition(xtemp, ytemp);
-		setXPPoints(xpPoints);
 		checkIfStill();
 		checkFlinching();
 		// Update animation

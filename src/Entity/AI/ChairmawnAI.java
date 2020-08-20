@@ -59,7 +59,8 @@ public class ChairmawnAI {
 		
 		return chaseIsOn;
 	}
-	
+	//
+	//
 	private void chasePlayer() {
 		for(i = 0; i < enemies.size(); i++) {
 			e = enemies.get(i);
@@ -67,14 +68,20 @@ public class ChairmawnAI {
 				if(e.right && e.getx() != p.getx() && p.getx() < e.getx() && playerWithinRange) {
 					e.right = false;
 					e.left = true;
+					e.maxSpeed = 1.3;
+					e.moveSpeed = 1.3;
 				}
 				else if(e.left && e.getx() != p.getx() && p.getx() > e.getx() && playerWithinRange) {
 					e.left = false;
 					e.right = true;
+					e.maxSpeed = 1.3;
+					e.moveSpeed = 1.3;
 				}
 			}
 			else {
 				chaseIsOn = false;
+				e.maxSpeed = 0.4;
+				e.moveSpeed = 0.4;
 			}
 		}
 	}
