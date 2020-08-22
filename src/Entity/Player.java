@@ -8,6 +8,10 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 import GameState.LoadGameState;
 import Entity.Vittles.*;
 
@@ -121,6 +125,8 @@ public class Player extends MapObject {
 	private BufferedImage spritesheet;
 	
 	private LoadGameState lsm;
+	
+	
 	
 	/**
 	 * Constructor for making player object with its appropriate tilemap
@@ -1070,61 +1076,68 @@ public class Player extends MapObject {
 			
 		} return elapsedTime;
 	}
-
-	public void checkBlending() {
-		
-		if(secondCounter == 1) {
-			if(blending && hasBoost != true && left == false && right == false && jumping == false) {
-				energy -= 20.0;
-				System.out.println("CONSUMED 20 ENERGY");
-				checkForOtherVittles();
-				if(onlyHasFruits == true) {
-					//healPoints += calcForCombo(fruits);
-					health += healPoints;
-					removeFromInventory(fruits);
-				}
-				else if(onlyHasVeggies == true) {
-					//atkPoints += calcForCombo(veggies);
-					atkPower += atkPoints;
-					removeFromInventory(veggies);
-				}
-				else if(onlyHasProteins == true) {
-					//shieldPoints += calcForCombo(proteins);
-					shield += shieldPoints;
-					removeFromInventory(proteins);
-				}
-				else {
-					checkForBonuses();
-					checkForMaluses();
-					health += healPoints;
-					removeFromInventory(fruits);
-					atkPower += atkPoints;
-					removeFromInventory(veggies);
-					shield += shieldPoints;
-					removeFromInventory(proteins);
-					clearStringArrays();
-					bonusMultiplierFruit = bonusMultiplierVeg = bonusMultiplierPro = 0;
-				}
-			}
-			else if (blending && left == false && right == false && jumping == false) {
-				energy -= 30.0;
-				System.out.println("CONSUMED 30 ENERGY");
-				if(fruits.size() > 0 || veggies.size() > 0 || proteins.size() > 0) {
-				implementBoost(liquids.get(0).getName());
+	
+	private void doBlendingStuff() {
+		if(blending && hasBoost != true && left == false && right == false && jumping == false) {
+			energy -= 20.0;
+			System.out.println("CONSUMED 20 ENERGY");
+			checkForOtherVittles();
+			if(onlyHasFruits == true) {
+				//healPoints += calcForCombo(fruits);
+				health += healPoints;
 				removeFromInventory(fruits);
-				removeFromInventory(veggies);
-				removeFromInventory(proteins);
-				liquids.remove(0);
-				}
 			}
-		secondCounter = 0;
-		} 
+			else if(onlyHasVeggies == true) {
+				//atkPoints += calcForCombo(veggies);
+				atkPower += atkPoints;
+				removeFromInventory(veggies);
+			}
+			else if(onlyHasProteins == true) {
+				//shieldPoints += calcForCombo(proteins);
+				shield += shieldPoints;
+				removeFromInventory(proteins);
+			}
+			else {
+				checkForBonuses();
+				checkForMaluses();
+				health += healPoints;
+				removeFromInventory(fruits);
+				atkPower += atkPoints;
+				removeFromInventory(veggies);
+				shield += shieldPoints;
+				removeFromInventory(proteins);
+				clearStringArrays();
+				bonusMultiplierFruit = bonusMultiplierVeg = bonusMultiplierPro = 0;
+			}
+		}
+		else if (blending && left == false && right == false && jumping == false) {
+			energy -= 30.0;
+			System.out.println("CONSUMED 30 ENERGY");
+			if(fruits.size() > 0 || veggies.size() > 0 || proteins.size() > 0) {
+			implementBoost(liquids.get(0).getName());
+			removeFromInventory(fruits);
+			removeFromInventory(veggies);
+			removeFromInventory(proteins);
+			liquids.remove(0);
+			}
+		}
 	}
 	
-	public void usingPowerUp() {
-		if(usingPowerUp) {
-			System.out.println("using powerup");
+	public void checkBlending() {
+		ScheduledExecutorService bud = Executors.newScheduledThreadPool(2);
+		
+		if(blending) {
+		Runnable blendingTakesTime = () -> {
+			doBlendingStuff();
+		};
+		//if(secondCounter == 1) {
+		
+		bud.schedule(blendingTakesTime, 2, TimeUnit.SECONDS);
+		
 		}
+		bud.shutdown();
+		//secondCounter = 0;
+		//} 
 	}
 	
 	public void setAnimation() {
@@ -1154,6 +1167,7 @@ public class Player extends MapObject {
 		else if(blending && falling == false && jumping == false) {
 			if(currentAction != BLENDING) {
 				currentAction = BLENDING;
+				checkBlending();
 				sfx.put("blending", BLENDING_SFX);
 				sfx.get("blending").play();
 				animation.setFrames(sprites.get(IDLE));
@@ -1244,7 +1258,6 @@ public class Player extends MapObject {
 		updateFireBalls();
 		checkFlinching();
 		checkShield();
-		checkBlending();
 		checkDead();
 		checkEnergy();
 		setAnimation();

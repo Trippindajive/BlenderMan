@@ -92,7 +92,6 @@ public class Chairmawn extends Enemy {
 		setPosition(xtemp, ytemp);
 		checkIfStill();
 		checkFlinching();
-		// Update animation
 		animation.update();
 		
 	}

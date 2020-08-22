@@ -14,6 +14,7 @@ import TileMap.TileMap;
 import Main.GamePanel;
 import java.awt.event.KeyEvent;
 import Entity.Enemies.*;
+import Entity.Items.Ions;
 import Entity.Items.StopWatch;
 import Entity.Vittles.*;
 import Entity.AI.ChairmawnAI;
@@ -38,9 +39,9 @@ public class Level1State extends GameState{
 	 */
 	public Player player;
 	public ArrayList<Enemy> enemies = new ArrayList<Enemy>();
-	private ArrayList<Vittle> Fruits = new ArrayList<Vittle>();
-	private ArrayList<Vittle> Veggies = new ArrayList<Vittle>();
-	private ArrayList<Vittle> Proteins = new ArrayList<Vittle>();
+	public ArrayList<Vittle> Fruits = new ArrayList<Vittle>();
+	public ArrayList<Vittle> Veggies = new ArrayList<Vittle>();
+	public  ArrayList<Vittle> Proteins = new ArrayList<Vittle>();
 	private ArrayList<Vittle> Liquids = new ArrayList<Vittle>();
 	
 	
@@ -143,11 +144,6 @@ public class Level1State extends GameState{
 		}
 	}
 	
-	/*private Point enemySpawner() {
-		Point[] points = new Point[];
-		return Point
-	}
-	*/
 	private void populateVittles() {
 		int i;
 		Strawberry fs = new Strawberry(tileMap);
@@ -186,7 +182,7 @@ public class Level1State extends GameState{
 		
 		FO = new Point[] {
 				//new Point(150, 130),
-			new Point(400, 100)
+			new Point(400, 365)
 		};
 		for(i = 0; i < FO.length; i++) {
 			fo = new Orange(tileMap);
@@ -198,9 +194,12 @@ public class Level1State extends GameState{
 				//new Point(100, 160),
 				//new Point(150, 160),
 				//new Point(270, 160),
-				//new Point(300, 160),
+				new Point(300, 365),
 				new Point(1525, 160),
-				new Point(750, 80)
+				new Point(750, 80),
+				new Point(1200, 260),
+				new Point(1500, 130),
+				new Point(2830, 650)
 		};
 		for(i = 0; i < V.length; i++) {
 			vb = new Broccoli(tileMap);
@@ -232,45 +231,48 @@ public class Level1State extends GameState{
 	}
 	
 	private void populatePowerUps() {
-		
+		int i;
 		StopWatch stopwatch;
+		Ions ions;
 		
 		Point[] stopwatchP = new Point[] {
 				new Point(230, 270),
-				new Point(280, 270)
+				new Point(780, 270)
 		};
-		for(int i = 0; i < stopwatchP.length; i++) {
+		for(i = 0; i < stopwatchP.length; i++) {
 			stopwatch = new StopWatch(tileMap);
 			stopwatch.setPosition(stopwatchP[i].x, stopwatchP[i].y);
 			PowerUps.add(stopwatch);
 		}
+		
+		Point[] ionsP = new Point[] {
+				new Point(280, 270),
+				new Point(940, 270)
+		};
+		for(i = 0; i < ionsP.length; i++) {
+			ions = new Ions(tileMap);
+			ions.setPosition(ionsP[i].x, ionsP[i].y);
+			PowerUps.add(ions);
+		}
 	}
 	
 	private void checkForStopWatch() {
+		StopWatch stopwatch = new StopWatch(tileMap);
+		
 		if(player.usingPowerUp) {
-			stopWatchVittles(Fruits);
-			stopWatchVittles(Veggies);
-			stopWatchVittles(Proteins);
+			for(int i = 0; i < PowerUps.size(); i++) {
+				if(PowerUps.get(i).getName().equals("STOPWATCH")) {
+					stopwatch = (StopWatch) PowerUps.get(i);
+				}
+			}
+			stopwatch.stopWatchVittles(Fruits);
+			stopwatch.stopWatchVittles(Veggies);
+			stopwatch.stopWatchVittles(Proteins);
 			player.usingPowerUp = false;
 		}
 	}
 	
-	private void stopWatchVittles(ArrayList<Vittle> vittles) {
-		int i;
-		ScheduledExecutorService sed = Executors.newScheduledThreadPool(2);
-		
-		for(i = 0; i < vittles.size(); i++) {
-			Vittle f = vittles.get(i);
-			f.moveSpeed = 0.0;
-			f.maxSpeed = 0.0;
-			
-			Runnable resumeMove = () -> {
-				f.moveSpeed = 0.3;
-				f.maxSpeed = 0.3;
-			};
-			sed.scheduleAtFixedRate(resumeMove, 5, 5, TimeUnit.SECONDS);
-		}
-	}
+	
 	
 	public void update() {
 		Enemy e; // enemy entity

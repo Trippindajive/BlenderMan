@@ -37,14 +37,6 @@ public class ChairmawnAI {
 		
 	}
 	
-	private void makeYouJump() {
-		for(Enemy e : enemies) {
-			if(e.dy <= 0) {
-				e.setPosition(e.getCurrentXPosition(), 1);
-			}
-		}
-	}
-	
 	private boolean checkIfPlayerWithinReach(int rangeModifier) {
 		enemyPlayerRange = p.getCurrentXPosition() - e.getCurrentXPosition(); 
 		
@@ -59,8 +51,7 @@ public class ChairmawnAI {
 		
 		return chaseIsOn;
 	}
-	//
-	//
+
 	private void chasePlayer() {
 		for(i = 0; i < enemies.size(); i++) {
 			e = enemies.get(i);
@@ -127,8 +118,6 @@ public class ChairmawnAI {
 	
 	
 	public void update() {
-		
-		//makeYouJump();
 		chasePlayer();
 		intersects();
 	}

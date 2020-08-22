@@ -19,7 +19,7 @@ public abstract class MapObject {
 	
 	// Position and Vector
 	protected double x; // Global Positions
-	protected double y;
+	public double y;
 	public double dx; // Local Positions
 	public double dy;
 	

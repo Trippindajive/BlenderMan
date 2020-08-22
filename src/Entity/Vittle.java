@@ -41,7 +41,7 @@ public class Vittle extends MapObject{
 	protected String name;
 	
 	// Behavior of vittle
-	protected boolean captured;
+	public boolean captured;
 	protected boolean flinching;
 	protected long flinchTimer;
 	protected long fleeTimer;
@@ -59,7 +59,7 @@ public class Vittle extends MapObject{
 		height = 42;
 		cwidth = 30;
 		cheight = 30;
-		rangeModifier = 200;
+		rangeModifier = 150;
 	}
 	
 	public boolean isCaptured() {

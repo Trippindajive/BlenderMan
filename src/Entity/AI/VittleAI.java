@@ -15,7 +15,6 @@ public class VittleAI {
 	private Player p;
 	private ArrayList<Vittle> vittles;
 	private Vittle v;
-	private PowerUp powerup;
 	
 	private int i;
 	private double vittlePlayerRange;
@@ -27,9 +26,6 @@ public class VittleAI {
 	public VittleAI(Player p, ArrayList<Vittle> vittles) {
 		this.p = p;
 		this.vittles = vittles;
-		if(p.powerups.size() > 0) {
-			this.powerup = p.powerups.get(0);
-		}
 		
 		Runnable randMove = () -> {
 			Random r = new Random();
@@ -60,16 +56,12 @@ public class VittleAI {
 			v = vittles.get(i);
 			if(checkIfPlayerInRange(v.rangeModifier) && !p.isDead()) {
 				if(v.getx() != p.getx() && p.getx() > v.getx() && playerWithinRange) {
-					v.left = true;
-					v.right = false;
-					v.facingLeft = true;
-					v.maxSpeed = 1.0;
+					jumpFromFright();
+					fleeRight();
 				}
 				else if(v.getx() != p.getx() && p.getx() < v.getx() && playerWithinRange) {
-					v.right = true;
-					v.left = false;
-					v.facingRight = true;
-					v.maxSpeed = 1.0;
+					jumpFromFright();
+					fleeLeft();
 				}
 			}
 			else {
@@ -77,6 +69,24 @@ public class VittleAI {
 				v.maxSpeed = 0.3;
 			}
 		}
+	}
+	
+	private void jumpFromFright() {
+		v.y -= 2;
+	}
+	
+	private void fleeRight() {
+		v.left = true;
+		v.right = false;
+		v.facingLeft = true;
+		v.maxSpeed = 1.0;
+	}
+	
+	private void fleeLeft() {
+		v.right = true;
+		v.left = false;
+		v.facingRight = true;
+		v.maxSpeed = 1.0;
 	}
 	
 	private void randomizeXMovement(Random r) {
@@ -95,5 +105,4 @@ public class VittleAI {
 	public void update() {
 		fleeFromPlayer();
 	}
-	
 }

@@ -6,6 +6,7 @@ import java.awt.event.KeyEvent;
 import Audio.AudioPlayer;
 import TileMap.Background;
 import java.util.ArrayList;
+import java.util.HashMap;
 /**
  * A subclass of GameState, it defines the properties of the main menu.
  * @author Tim Riggins
@@ -19,7 +20,7 @@ public class MenuState extends GameState {
 	private Color titleColor;
 	private Font titleFont;
 	private Font font;
-	private AudioPlayer bgMusic;
+	private HashMap<String, AudioPlayer> bgMusic;
 	
 	public MenuState(GameStateManager gsm) {
 		this.gsm = gsm;
@@ -36,6 +37,11 @@ public class MenuState extends GameState {
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
+		
+		bgMusic = new HashMap<String, AudioPlayer>();
+		bgMusic.put("menu music", new AudioPlayer("/Music/Red-MarKer-DMC-12-Gauge.wav"));
+	
+		
 	}
 	
 	public void init() {
@@ -44,6 +50,12 @@ public class MenuState extends GameState {
 	
 	public void update() {
 		bg.update();
+		//playMusic();
+	}
+	
+	private void playMusic() {
+		
+		bgMusic.get("menu music").play();
 	}
 	
 	public void draw(Graphics2D g) {
