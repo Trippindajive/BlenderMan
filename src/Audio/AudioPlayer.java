@@ -4,7 +4,7 @@ import javax.sound.sampled.*;
 
 public class AudioPlayer {
 	
-	private Clip clip;
+	public Clip clip;
 
 	public AudioPlayer(String s) {
 		
@@ -32,14 +32,7 @@ public class AudioPlayer {
 					decodeFormat, ais);
 			clip = AudioSystem.getClip();
 			clip.open(dais);
-			
-			FloatControl gainControl = (FloatControl) clip.getControl(
-					FloatControl.Type.MASTER_GAIN);
-			// Reduce volume by 10 decibels.
-			//gainControl.setValue(-10.0f); 
-			//clip.start();
-			//play();
-			
+	
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
