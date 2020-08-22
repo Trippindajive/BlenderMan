@@ -1,5 +1,6 @@
 package Entity.AI;
 
+import Entity.AIBase;
 import Entity.Enemy;
 import Entity.Player;
 import java.util.ArrayList;
@@ -9,7 +10,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 
-public class ChairmawnAI {
+public class ChairmawnAI extends AIBase{
 	
 	private Player p;
 	private ArrayList<Enemy> enemies;
@@ -22,7 +23,7 @@ public class ChairmawnAI {
 	private boolean playerWithinRange;
 	private int collisionRange;
 	
-	ScheduledExecutorService sed = Executors.newScheduledThreadPool(2);
+	//ScheduledExecutorService sed = Executors.newScheduledThreadPool(2);
 	
 	public ChairmawnAI(Player p, ArrayList<Enemy> enemies) {
 		this.p = p;

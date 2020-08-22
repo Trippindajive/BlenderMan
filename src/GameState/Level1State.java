@@ -73,6 +73,9 @@ public class Level1State extends GameState{
 	Point[] FB; // banana
 	Point[] FO; // orange
 	
+	public int killScheduler = 0;
+	public ArrayList<AIBase> aibase = new ArrayList<AIBase>();
+	
 	/**
 	 * @param Location arrays for powerups
 	 */
@@ -272,7 +275,19 @@ public class Level1State extends GameState{
 		}
 	}
 	
+	public void killSchedule() {
+		ArrayList<AIBase> r = makeAIArrayList();
+		
+		r.forEach(ai -> ai.murderAI());
+	}
 	
+	private ArrayList<AIBase> makeAIArrayList() {
+		aibase.add(chairmawnAI);
+		aibase.add(fruitAI);
+		aibase.add(veggieAI);
+		aibase.add(proteinAI);
+		return aibase;
+	}
 	
 	public void update() {
 		Enemy e; // enemy entity
@@ -459,7 +474,7 @@ public class Level1State extends GameState{
 		if(player.isDead() == true) {
 			gameOver = new GameOver();
 			gameOver.draw(g);
-			
+			killSchedule();
 		}
 	}
 	

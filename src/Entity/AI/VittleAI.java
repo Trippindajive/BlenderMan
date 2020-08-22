@@ -1,6 +1,7 @@
 package Entity.AI;
 
 import Entity.Vittle;
+import Entity.AIBase;
 import Entity.Player;
 import Entity.PowerUp;
 
@@ -10,7 +11,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class VittleAI {
+public class VittleAI extends AIBase{
 	
 	private Player p;
 	private ArrayList<Vittle> vittles;
@@ -21,7 +22,7 @@ public class VittleAI {
 	private boolean fleeing;
 	private boolean playerWithinRange;
 	
-	ScheduledExecutorService sed = Executors.newScheduledThreadPool(2);
+	
 	
 	public VittleAI(Player p, ArrayList<Vittle> vittles) {
 		this.p = p;
@@ -100,6 +101,7 @@ public class VittleAI {
 				v.dx = -v.moveSpeed;
 			}
 		}
+		System.out.println("ai running randomly");
 	}
 	
 	public void update() {
