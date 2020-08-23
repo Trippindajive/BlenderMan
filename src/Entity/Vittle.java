@@ -46,6 +46,9 @@ public class Vittle extends MapObject{
 	protected long flinchTimer;
 	protected long fleeTimer;
 	public int rangeModifier;
+	public double fleeSpeed;
+	public double origMaxSpeed;
+	
 	
 	public Vittle(TileMap tm) {
 		super(tm);
@@ -54,6 +57,8 @@ public class Vittle extends MapObject{
 		maxSpeed = 0.3;
 		fallSpeed = 0.2;
 		terminalSpeed = 10.0;
+		origMaxSpeed = 0.3;
+		fleeSpeed = 1.0;
 		
 		width = 42;
 		height = 42;

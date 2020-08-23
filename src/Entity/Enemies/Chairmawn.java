@@ -18,6 +18,8 @@ public class Chairmawn extends Enemy {
 		maxSpeed = 0.4;
 		fallSpeed = 0.2;
 		terminalSpeed = 10.0;
+		origMaxSpeed = 0.4;
+		chaseSpeed = 1.0;
 		
 		width = 40; // Width of actual spritesheet
 		height = 40;

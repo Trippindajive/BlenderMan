@@ -20,6 +20,7 @@ public class Strawberry extends Vittle {
 		atkPoints = 2;
 		scorePoints = 10;
 		
+		
 		// Load Sprites
 		try {
 			

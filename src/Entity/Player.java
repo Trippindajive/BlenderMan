@@ -4,6 +4,8 @@ import TileMap.*;
 import Audio.AudioPlayer;
 import java.util.ArrayList;
 import javax.imageio.ImageIO; // Package that contains classes which can read spritesheets
+import javax.sound.sampled.FloatControl;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
@@ -120,13 +122,14 @@ public class Player extends MapObject {
 	private AudioPlayer POWERUP_OBTAINED_SFX = new AudioPlayer("/SFX/powerup_obtained.wav");
 	private AudioPlayer SCRATCHING_SFX = new AudioPlayer("/SFX/zapsplat_household_band_aid_plaster_strip_rip_tear_002_11599.wav");
 	private AudioPlayer ERROR_SFX = new AudioPlayer("/SFX/error_tone.wav");
-	private AudioPlayer POWERUP_USED = new AudioPlayer("/SFX/powerup_used.wav");
+	private AudioPlayer POWERUP_USED_SFX = new AudioPlayer("/SFX/powerup_used.wav");
+	private AudioPlayer ION_OBTAINED_SFX = new AudioPlayer("/SFX/ion_obtained.wav");
 	
 	private BufferedImage spritesheet;
 	
 	private LoadGameState lsm;
 	
-	
+	FloatControl gainControl;
 	
 	/**
 	 * Constructor for making player object with its appropriate tilemap
@@ -301,7 +304,7 @@ public class Player extends MapObject {
 		if(powerups.size() > 0) {
 			usingPowerUp = true;
 			powerups.get(0).usePowerUp(powerups.get(0).getName());
-			sfx.put("powerupUsed", POWERUP_USED);
+			sfx.put("powerupUsed", POWERUP_USED_SFX);
 			sfx.get("powerupUsed").play();
 			powerups.remove(0);
 		} else {
@@ -629,11 +632,29 @@ public class Player extends MapObject {
 			if(xRange >= -25 && xRange <= 25 && yRange >= -30 && yRange <= 30) {
 				pu.obtained = true;
 				sfx.put("powerup obtained", POWERUP_OBTAINED_SFX);
-				sfx.get("powerup obtained").play();
-				setPowerUps(pu);
-				System.out.println("powerup obtained");
+				sfx.put("ion obtained", ION_OBTAINED_SFX);
+				if(!pu.getName().equals("ION")) {
+					sfx.get("powerup obtained").play();
+					setPowerUps(pu);
+				}
+				else if(pu.getName().equals("ION")) {
+					gainControl = (FloatControl) 
+					sfx.get("ion obtained").clip.getControl(
+					FloatControl.Type.MASTER_GAIN);
+					
+					gainControl.setValue(-10.0f);
+					sfx.get("ion obtained").play();
+					energy = energy * 1.33;
+					if(energy > maxEnergy) {
+						energy = maxEnergy;
+					}
+				}
 			}
 		}
+	}
+	
+	public void grabItem(ArrayList<PowerUp> item) {
+		
 	}
 	
 	public void hit(int damage, Enemy e, int knockback) {
@@ -1130,14 +1151,13 @@ public class Player extends MapObject {
 		Runnable blendingTakesTime = () -> {
 			doBlendingStuff();
 		};
-		//if(secondCounter == 1) {
-		
-		bud.schedule(blendingTakesTime, 2, TimeUnit.SECONDS);
+	
+		bud.schedule(blendingTakesTime, 1, TimeUnit.SECONDS);
 		
 		}
+		
 		bud.shutdown();
-		//secondCounter = 0;
-		//} 
+		
 	}
 	
 	public void setAnimation() {
@@ -1167,9 +1187,9 @@ public class Player extends MapObject {
 		else if(blending && falling == false && jumping == false) {
 			if(currentAction != BLENDING) {
 				currentAction = BLENDING;
-				checkBlending();
 				sfx.put("blending", BLENDING_SFX);
 				sfx.get("blending").play();
+				checkBlending();
 				animation.setFrames(sprites.get(IDLE));
 				animation.setDelay(50);
 				width = 100;

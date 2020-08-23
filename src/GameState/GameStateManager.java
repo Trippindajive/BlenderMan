@@ -61,11 +61,11 @@ public class GameStateManager {
 	
 	private void loadState(int state) {
 		if(state == MENUSTATE) {
-			playSong("menu music");
+			//playSong("menu music");
 			gameStates[state] = new MenuState(this);
 		}
 		if(state == LEVEL1STATE) {
-			playSong("level1 music");
+			//playSong("level1 music");
 			gameStates[state] = new Level1State(this);
 		}
 		if(state == HELPSCREEN) {

@@ -22,6 +22,8 @@ public class VittleAI extends AIBase{
 	private boolean fleeing;
 	private boolean playerWithinRange;
 	
+	//private double tempSpeed;
+	
 	
 	
 	public VittleAI(Player p, ArrayList<Vittle> vittles) {
@@ -67,7 +69,7 @@ public class VittleAI extends AIBase{
 			}
 			else {
 				fleeing = false;
-				v.maxSpeed = 0.3;
+				v.maxSpeed = v.origMaxSpeed;
 			}
 		}
 	}
@@ -80,14 +82,14 @@ public class VittleAI extends AIBase{
 		v.left = true;
 		v.right = false;
 		v.facingLeft = true;
-		v.maxSpeed = 1.0;
+		v.maxSpeed = v.fleeSpeed;
 	}
 	
 	private void fleeLeft() {
 		v.right = true;
 		v.left = false;
 		v.facingRight = true;
-		v.maxSpeed = 1.0;
+		v.maxSpeed = v.fleeSpeed;
 	}
 	
 	private void randomizeXMovement(Random r) {
@@ -101,7 +103,6 @@ public class VittleAI extends AIBase{
 				v.dx = -v.moveSpeed;
 			}
 		}
-		System.out.println("ai running randomly");
 	}
 	
 	public void update() {

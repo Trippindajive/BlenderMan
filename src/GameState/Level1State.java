@@ -44,6 +44,15 @@ public class Level1State extends GameState{
 	public  ArrayList<Vittle> Proteins = new ArrayList<Vittle>();
 	private ArrayList<Vittle> Liquids = new ArrayList<Vittle>();
 	
+	/**
+	 * @param List of entities
+	 */
+	Enemy e;
+	Vittle f; // fruit entity
+	Vittle v; // vegetable entity
+	Vittle p; // protein entity
+	Vittle l; // liquid entity
+	PowerUp pw; // powerup entity
 	
 	/**
 	 * *param List of items/powerups in this level
@@ -76,12 +85,8 @@ public class Level1State extends GameState{
 	public int killScheduler = 0;
 	public ArrayList<AIBase> aibase = new ArrayList<AIBase>();
 	
-	/**
-	 * @param Location arrays for powerups
-	 */
-	//Point[] stopwatchP; // stopwatches
-	
 	private HUD hud;
+	
 	
 	public Level1State(GameStateManager gsm) {
 		this.gsm = gsm;
@@ -289,48 +294,13 @@ public class Level1State extends GameState{
 		return aibase;
 	}
 	
-	public void update() {
-		Enemy e; // enemy entity
-		Vittle f; // fruit entity
-		Vittle v; // vegetable entity
-		Vittle p; // protein entity
-		Vittle l; // liquid entity
-		PowerUp pw; // powerup entity
-		
-		/*if(paused) {
-			sleep();
-			System.out.println("Game Paused");
-		}
-		*/
-		
-		// Update player
-		player.update();
-		
-		tileMap.setPosition(
-				GamePanel.WIDTH / 2 - player.getx(),
-				GamePanel.HEIGHT / 2 - player.gety());
-		
-		// Checks if player died
+	private void checkPlayerDead() {
 		if(player.getHealth() == 0) {
 			player.getNextPosition();
 		}
-		
-		checkForStopWatch();
-		
-		// UPDATE BACKGROUND
-		//bg.setPosition(tileMap.getx(), tileMap.gety());
-		
-		// Check if player is attacking
-		player.checkAttack(enemies);
-		player.checkCapturedFruit(Fruits);
-		player.checkCapturedVeg(Veggies);
-		player.checkCapturedProtein(Proteins);
-		player.checkCapturedLiquid(Liquids);
-		
-		// Check if powerups intersected
-		player.checkObtainedPowerUps(PowerUps);
-		
-		// Update all enemies
+	}
+	
+	private void updateEnemies() {
 		for(int i = 0; i < enemies.size(); i++) {
 			e = enemies.get(i);
 			e.update();
@@ -341,8 +311,9 @@ public class Level1State extends GameState{
 						e.getx(), e.gety()));
 			}
 		}
-		
-		// Update all fruit vittles
+	}
+	
+	private void updateFruits() {
 		for(int i = 0; i < Fruits.size(); i++) {
 			f = Fruits.get(i);
 			f.update();
@@ -354,8 +325,9 @@ public class Level1State extends GameState{
 						f.getx(), f.gety()));
 			}
 		}
-		
-		// Update all veggie vittles
+	}
+	
+	private void updateVeggies() {
 		for(int i = 0; i < Veggies.size(); i++) {
 			 v = Veggies.get(i);
 			v.update();
@@ -367,8 +339,9 @@ public class Level1State extends GameState{
 						v.getx(), v.gety()));
 			}
 		}
-		
-		// Update all protein vittles
+	}
+	
+	private void updateProteins() {
 		for(int i = 0; i < Proteins.size(); i++) {
 			p = Proteins.get(i);
 			p.update();
@@ -380,8 +353,9 @@ public class Level1State extends GameState{
 						p.getx(), p.gety()));
 			}
 		}
-		
-		// Update all liquid vittles
+	}
+	
+	private void updateLiquids() {
 		for(int i = 0; i < Liquids.size(); i++) {
 			l = Liquids.get(i);
 			l.update();
@@ -393,8 +367,9 @@ public class Level1State extends GameState{
 						l.getx(), l.gety()));
 			}
 		}
-		
-		//Update all powerups
+	}
+	
+	private void updatePowerUps() {
 		for(int i = 0; i < PowerUps.size(); i++) {
 			pw = PowerUps.get(i);
 			pw.update();
@@ -402,8 +377,9 @@ public class Level1State extends GameState{
 				PowerUps.remove(i);
 			}
 		}
-		
-		// Update death explosions
+	}
+	
+	private void updateDeathExplosions() {
 		for(int i = 0; i < deathExplosions.size(); i++) {
 			deathExplosions.get(i).update();
 			if(deathExplosions.get(i).shouldRemove()) {
@@ -411,13 +387,42 @@ public class Level1State extends GameState{
 				i--;
 			}
 		}
-		
-		// Update Artificial Intelligence
+	}
+	
+	private void updateAI() {
 		chairmawnAI.update();
 		fruitAI.update();
 		veggieAI.update();
 		proteinAI.update();
+	}
+	
+	public void update() {
+		tileMap.setPosition(
+				GamePanel.WIDTH / 2 - player.getx(),
+				GamePanel.HEIGHT / 2 - player.gety());
+		// UPDATE BACKGROUND
+		//bg.setPosition(tileMap.getx(), tileMap.gety());
 		
+		player.update();
+		checkPlayerDead();
+		player.checkAttack(enemies);
+		player.checkCapturedFruit(Fruits);
+		player.checkCapturedVeg(Veggies);
+		player.checkCapturedProtein(Proteins);
+		player.checkCapturedLiquid(Liquids);
+		player.checkObtainedPowerUps(PowerUps);
+		
+		updateEnemies();
+		updateFruits();
+		updateVeggies();
+		updateProteins();
+		updateLiquids();
+		updatePowerUps();
+		updateAI();
+		
+		checkForStopWatch();
+		
+		updateDeathExplosions();
 	}
 	
 	public void draw(Graphics2D g) {

@@ -31,9 +31,9 @@ public class PowerUp extends MapObject{
 		switch(name) {
 		
 		case "STOPWATCH":
-			System.out.println("Powerup used");
+			System.out.println("Stopwatch used");
 			break;
-			
+		
 		default:
 			break;
 		}
