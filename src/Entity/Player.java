@@ -154,7 +154,7 @@ public class Player extends MapObject {
 		
 		facingRight = true;
 		
-		health = 1;
+		health = 10;
 		maxHealth = 50;
 		atkPower = 10;
 		maxPower = 25;
@@ -664,12 +664,16 @@ public class Player extends MapObject {
 		sfx.put("playerHit", DAMAGED_SFX);
 		health -= damage;
 		if(e.right && !dead) {
-			x += e.knockBackPlayer;
 			sfx.get("playerHit").play();
+			if((x + e.knockBackPlayer < getx()) == !intersects(this)) {
+				x += e.knockBackPlayer;
+			}
 		}
 		if(e.left && !dead) {
-			x -= e.knockBackPlayer;
 			sfx.get("playerHit").play();
+			if((x - e.knockBackPlayer > getx()) ==!intersects(this)) {
+				x -= e.knockBackPlayer;
+			}			
 		}
 		if(health < 0) {
 			health = 0;
@@ -1270,7 +1274,7 @@ public class Player extends MapObject {
 	public void update() {
 	
 		getNextPosition();
-		checkTileMapCollision();
+		checkTileMapCollision(); // Perhaps the key to fixing enemy atk bug?
 		setPosition(xtemp, ytemp);
 		notOnScreen();
 		checkIfAttacksStopped();

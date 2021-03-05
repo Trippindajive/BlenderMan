@@ -23,7 +23,7 @@ public class TileMap {
 	private int xmax;
 	private int ymax;
 	
-	private double tween; // smooths camera movement?
+	private double tween; // smoothes entity movement
 	
 	// Map
 	private int[][] map;
@@ -48,7 +48,7 @@ public class TileMap {
 		this.tileSize = tileSize;
 		numRowsToDraw = GamePanel.HEIGHT / tileSize + 2;
 		numColsToDraw = GamePanel.WIDTH / tileSize + 2;
-		tween = 0.07;
+		tween = 0.07; // tutorial(0.07)
 	}
 	
 	public void loadTiles(String s) {

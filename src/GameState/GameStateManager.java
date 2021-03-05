@@ -17,7 +17,7 @@ public class GameStateManager {
 	
 	private GameState[] gameStates;
 	private int currentState;
-	public static final int NUMGAMESTATES = 12;
+	public static final int NUMGAMESTATES = 13;
 	public static final int MENUSTATE = 0;
 	public static final int LEVEL1STATE = 1;
 	public static final int LOADGAMESTATE = 2;
@@ -99,11 +99,9 @@ public class GameStateManager {
 	 */
 	public void update() {
 		try {
-			
 			gameStates[currentState].update();
-			
 		} catch (Exception b) {
-			//b.printStackTrace();
+			//b.printStackTrace(); //Currently getting nullPointerException when uncommented, not sure why
 		}
 	}
 	/**
@@ -112,11 +110,9 @@ public class GameStateManager {
 	 */
 	public void draw(java.awt.Graphics2D g) {
 		try {
-			
 			gameStates[currentState].draw(g);
-			
 		} catch (Exception e) {
-			//e.printStackTrace();
+			//e.printStackTrace(); //Currently getting nullPointerException when uncommented, not sure why
 		}
 	}
 	/**

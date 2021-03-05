@@ -11,11 +11,11 @@ public class AIBase {
 		
 	}
 	
-	public void murderAI() {
+	public void murderAI() { // Shut the scheduler off when the player is not playing
 		sed.shutdown();
 	}
 	
-	public void reviveAI() {
+	public void reviveAI() { // Restart the scheduler when the player begins playing
 		sed = Executors.newScheduledThreadPool(2);
 	}
 	

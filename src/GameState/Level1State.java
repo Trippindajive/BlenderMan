@@ -28,14 +28,14 @@ import Entity.AI.VittleAI;
 public class Level1State extends GameState{
 	
 	/**
-	 * @param TileMap
+	  @param TileMap
 	 */
 	private TileMap tileMap;
 	private Background bg;
 	private GameOver gameOver;
 	
 	/**
-	 * @param List of entities in this level
+	 *@param List of entities in this level
 	 */
 	public Player player;
 	public ArrayList<Enemy> enemies = new ArrayList<Enemy>();
@@ -45,7 +45,7 @@ public class Level1State extends GameState{
 	private ArrayList<Vittle> Liquids = new ArrayList<Vittle>();
 	
 	/**
-	 * @param List of entities
+	  @param List of entities
 	 */
 	Enemy e;
 	Vittle f; // fruit entity
@@ -55,12 +55,12 @@ public class Level1State extends GameState{
 	PowerUp pw; // powerup entity
 	
 	/**
-	 * *param List of items/powerups in this level
+	 * @param List of items/powerups in this level
 	 */
 	private ArrayList<PowerUp> PowerUps = new ArrayList<PowerUp>();
 	
 	/**
-	 * @param List of AI entities in this level
+	  @param List of AI entities in this level
 	 */
 	private ChairmawnAI chairmawnAI;
 	private VittleAI fruitAI;
@@ -68,12 +68,12 @@ public class Level1State extends GameState{
 	private VittleAI proteinAI;
 	
 	/**
-	 * @param List of fx in this level
+	  @param List of fx in this level
 	 */
 	private ArrayList<DeathExplosion> deathExplosions = new ArrayList<DeathExplosion>();;
 	
 	/**
-	 * @param Location arrays for vittles
+	  @param Location arrays for vittles
 	 */
 	Point[] F; // strawberries
 	Point[] V; // broccoli
@@ -98,13 +98,13 @@ public class Level1State extends GameState{
 		tileMap = new TileMap(30);
 		tileMap.loadTiles("/Tilesets/grasstileset.gif");
 		tileMap.loadMap("/Maps/TaylorDemo");
-		tileMap.setPosition(0, 0);
-		tileMap.setTween(1); //Corrects "twitching" behavior of moving entities
+		tileMap.setPosition(75, 365);
+		tileMap.setTween(0.2); //Corrects "twitching" behavior of moving entities, tutorial(1)
 		
-		bg = new Background("/Backgrounds/retro arcade.gif", 0.1); // double value is a move scale
+		bg = new Background("/Backgrounds/world 1-1 placeholder B.png", 0.2); // double value is a move scale
 
 		player = new Player(tileMap);
-		player.setPosition(80.0, 365);
+		player.setPosition(75, 365);
 		
 		// Populate enemies & vittles
 		populateEnemies();
@@ -121,7 +121,11 @@ public class Level1State extends GameState{
 		
 		hud = new HUD(player);
 	}
-
+	
+	private void enemySpawner() {
+		
+	}
+	
 	private void populateEnemies() {
 		
 		Chairmawn e;
@@ -282,7 +286,6 @@ public class Level1State extends GameState{
 	
 	public void killSchedule() {
 		ArrayList<AIBase> r = makeAIArrayList();
-		
 		r.forEach(ai -> ai.murderAI());
 	}
 	
@@ -398,10 +401,11 @@ public class Level1State extends GameState{
 	
 	public void update() {
 		tileMap.setPosition(
-				GamePanel.WIDTH / 2 - player.getx(),
-				GamePanel.HEIGHT / 2 - player.gety());
+				GamePanel.WIDTH / 3 - player.getx(), // Sets how "camera" should move in-game horizontally
+				GamePanel.HEIGHT / 3 - player.gety()); // Sets how "camera" should move in-game vertically
+		
 		// UPDATE BACKGROUND
-		//bg.setPosition(tileMap.getx(), tileMap.gety());
+		bg.setPosition(tileMap.getx(), tileMap.gety());
 		
 		player.update();
 		checkPlayerDead();
@@ -437,7 +441,9 @@ public class Level1State extends GameState{
 		tileMap.draw(g);
 		
 		// Draw player
-		player.draw(g);
+		if(!player.isDead()) {
+			player.draw(g);
+		}
 		
 		// Draw enemies
 		for(int i = 0; i < enemies.size(); i++) {

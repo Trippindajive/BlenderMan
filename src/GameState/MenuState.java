@@ -16,7 +16,8 @@ public class MenuState extends GameState {
 	
 	private Background bg;
 	private int currentChoice = 0;
-	private String[] options = {"Start New Adventure", "Load Old Adventure(WIP)", "Password(WIP)", "Leaderboards(WIP)", "Help", "Quit"};
+	private String[] options = {"New Game", "Load Game", "Password(WIP)", "Leaderboards(WIP)", 
+			"Controls", "Quit"};
 	private Color titleColor;
 	private Font titleFont;
 	private Font font;
@@ -26,11 +27,11 @@ public class MenuState extends GameState {
 		this.gsm = gsm;
 		
 		try {
-			bg = new Background("/Backgrounds/retro sunshine 640x480.jpg", 1.0);
+			bg = new Background("/Backgrounds/menu placeholder.jpg", 1.0);
 			bg.setVector(-0.5, 0);
 			
 			titleColor = new Color(0, 128, 0);
-			titleFont = new Font("Century Gothic", Font.PLAIN, 72);
+			titleFont = new Font("Century Gothic", Font.ITALIC, 72);
 			
 			font = new Font("Arial", Font.PLAIN, 24);
 			
@@ -50,11 +51,9 @@ public class MenuState extends GameState {
 	
 	public void update() {
 		bg.update();
-		//playMusic();
 	}
 	
 	private void playMusic() {
-		
 		bgMusic.get("menu music").play();
 	}
 	
@@ -65,7 +64,7 @@ public class MenuState extends GameState {
 		// Draw title
 		g.setColor(titleColor);
 		g.setFont(titleFont);
-		g.drawString("BlenderMan", 110, 100); // In the future, write a function that automatically centers strings
+		g.drawString("BlenderMan", 240, 100); // In the future, write a function that automatically centers strings
 		
 		// Draw menu options
 		g.setFont(font);
@@ -76,7 +75,7 @@ public class MenuState extends GameState {
 			else {
 				g.setColor(Color.WHITE);
 			}
-			g.drawString(options[i], 280, 180 + i * 25);
+			g.drawString(options[i], 380, 220 + i * 25);
 		}
 	}
 	

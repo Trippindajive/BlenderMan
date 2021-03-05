@@ -27,7 +27,7 @@ public class LoadGameState extends GameState {
 		
 		try {
 			
-			bg = new Background("/Backgrounds/retro sunshine 640x480.jpg", 1.0);
+			bg = new Background("/Backgrounds/menu placeholder.jpg", 1.0);
 			bg.setVector(-0.5, 0.0);
 			
 		} catch (Exception e) {
