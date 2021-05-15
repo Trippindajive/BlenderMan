@@ -1,6 +1,5 @@
 package GameState;
 
-import java.awt.event.KeyEvent;
 import java.util.HashMap;
 
 import javax.sound.sampled.Clip;
@@ -26,7 +25,7 @@ public class GameStateManager {
 	private HashMap<String, AudioPlayer> bgMusic = new HashMap<String, AudioPlayer>();
 	
 	private String previousSong = "";
-	private boolean musicOnOrOff;
+	protected boolean musicOn;
 	
 	public GameStateManager() {
 		gameStates = new GameState[NUMGAMESTATES];
@@ -45,7 +44,7 @@ public class GameStateManager {
 				bgMusic.get(s).clip.getControl(
 				FloatControl.Type.MASTER_GAIN);
 		
-		if(s.equals(previousSong) || musicOnOrOff) {
+		if(s.equals(previousSong) || musicOn) {
 			return;
 		}
 		if(!previousSong.equals("")) {
@@ -61,11 +60,15 @@ public class GameStateManager {
 	
 	private void loadState(int state) {
 		if(state == MENUSTATE) {
-			//playSong("menu music");
+			if(!musicOn) {
+				playSong("menu music");
+			}
 			gameStates[state] = new MenuState(this);
 		}
 		if(state == LEVEL1STATE) {
-			//playSong("level1 music");
+			if(!musicOn) {
+				playSong("level1 music");
+			}
 			gameStates[state] = new Level1State(this);
 		}
 		if(state == HELPSCREEN) {
@@ -121,9 +124,6 @@ public class GameStateManager {
 	 */
 	public void keyPressed(int k) {
 		gameStates[currentState].keyPressed(k);
-		if(k == KeyEvent.VK_M) {
-			//musicOnOrOff = true;
-		}
 	}
 	/**
 	 * Signals key release.

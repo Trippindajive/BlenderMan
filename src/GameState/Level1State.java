@@ -101,7 +101,7 @@ public class Level1State extends GameState{
 		tileMap.setPosition(75, 365);
 		tileMap.setTween(0.2); //Corrects "twitching" behavior of moving entities, tutorial(1)
 		
-		bg = new Background("/Backgrounds/world 1-1 placeholder B.png", 0.2); // double value is a move scale
+		bg = new Background("/Backgrounds/world 1-1 placeholder C.jpg", 0.2); // double value is a move scale
 
 		player = new Player(tileMap);
 		player.setPosition(75, 365);
@@ -122,6 +122,9 @@ public class Level1State extends GameState{
 		hud = new HUD(player);
 	}
 	
+	/** Random generator for enemy spawns
+	 * 
+	 */
 	private void enemySpawner() {
 		
 	}

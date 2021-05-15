@@ -17,7 +17,7 @@ public class MenuState extends GameState {
 	private Background bg;
 	private int currentChoice = 0;
 	private String[] options = {"New Game", "Load Game", "Password(WIP)", "Leaderboards(WIP)", 
-			"Controls", "Quit"};
+			"Controls", "Mute Music", "Quit"};
 	private Color titleColor;
 	private Font titleFont;
 	private Font font;
@@ -53,9 +53,9 @@ public class MenuState extends GameState {
 		bg.update();
 	}
 	
-	private void playMusic() {
+	/*private void playMusic() {
 		bgMusic.get("menu music").play();
-	}
+	}*/
 	
 	public void draw(Graphics2D g) {
 		// Draw background
@@ -100,6 +100,10 @@ public class MenuState extends GameState {
 			gsm.setState(11);
 		}
 		if(currentChoice == 5) {
+			// Mute Music
+			gsm.musicOn = true;
+		}
+		if(currentChoice == 6) {
 			System.exit(0);
 		}
 	}
@@ -119,6 +123,9 @@ public class MenuState extends GameState {
 			if(currentChoice > options.length - 1) {
 				currentChoice = 0;
 			}
+		}
+		if(k == KeyEvent.VK_M) {
+			gsm.musicOn = true;
 		}
 	}
 	
