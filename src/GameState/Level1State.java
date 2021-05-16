@@ -404,8 +404,8 @@ public class Level1State extends GameState{
 	
 	public void update() {
 		tileMap.setPosition(
-				GamePanel.WIDTH / 3 - player.getx(), // Sets how "camera" should move in-game horizontally
-				GamePanel.HEIGHT / 3 - player.gety()); // Sets how "camera" should move in-game vertically
+				GamePanel.WIDTH / 2 - player.getx(), // Sets how "camera" should move in-game horizontally
+				GamePanel.HEIGHT / 2 - player.gety()); // Sets how "camera" should move in-game vertically
 		
 		// UPDATE BACKGROUND
 		bg.setPosition(tileMap.getx(), tileMap.gety());
